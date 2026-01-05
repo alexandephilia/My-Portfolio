@@ -149,7 +149,7 @@ export default function App() {
             }}
             onDragStart={(e) => e.preventDefault()}
         >
-            <div className="max-w-[740px] mx-auto border-x border-dashed border-gray-200 bg-[#FAFAFA] min-h-screen flex flex-col">
+            <div className="relative max-w-[740px] mx-auto border-x border-dashed border-gray-200 bg-[#FAFAFA] min-h-screen flex flex-col">
 
                 <motion.div
                     variants={isFirstLoad ? containerVariants : {}}
@@ -271,6 +271,12 @@ export default function App() {
                         <Footer />
                     </SectionWrapper>
                 </motion.div>
+                <DraggableSticker 
+                    id="global-sticker-1"
+                    src="/sticker_1.png"
+                    className="top-42 right-4 md:top-98 md:-right-3"
+                    peelFrom="top"
+                />
             </div>
 
             {/* Minimalist Music Dock */}
@@ -279,13 +285,6 @@ export default function App() {
             {/* Progressive Viewport Blur */}
             <TopBlur />
             <BottomBlur />
-
-            <DraggableSticker 
-                id="global-sticker-1"
-                src="/sticker_1.png"
-                className="top-75 -right-4 md:top-98 md:right-52"
-                peelFrom="top"
-            />
         </div>
     );
 }

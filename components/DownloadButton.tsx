@@ -38,9 +38,9 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({ href, fileName =
     // Using responsive-aware logic for mobile optimization
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
-    const idleWidth = isMobile ? 120 : 125;   // "Download Resume" + icon
-    const streamWidth = isMobile ? 100 : 105;  // "Streaming"
-    const successWidth = isMobile ? 88 : 92;   // "Exported"
+    const idleWidth = isMobile ? 105 : 125;   // Reduced from 120
+    const streamWidth = isMobile ? 88 : 105;  // Reduced from 100
+    const successWidth = isMobile ? 78 : 92;   // Reduced from 88
 
     return (
         <motion.button
@@ -116,10 +116,10 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({ href, fileName =
                                 ease: [0.16, 1, 0.3, 1]
                             }}
                             style={{ transformPerspective: 800 }}
-                            className="flex items-center gap-1.5 px-2.5 whitespace-nowrap"
+                            className="flex items-center gap-1 md:gap-1.5 px-1.5 md:px-2.5 whitespace-nowrap"
                         >
                             <Download size={11} className="text-gray-500 group-hover:text-gray-900 transition-colors" />
-                            <span className="text-gray-600 group-hover:text-gray-900 font-semibold tracking-tight">
+                            <span className="text-[7px] md:text-[10px] text-gray-600 group-hover:text-gray-900 font-semibold tracking-tight">
                                 Download Resume
                             </span>
                         </motion.div>
@@ -131,10 +131,10 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({ href, fileName =
                             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                             exit={{ opacity: 0, y: -15, filter: 'blur(8px)' }}
                             transition={{ duration: 0.4 }}
-                            className="flex items-center gap-1.5 px-2.5 whitespace-nowrap"
+                            className="flex items-center gap-1 md:gap-1.5 px-1.5 md:px-2.5 whitespace-nowrap"
                         >
                             <Loader2 size={10} className="text-[rgb(74,108,196)] animate-spin" />
-                            <span className="text-[7px] font-mono font-black text-[rgb(74,108,196)] uppercase tracking-[0.2em] pl-0.5">
+                            <span className="text-[6px] md:text-[7px] font-mono font-black text-[rgb(74,108,196)] uppercase tracking-[0.2em] pl-0.5">
                                 Streaming
                             </span>
                         </motion.div>
@@ -150,10 +150,10 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({ href, fileName =
                                 ease: [0.16, 1, 0.3, 1]
                             }}
                             style={{ transformPerspective: 800 }}
-                            className="flex items-center gap-1.5 px-2.5 whitespace-nowrap"
+                            className="flex items-center gap-1 md:gap-1.5 px-1.5 md:px-2.5 whitespace-nowrap"
                         >
                             <CheckCircle2 size={11} className="text-emerald-600" />
-                            <span className="text-emerald-700 font-bold tracking-tight">
+                            <span className="text-[7px] md:text-[10px] text-emerald-700 font-bold tracking-tight">
                                 Exported
                             </span>
                         </motion.div>

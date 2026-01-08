@@ -14,6 +14,7 @@ import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { MusicDock } from './components/MusicDock';
 import { ProjectCard } from './components/ProjectCard';
+import { ScrollTimeline } from './components/ScrollTimeline';
 import { SectionWrapper } from './components/SectionWrapper';
 import { Skills } from './components/Skills';
 import { StackInsights } from './components/StackInsights';
@@ -141,7 +142,7 @@ export default function App() {
 
     return (
         <div
-            className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans relative"
+            className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans relative overflow-x-hidden"
             style={{
                 userSelect: 'none',
                 WebkitUserSelect: 'none',
@@ -162,11 +163,11 @@ export default function App() {
                     </motion.div>
 
                     <main className="flex flex-col">
-                        <SectionWrapper>
+                        <SectionWrapper id="hero">
                             <Hero />
                         </SectionWrapper>
 
-                        <SectionWrapper>
+                        <SectionWrapper id="projects">
                             <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
                         </SectionWrapper>
 
@@ -247,19 +248,19 @@ export default function App() {
                             </section>
                         </SectionWrapper>
 
-                        <SectionWrapper>
+                        <SectionWrapper id="experience">
                             <Experience />
                         </SectionWrapper>
-                        <SectionWrapper>
+                        <SectionWrapper id="education">
                             <Education />
                         </SectionWrapper>
-                        <SectionWrapper>
+                        <SectionWrapper id="skills">
                             <Skills />
                         </SectionWrapper>
                         <SectionWrapper>
                             <StackInsights />
                         </SectionWrapper>
-                        <SectionWrapper>
+                        <SectionWrapper id="contact">
                             <Contact />
                         </SectionWrapper>
                         <SectionWrapper>
@@ -274,7 +275,7 @@ export default function App() {
                 <DraggableSticker 
                     id="global-sticker-1"
                     src="/sticker_1.png"
-                    className="top-42 right-4 md:top-98 md:-right-3"
+                    className="bottom-70 -right-[-21rem] md:bottom-35 md:-right-[-32rem]"
                     peelFrom="top"
                 />
             </div>
@@ -285,6 +286,9 @@ export default function App() {
             {/* Progressive Viewport Blur */}
             <TopBlur />
             <BottomBlur />
+
+            {/* Global Progressive Timeline */}
+            <ScrollTimeline />
         </div>
     );
 }

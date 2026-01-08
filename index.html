@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="upgrade-insecure-requests"
+    />
     <title>alex.exit(0)</title>
     <link rel="icon" type="image/jpeg" href="./fav.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
-        rel="stylesheet" />
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script type="importmap">
       {
         "imports": {
@@ -26,11 +34,119 @@
       }
     </script>
     <link rel="stylesheet" href="./index.css" />
-</head>
+<script>
+  if (window.location.search.includes('grab=true')) {
+    console.log('Grabby: HUD ENGAGED. Always-on crosshairs active.');
+    const s = document.createElement('script');
+    s.src = "https://unpkg.com/react-grab/dist/index.global.js";
+    document.head.appendChild(s);
 
-<body>
+    // 1. PREMIUM SKEUOMORPHIC HUD ELEMENTS - MATTE BLACK EDITION
+    const overlay = document.createElement('div');
+    overlay.id = 'grabby-overlay';
+    overlay.style.cssText = `
+      position: fixed; pointer-events: none; z-index: 2147483647; 
+      background: rgba(0, 0, 0, 0.05); 
+      border: 0.5px solid rgba(0, 0, 0, 0.4); 
+      transition: all 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+      display: none; border-radius: 4px; transform: translateZ(0);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    `;
+    
+    // Stealth Black Measure Lines - ZERO-LAG SNAP (Display: None by default)
+    const chV = document.createElement('div'); chV.style.cssText = `position: fixed; top: 0; bottom: 0; width: 1px; background: rgba(0, 0, 0, 0.15); z-index: 2147483646; pointer-events: none; transform: translateZ(0); will-change: transform; display: none;`;
+    const chH = document.createElement('div'); chH.style.cssText = `position: fixed; left: 0; right: 0; height: 1px; background: rgba(0, 0, 0, 0.15); z-index: 2147483646; pointer-events: none; transform: translateZ(0); will-change: transform; display: none;`;
+    
+    // THE PREMIUM MATTE GLASS TOOLTIP (With Shine)
+    const tooltip = document.createElement('div');
+    tooltip.style.cssText = `
+      position: absolute; top: -34px; left: 0; 
+      background: linear-gradient(180deg, rgba(30, 30, 35, 0.9) 0%, rgba(18, 18, 20, 0.95) 100%); 
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      color: #fafafa; padding: 6px 12px; 
+      font-family: 'JetBrains Mono', monospace; 
+      font-size: 11px; font-weight: 500; 
+      border-radius: 6px; white-space: nowrap; 
+      z-index: 2147483647; text-transform: lowercase; 
+      letter-spacing: -0.01em;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+    `;
+    
+    overlay.appendChild(tooltip);
+    document.documentElement.appendChild(overlay);
+    document.documentElement.appendChild(chV);
+    document.documentElement.appendChild(chH);
+
+    let activeEl = null;
+
+    // 2. PRECISION HUNTER ALGORITHM
+    const getDeepestMeaningfulElement = (x, y) => {
+      overlay.style.display = 'none';
+      let el = document.elementFromPoint(x, y);
+      overlay.style.display = 'block';
+      if (!el || el === document.documentElement || el === document.body) return null;
+      while (el.parentElement && el.parentElement !== document.body && el.tagName !== 'BUTTON' && el.tagName !== 'A' && el.parentElement.children.length === 1 && el.innerText === el.parentElement.innerText) el = el.parentElement;
+      return el;
+    };
+
+    window.addEventListener('mousemove', (e) => {
+      if (e.metaKey || e.ctrlKey) {
+        overlay.style.display = chV.style.display = chH.style.display = 'block';
+        
+        // Hardware-accelerated zero-lag tracking
+        chV.style.transform = `translateX(${e.clientX}px)`;
+        chH.style.transform = `translateY(${e.clientY}px)`;
+
+        let el = getDeepestMeaningfulElement(e.clientX, e.clientY);
+
+        if (el && el !== activeEl && !el.id.includes('grabby-')) {
+          activeEl = el;
+          const rect = activeEl.getBoundingClientRect();
+          Object.assign(overlay.style, { top: rect.top + 'px', left: rect.left + 'px', width: rect.width + 'px', height: rect.height + 'px' });
+          const tag = activeEl.tagName.toLowerCase();
+          const classes = activeEl.className && typeof activeEl.className === 'string' ? activeEl.className.split(' ').filter(c => c && !c.includes(':')).slice(0, 1).map(c => '.' + c).join('') : '';
+          tooltip.innerHTML = `<span style="color:rgba(255,255,255,0.3)">grab:</span> ${tag}${classes}`;
+          document.body.style.cursor = 'none';
+        }
+      } else {
+        overlay.style.display = chV.style.display = chH.style.display = 'none';
+        activeEl = null;
+        document.body.style.cursor = '';
+      }
+    }, { passive: true });
+
+    // 3. NUCLEAR SYNC & CLIPBOARD
+    const block = (e) => { if (e.metaKey || e.ctrlKey) { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); return false; }};
+    window.addEventListener('mousedown', block, true);
+    window.addEventListener('mouseup', block, true);
+    window.addEventListener('click', (e) => {
+      // 1. UNCONDITIONAL BLOCK for Meta-clicks (Stops all reloads)
+      if (e.metaKey || e.ctrlKey) {
+        e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+        
+        if (activeEl) {
+          overlay.style.background = 'rgba(0, 0, 0, 0.2)'; overlay.style.borderColor = '#000000';
+          setTimeout(() => { overlay.style.background = 'rgba(0,0,0,0.05)'; overlay.style.borderColor = 'rgba(0,0,0,0.4)'; }, 300);
+
+          const grabInfo = { tagName: activeEl.tagName, className: activeEl.className, innerText: activeEl.innerText?.slice(0, 100), id: activeEl.id, timestamp: new Date().toLocaleTimeString() };
+          fetch('/__grabby_sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(grabInfo) });
+          const copyText = `[GRABBY] Tag: ${grabInfo.tagName} | Class: ${grabInfo.className} | Text: "${grabInfo.innerText}"`;
+          navigator.clipboard.writeText(copyText).then(() => {
+            const oldHtml = tooltip.innerHTML; tooltip.innerHTML = "<span style='color:#00ff88'>SYNCED & COPIED</span>";
+            setTimeout(() => tooltip.innerHTML = oldHtml, 1500);
+          });
+        }
+        return false;
+      }
+    }, true);
+  }
+</script>
+  </head>
+
+  <body>
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>
-</body>
-
+  </body>
 </html>

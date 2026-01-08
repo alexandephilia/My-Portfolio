@@ -93,7 +93,7 @@ export const ScrollTimeline = () => {
       <div className="fixed right-0 top-0 bottom-0 w-8 sm:w-12 lg:w-32 z-[100] flex flex-col items-end pointer-events-none group px-1 sm:px-2 lg:px-8">
         {/* The Rail Container */}
         <div 
-          className="relative h-[calc(100%-8rem)] flex flex-col items-end justify-between my-16 mr-0 sm:mr-1 lg:mr-2 pointer-events-auto w-full group/rail"
+          className="relative h-[calc(100%-10rem)] sm:h-[calc(100%-8rem)] flex flex-col items-end justify-between mt-16 mb-24 sm:mb-16 mr-0 sm:mr-1 lg:mr-2 pointer-events-auto w-full group/rail"
           onPointerDown={(e) => {
             // Stop propagation to prevent backdrop from dismissing immediately
             e.stopPropagation();

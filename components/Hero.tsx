@@ -258,29 +258,33 @@ export const Hero: React.FC = () => {
     const [revealSequence, setRevealSequence] = useState({ agnostic: false, adaptive: false });
 
     useEffect(() => {
-        // Timeline for the automated sequential reveal
-        const timer1 = setTimeout(() => {
+        let isMounted = true;
+        
+        const runSequence = async () => {
+            // Initial delay wait for main text reveal
+            await new Promise(r => setTimeout(r, 1200));
+            if (!isMounted) return;
+
+            // 1. Show Agnostic
             setRevealSequence(prev => ({ ...prev, agnostic: true }));
-        }, 1200); // Wait for main text reveal
-
-        const timer2 = setTimeout(() => {
+            await new Promise(r => setTimeout(r, 1200));
+            if (!isMounted) return;
             setRevealSequence(prev => ({ ...prev, agnostic: false }));
-        }, 2400); // Show for 1.2s
 
-        const timer3 = setTimeout(() => {
+            // Gap
+            await new Promise(r => setTimeout(r, 200));
+            if (!isMounted) return;
+
+            // 2. Show Adaptive
             setRevealSequence(prev => ({ ...prev, adaptive: true }));
-        }, 2600); // 200ms gap
-
-        const timer4 = setTimeout(() => {
+            await new Promise(r => setTimeout(r, 1200));
+            if (!isMounted) return;
             setRevealSequence(prev => ({ ...prev, adaptive: false }));
-        }, 3800); // Show for 1.2s
-
-        return () => {
-            clearTimeout(timer1);
-            clearTimeout(timer2);
-            clearTimeout(timer3);
-            clearTimeout(timer4);
         };
+
+        runSequence();
+
+        return () => { isMounted = false; };
     }, []);
 
     return (

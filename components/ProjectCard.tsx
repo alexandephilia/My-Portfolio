@@ -32,25 +32,9 @@ const Shimmer: React.FC = () => (
     <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-shimmer"
         style={{
             backgroundSize: '200% 100%',
-            animation: 'shimmer 1.5s infinite linear',
         }}
     />
 );
-
-// Add shimmer keyframes to document
-if (typeof document !== 'undefined') {
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-    `;
-    if (!document.querySelector('[data-shimmer-style]')) {
-        style.setAttribute('data-shimmer-style', 'true');
-        document.head.appendChild(style);
-    }
-}
 
 // Lazy image component with shimmer
 const LazyImage: React.FC<{ src: string; alt: string; blur?: number }> = ({ src, alt, blur }) => {

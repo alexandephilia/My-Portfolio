@@ -3,23 +3,25 @@ import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
 // import { grabbySyncPlugin } from './api/grabby-plugin';
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
     const env = loadEnv(mode, '.', '');
     const isDev = mode === 'development';
     
-    // Conditional plugin array
+    // Conditional plugin array with React as base
     const plugins = [react()];
+
+    // Dynamically import Grabby only in development
     if (isDev) {
-        // Safe dynamic import or just standard import but only use if dev
-        // Actually, the build fails because it can't resolve the file during build time on Vercel
-        // likely because the 'api' folder structure or file isn't included or ts-node issue.
-        // But the user error says "Could not resolve ./api/grabby-plugin".
-        // We will try/catch the require/import or just suppress it for production build.
         try {
-           const { grabbySyncPlugin } = require('./api/grabby-plugin');
-           plugins.push(grabbySyncPlugin());
+           // We use a relative path import. Note: in ESM we need the extension if strictly configured, 
+           // but Vite's bundler usually handles resolution. Safe to try both or rely on Vite.
+           // @ts-ignore - The file might not exist in production build context
+           const module = await import('./api/grabby-plugin');
+           if (module && module.grabbySyncPlugin) {
+               plugins.push(module.grabbySyncPlugin());
+           }
         } catch (e) {
-           console.warn("Grabby plugin not loaded (safe for production)");
+           console.warn("Grabby plugin could not be loaded (skipping for dev/build):", e);
         }
     }
 

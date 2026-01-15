@@ -126,7 +126,7 @@ export const EXPERIENCE: ExperienceItem[] = [
     {
         id: "1",
         company: "RnD Remote | Dubai Based",
-        role: "DevOps Engineer",
+        role: "Founding Engineer",
         description: "Architected a multi-chain crypto intelligence platform and Telegram bot handling real-time analytics for 6+ networks. Built automated Docker infrastructure, high-performance data pipelines, and a Next.js admin dashboard with 3D analytics.",
         period: "2025"
     },
@@ -215,7 +215,7 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
         ]
     },
     {
-        title: "DevOps",
+        title: "Founding",
         skills: [
             "Docker",
             "CI/CD",

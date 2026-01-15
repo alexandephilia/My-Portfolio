@@ -53,14 +53,7 @@ export default function App() {
         sessionStorage.setItem('hasVisited', 'true');
     }, []);
 
-    // Prevent right-click context menu globally
-    useEffect(() => {
-        const handleContextMenu = (e: MouseEvent) => {
-            e.preventDefault();
-        };
-        document.addEventListener('contextmenu', handleContextMenu);
-        return () => document.removeEventListener('contextmenu', handleContextMenu);
-    }, []);
+
 
     // Global Animation Variants
     const sectionVariants = {
@@ -141,15 +134,26 @@ export default function App() {
     const displayProjects = PROJECTS.filter(project => project.category === activeTab);
 
     return (
-        <div
-            className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans relative overflow-x-hidden"
-            style={{
-                userSelect: 'none',
-                WebkitUserSelect: 'none',
-                WebkitTouchCallout: 'none',
-            }}
-            onDragStart={(e) => e.preventDefault()}
-        >
+        <>
+            <style>{`
+                html, body {
+                    scrollbar-width: none;
+                    -ms-overflow-style: none;
+                }
+                html::-webkit-scrollbar, body::-webkit-scrollbar {
+                    display: none;
+                }
+            `}</style>
+            <div
+                className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans relative overflow-x-hidden"
+                style={{
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    WebkitTouchCallout: 'none',
+                }}
+                onContextMenu={(e) => e.preventDefault()}
+                onDragStart={(e) => e.preventDefault()}
+            >
             <div className="relative max-w-[740px] mx-auto border-x border-dashed border-gray-200 bg-[#FAFAFA] min-h-screen flex flex-col">
 
                 <motion.div
@@ -290,5 +294,6 @@ export default function App() {
             {/* Global Progressive Timeline */}
             <ScrollTimeline />
         </div>
+        </>
     );
 }

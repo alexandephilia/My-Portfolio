@@ -14,7 +14,7 @@ export const MusicDock: React.FC = () => {
     const [currentSongIndex, setCurrentSongIndex] = useState(0);
     const [isRepeatOne, setIsRepeatOne] = useState(false);
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
-    const [expandedWidth, setExpandedWidth] = useState(380);
+
     const [showSpotlight, setShowSpotlight] = useState(false); // Spotlight onboarding state
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -22,16 +22,7 @@ export const MusicDock: React.FC = () => {
 
     const currentSong = SONGS[currentSongIndex];
 
-    // Calculate expanded width based on viewport
-    useEffect(() => {
-        const updateWidth = () => {
-            const maxWidth = Math.min(380, window.innerWidth - 48);
-            setExpandedWidth(maxWidth);
-        };
-        updateWidth();
-        window.addEventListener('resize', updateWidth);
-        return () => window.removeEventListener('resize', updateWidth);
-    }, []);
+
 
     // Simple reliable check: scroll if title exceeds character threshold
     const shouldScroll = currentSong.title.length > MAX_TITLE_CHARS;
@@ -189,7 +180,7 @@ export const MusicDock: React.FC = () => {
                         <motion.div
                             initial={{ width: 64 }}
                             animate={{
-                                width: isMinimized ? 64 : expandedWidth,
+                                width: isMinimized ? 64 : 'min(380px, calc(100vw - 48px))',
                             }}
                             transition={{
                                 type: 'spring',

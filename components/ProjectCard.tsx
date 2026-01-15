@@ -123,7 +123,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                 <>
                     {/* Desktop version - original layout */}
                     <motion.div
-                        className="hidden md:block absolute inset-x-6 bottom-0 z-0 overflow-hidden"
+                        className="hidden md:block absolute inset-x-6 bottom-0 z-0"
                         initial={{ y: 0, opacity: 0, scale: 0.98 }}
                         animate={{
                             y: isHovered ? 44 : 0,
@@ -168,8 +168,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
                     {/* Mobile version - wrapping layout to show all items */}
                     <motion.div
-                        className="md:hidden absolute inset-x-2 z-0 overflow-hidden"
-                        style={{ bottom: '8px' }}
+                        className="md:hidden absolute inset-x-2 z-0"
+                        style={{ bottom: 'calc(var(--spacing) * 2)' }}
                         initial={{ y: 0, opacity: 0, scale: 0.98 }}
                         animate={{
                             y: isHovered ? 52 : 0,
@@ -203,7 +203,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
             {/* Outer Rim Container */}
             <div
-                className="w-full rounded-[24px] p-[4px] backdrop-blur-md md:backdrop-blur-[25px] transition-transform duration-300 group-hover:-translate-y-1 relative z-10"
+                className="w-full rounded-[24px] p-[4px] backdrop-blur-md md:backdrop-blur-[25px] transition-transform duration-300 group-hover:-translate-y-1 relative z-10 overflow-hidden"
                 style={{
                     background: `linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 50%, #E5E7EB 100%)`,
                     boxShadow: 'rgba(0, 0, 0, 0.13) 0px 8px 10px, rgba(0, 0, 0, 0.05) 0px 4px 4px'

@@ -1,7 +1,7 @@
 'use client';
 
-import { motion, useScroll, useSpring, useTransform, useMotionValue, AnimatePresence } from 'framer-motion';
-import { useEffect, useState, useMemo } from 'react';
+import { motion, useScroll, useSpring, useTransform, useMotionValue, AnimatePresence, useMotionValueEvent } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 const SECTIONS_CONFIG = [
   { id: 'hero', label: 'Home' },
@@ -57,14 +57,24 @@ export const ScrollTimeline = () => {
     };
   }, []);
 
-  useEffect(() => {
-    return scrollYProgress.onChange((latest) => {
-      setScrollValue(latest);
-    });
-  }, [scrollYProgress]);
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    setScrollValue(latest);
+  });
 
   // No longer using global pointerup to auto-clear, as we want "Sticky Reveal" on mobile
   // and explicit dismissal via backdrop click.
+
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isMobile = windowWidth < 640;
+  const isTablet = windowWidth < 1024;
 
   const ticks = Array.from({ length: 101 });
 
@@ -140,6 +150,8 @@ export const ScrollTimeline = () => {
               scrollValue={scrollValue}
               isRevealed={isRevealed}
               setIsRevealed={setIsRevealed}
+              isMobile={isMobile}
+              isTablet={isTablet}
             />;
           })}
         </div>
@@ -149,18 +161,7 @@ export const ScrollTimeline = () => {
 };
 
 // Extracted Sub-component with isRevealed control
-const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseYProgress, scrollValue, isRevealed, setIsRevealed }: any) => {
-  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const isMobile = windowWidth < 640;
-  const isTablet = windowWidth < 1024;
+const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseYProgress, scrollValue, isRevealed, setIsRevealed, isMobile, isTablet }: any) => {
 
   const distance = useTransform([smoothedProgress, mouseYProgress], ([scroll, mouse]: any) => {
     const scrollDist = Math.abs(tickProgress - (scroll as number));

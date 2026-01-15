@@ -123,7 +123,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                 <>
                     {/* Desktop version - original layout */}
                     <motion.div
-                        className="hidden md:block absolute inset-x-6 bottom-0 z-0"
+                        className="hidden md:block absolute inset-x-6 bottom-0 z-0 overflow-hidden"
                         initial={{ y: 0, opacity: 0, scale: 0.98 }}
                         animate={{
                             y: isHovered ? 44 : 0,
@@ -137,7 +137,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                             mass: 0.8
                         }}
                     >
-                        <div className="w-full h-14 rounded-b-[20px] bg-[#FAFAFA] border-x border-b border-gray-200 shadow-[0_12px_32px_rgba(0,0,0,0.06)] px-6 flex items-center justify-between relative">
+                        <div className="w-full h-14 rounded-b-[20px] bg-[#FAFAFA] border-x border-b border-gray-200 shadow-[0_12px_32px_rgba(0,0,0,0.06)] px-6 flex items-center justify-between relative overflow-hidden">
                             {/* Stripped Lines Corners */}
                             <div className="absolute top-0 left-0 w-4 h-4 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(45deg, #000, #000 1px, transparent 1px, transparent 5px)' }} />
                             <div className="absolute top-0 right-0 w-4 h-4 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(-45deg, #000, #000 1px, transparent 1px, transparent 5px)' }} />
@@ -168,8 +168,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
                     {/* Mobile version - wrapping layout to show all items */}
                     <motion.div
-                        className="md:hidden absolute inset-x-2 z-0"
-                        style={{ bottom: 'calc(var(--spacing) * 2)' }}
+                        className="md:hidden absolute inset-x-2 z-0 overflow-hidden"
+                        style={{ bottom: '8px' }}
                         initial={{ y: 0, opacity: 0, scale: 0.98 }}
                         animate={{
                             y: isHovered ? 52 : 0,
@@ -183,7 +183,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                             mass: 0.8
                         }}
                     >
-                        <div className="w-full py-2 px-3 rounded-b-[16px] bg-[#FAFAFA] border-x border-b border-gray-200 shadow-[0_12px_32px_rgba(0,0,0,0.06)]">
+                        <div className="w-full py-2 px-3 rounded-b-[16px] bg-[#FAFAFA] border-x border-b border-gray-200 shadow-[0_12px_32px_rgba(0,0,0,0.06)] overflow-hidden">
                             {/* Stack Insight Label */}
                             <div className="text-[8px] font-mono font-bold text-[rgb(74,108,196)] uppercase tracking-[0.15em] opacity-60 mb-1.5 text-center">
                                 Stack Insight

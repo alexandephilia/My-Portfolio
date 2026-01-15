@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Bold, Code, Heading1, Heading2, Heading3, Italic, List, ListOrdered, Loader2, PenLine, Plus, Quote, Send, Trash2, X } from 'lucide-react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -47,44 +47,47 @@ const NotionEditor: React.FC<NotionEditorProps> = ({ value, onChange, placeholde
     const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 });
     const [slashFilter, setSlashFilter] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const [hintPosition, setHintPosition] = useState<{ top: number; show: boolean }>({ top: 0, show: true });
+    
+    // Hint position top is transient interaction data - stored in ref to avoid re-renders
+    const hintTopRef = useRef(0);
+    // Force update trigger for hint position changes
+    const [, forceHintUpdate] = useState(0);
 
     const filteredCommands = SLASH_COMMANDS.filter(cmd =>
         cmd.label.toLowerCase().includes(slashFilter.toLowerCase())
     );
 
+    // Calculate hint position - called from event handlers, not useEffect
     const updateHintPosition = useCallback(() => {
         if (!textareaRef.current) return;
         const textarea = textareaRef.current;
         const cursorPos = textarea.selectionStart;
         const textBefore = value.slice(0, cursorPos);
-        const lastNewline = textBefore.lastIndexOf('\n');
+        const linesBefore = textBefore.split('\n').length - 1;
+        const lineHeight = 27;
+        const newTop = linesBefore * lineHeight;
+        
+        if (hintTopRef.current !== newTop) {
+            hintTopRef.current = newTop;
+            forceHintUpdate(n => n + 1); // Trigger re-render only when position changes
+        }
+    }, [value]);
 
-        // Get the ENTIRE current line content (from line start to line end)
+    // Compute hint visibility inline - derived from state, not synced via effect
+    const computeHintShow = useMemo(() => {
+        if (showSlashMenu) return false;
+        if (!textareaRef.current) return value.length === 0;
+        
+        const cursorPos = textareaRef.current.selectionStart;
+        const textBefore = value.slice(0, cursorPos);
+        const lastNewline = textBefore.lastIndexOf('\n');
         const lineStart = lastNewline + 1;
         const nextNewline = value.indexOf('\n', lineStart);
         const lineEnd = nextNewline === -1 ? value.length : nextNewline;
         const entireLineContent = value.slice(lineStart, lineEnd);
-
-        // Placeholder should only show when:
-        // 1. The entire line is completely empty (no characters at all)
-        // 2. Slash menu is not open
-        // This means any character (including spaces, markdown prefixes, etc.) hides the placeholder
-        const isLineCompletelyEmpty = entireLineContent.length === 0;
-
-        // Count lines before cursor for vertical positioning
-        const linesBefore = textBefore.split('\n').length - 1;
-        const lineHeight = 27;
-
-        setHintPosition({
-            top: linesBefore * lineHeight,
-            show: isLineCompletelyEmpty && !showSlashMenu
-        });
+        
+        return entireLineContent.length === 0;
     }, [value, showSlashMenu]);
-
-    useEffect(() => {
-        updateHintPosition();
-    }, [value, updateHintPosition, showSlashMenu]);
 
     const getCaretCoordinates = () => {
         if (!textareaRef.current) return { top: 0, left: 0 };
@@ -204,11 +207,11 @@ const NotionEditor: React.FC<NotionEditorProps> = ({ value, onChange, placeholde
     return (
         <div className="relative">
             {/* Placeholder hint that follows cursor to empty lines */}
-            {hintPosition.show && (
+            {computeHintShow && (
                 <div
                     ref={overlayRef}
                     className="absolute pointer-events-none text-gray-300 text-[15px] leading-[1.8]"
-                    style={{ top: hintPosition.top }}
+                    style={{ top: hintTopRef.current }}
                 >
                     {placeholder}
                 </div>

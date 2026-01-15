@@ -104,11 +104,19 @@ export const MusicDock: React.FC = () => {
     const nextSong = () => {
         setCurrentSongIndex((prev) => (prev + 1) % SONGS.length);
         setIsPlaying(true);
+        // Play after React updates the audio src - use microtask to batch with state update
+        setTimeout(() => {
+            audioRef.current?.play().catch(e => console.error("Audio play failed on next:", e));
+        }, 0);
     };
 
     const prevSong = () => {
         setCurrentSongIndex((prev) => (prev - 1 + SONGS.length) % SONGS.length);
         setIsPlaying(true);
+        // Play after React updates the audio src
+        setTimeout(() => {
+            audioRef.current?.play().catch(e => console.error("Audio play failed on prev:", e));
+        }, 0);
     };
 
     const toggleRepeat = () => setIsRepeatOne(!isRepeatOne);
@@ -121,12 +129,6 @@ export const MusicDock: React.FC = () => {
             nextSong();
         }
     };
-
-    useEffect(() => {
-        if (audioRef.current && isPlaying) {
-            audioRef.current.play().catch(e => console.error("Audio play failed on change:", e));
-        }
-    }, [currentSongIndex]);
 
     // Auto-dismiss spotlight after 3 seconds
     useEffect(() => {

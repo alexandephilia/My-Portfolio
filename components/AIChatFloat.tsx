@@ -337,7 +337,7 @@ Now be entertaining, you beautiful bastard.`
                             animate={{ opacity: 1 }}
                             className="h-[200px] flex flex-col items-center justify-start pt-8 text-center px-4"
                         >
-                            <p className="text-5xl md:text-6xl lg:text-7xl text-blue-900 mb-4" style={{ fontFamily: 'Instrument Serif, serif' }}>What's up?</p>
+                            <p className="text-5xl md:text-5xl lg:text-5xl text-blue-900 mb-4" style={{ fontFamily: 'Instrument Serif, serif' }}>What's up?</p>
                             <p className="text-[10px] text-blue-500/60 mb-3 font-mono">Ask me anything about Alex's work.</p>
                             
                             <div className="flex flex-col items-center justify-start h-14 -mt-0.5 relative">
@@ -457,20 +457,21 @@ Now be entertaining, you beautiful bastard.`
                 <div
                     className={`
                         flex items-center gap-2 rounded-2xl border px-3 py-1.5 pointer-events-auto
-                        transition-all duration-200
+                        transition-all duration-200 backdrop-blur-2xl backdrop-saturate-150
                         ${isLoading 
                             ? 'bg-gray-100 border-gray-300' 
-                            : 'bg-linear-to-b from-white to-gray-50 border-gray-200/60'
+                            : 'bg-linear-to-b from-white/10 via-white/20 to-white/80 border-white/40'
                         }
                     `}
                     style={{ 
                         boxShadow: isLoading 
                             ? '0 2px 8px rgba(0,0,0,0.1), inset 0 1px 2px rgba(0,0,0,0.05)' 
                             : `
-                                0 4px 12px rgba(0,0,0,0.03),
+                                0 4px 12px rgba(0,0,0,0.05),
                                 0 1px 2px rgba(0,0,0,0.02),
-                                inset 0 2px 4px rgba(0,0,0,0.05),
-                                inset 0 1px 0 rgba(255,255,255,1)
+                                inset 0 1px 1px rgba(255,255,255,0.8),
+                                inset 0 -8px 12px -4px rgba(255,255,255,0.9),
+                                inset 0 -1px 0 rgba(255,255,255,1)
                             `
                     }}
                 >

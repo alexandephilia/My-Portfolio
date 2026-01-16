@@ -242,20 +242,22 @@ export const TransformDock: React.FC = () => {
                     layout
                     className="
                         relative
-                        bg-white/50 backdrop-blur-2xl backdrop-saturate-150
+                        backdrop-blur-3xl backdrop-saturate-150
                         border border-white/40
                         overflow-hidden
                     "
-                    style={{
-                        borderRadius: 24,
-                        boxShadow: `
-                            0 0 0 1px rgba(255,255,255,0.5),
-                            0 2px 4px rgba(0,0,0,0.02),
-                            0 8px 16px rgba(0,0,0,0.06),
-                            0 24px 48px rgba(0,0,0,0.08)
-                        `,
-                        background: 'linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.6) 100%)'
-                    }}
+                style={{
+                    borderRadius: 28,
+                    boxShadow: `
+                        0 0 0 1px rgba(255,255,255,0.4),
+                        0 8px 16px -4px rgba(0,0,0,0.1),
+                        0 20px 40px -8px rgba(0,0,0,0.12),
+                        inset 0 1px 1px rgba(255,255,255,0.8),
+                        inset 0 -10px 20px -5px rgba(255,255,255,0.9),
+                        inset 0 -1px 0 rgba(255,255,255,1)
+                    `,
+                    background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.15) 60%, rgba(255, 255, 255, 0.7) 100%)'
+                }}
                     transition={springTransition}
                 >
                     {/* Inner highlight - top edge glow */}

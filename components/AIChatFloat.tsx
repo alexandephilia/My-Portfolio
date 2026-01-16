@@ -314,7 +314,7 @@ Now be entertaining, you beautiful bastard.`
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Ask something..."
-                        className="flex-1 bg-transparent text-[16px] sm:text-[11px] text-blue-900 placeholder-blue-400/60 outline-none font-mono"
+                        className="flex-1 bg-transparent text-[11px] text-blue-900 placeholder-blue-400/60 outline-none font-mono"
                         disabled={isLoading}
                         autoComplete="off"
                         autoCorrect="off"

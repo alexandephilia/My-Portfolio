@@ -105,12 +105,17 @@ export const ScrollTimeline = () => {
                 <div
                     className="relative h-[calc(100%-14rem)] sm:h-[calc(100%-10rem)] flex flex-col items-end justify-between mt-16 mb-32 sm:mb-24 mr-0 sm:mr-1 lg:mr-2 pointer-events-auto w-full group/rail"
                     onPointerDown={(e) => {
-                        // Stop propagation to prevent backdrop from dismissing immediately
+                        // On mobile, only reveal on double-tap or if already revealed
+                        // On desktop, single click reveals
+                        if (typeof window !== 'undefined' && window.innerWidth < 640) {
+                            // Mobile: require tap on the actual ticks, not the container
+                            return;
+                        }
                         e.stopPropagation();
                         if (!isRevealed) setIsRevealed(true);
                     }}
                     onPointerEnter={() => {
-                        // For desktop hover
+                        // For desktop hover only
                         if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
                             setIsRevealed(true);
                         }

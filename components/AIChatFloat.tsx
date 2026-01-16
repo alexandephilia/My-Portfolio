@@ -189,6 +189,9 @@ Now be entertaining, you beautiful bastard.`
             <div
                 className={`flex-1 overscroll-contain ${messages.length > 0 ? 'overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-blue-400/30 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-blue-500/40' : 'overflow-hidden'}`}
                 onWheel={(e) => { if (messages.length > 0) e.stopPropagation(); }}
+                onTouchStart={(e) => e.stopPropagation()}
+                onTouchMove={(e) => e.stopPropagation()}
+                onPointerDown={(e) => e.stopPropagation()}
             >
                 {/* Sticky header - transparent, inherits parent glassmorphism */}
                 <div className="sticky top-0 z-20 flex gap-1 p-2 pb-1">

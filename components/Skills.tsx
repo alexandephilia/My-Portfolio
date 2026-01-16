@@ -50,6 +50,7 @@ export const Skills: React.FC = () => {
 const PhilosophySection: React.FC = () => {
     return (
         <motion.div
+            id="philosophy"
             variants={staggerItemVariants}
             className="mb-10 flex flex-col gap-8 w-full"
         >
@@ -156,12 +157,12 @@ const KeyboardGroup: React.FC<{ category: SkillCategory; index: number }> = ({ c
 }
 
 const AUDIO_POOL_SIZE = 5;
-const audioPool = (typeof Audio !== 'undefined') 
+const audioPool = (typeof Audio !== 'undefined')
     ? Array.from({ length: AUDIO_POOL_SIZE }, () => {
         const a = new Audio('/click.mp3');
         a.preload = 'auto';
         return a;
-    }) 
+    })
     : [];
 let poolIndex = 0;
 
@@ -170,7 +171,7 @@ const playClick = () => {
     const sound = audioPool[poolIndex];
     if (sound) {
         sound.currentTime = 0;
-        sound.play().catch(() => {});
+        sound.play().catch(() => { });
         poolIndex = (poolIndex + 1) % AUDIO_POOL_SIZE;
     }
 };

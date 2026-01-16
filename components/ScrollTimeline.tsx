@@ -104,29 +104,21 @@ export const ScrollTimeline = () => {
                 {/* The Rail Container */}
                 <div
                     className="relative h-[calc(100%-14rem)] sm:h-[calc(100%-10rem)] flex flex-col items-end justify-between mt-16 mb-32 sm:mb-24 mr-0 sm:mr-1 lg:mr-2 pointer-events-auto w-full group/rail"
-                    onPointerDown={(e) => {
-                        // On mobile, only reveal on double-tap or if already revealed
-                        // On desktop, single click reveals
-                        if (typeof window !== 'undefined' && window.innerWidth < 640) {
-                            // Mobile: require tap on the actual ticks, not the container
-                            return;
-                        }
-                        e.stopPropagation();
-                        if (!isRevealed) setIsRevealed(true);
-                    }}
                     onPointerEnter={() => {
-                        // For desktop hover only
+                        // Desktop only - hover to reveal
                         if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
                             setIsRevealed(true);
                         }
                     }}
                     onMouseMove={(e) => {
+                        // Desktop only
+                        if (typeof window === 'undefined' || window.innerWidth < 1024) return;
                         const rect = e.currentTarget.getBoundingClientRect();
                         const y = (e.clientY - rect.top) / rect.height;
                         mouseYProgress.set(Math.min(Math.max(y, 0), 1));
                     }}
                     onMouseLeave={() => {
-                        // Desktop hover exit
+                        // Desktop only - hover exit
                         if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
                             setIsRevealed(false);
                         }
@@ -205,48 +197,40 @@ const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseY
 
     return (
         <div key={i} className="relative flex items-center justify-end w-full h-1 lg:h-1.5 group/tick-row">
-            {/* Click Interaction Area */}
-            <div className="absolute inset-y-[-4px] right-0 w-12 sm:w-16 lg:w-24 pointer-events-auto cursor-pointer z-30"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    if (!isRevealed) {
-                        // First tap: reveal everything
-                        setIsRevealed(true);
-                    } else {
-                        // Second tap/tap-while-revealed: navigate
+            {/* Click Interaction Area - Desktop only */}
+            {!isMobile && (
+                <div className="absolute inset-y-[-4px] right-0 w-12 lg:w-24 pointer-events-auto cursor-pointer z-30"
+                    onClick={(e) => {
+                        e.stopPropagation();
                         const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
                         if (scrollHeight > 0) {
                             window.scrollTo({ top: tickProgress * scrollHeight, behavior: 'smooth' });
                         }
-                    }
-                }}
-            />
+                    }}
+                />
+            )}
 
-            {/* Decimal Value */}
-            {isActive && !isSection && (
+            {/* Decimal Value - Desktop only */}
+            {isActive && !isSection && !isMobile && (
                 <motion.span
                     initial={{ opacity: 0, x: -4 }}
-                    animate={{ opacity: (!isMobile || isRevealed) ? 1 : 0, x: 0 }}
+                    animate={{ opacity: 1, x: 0 }}
                     className="absolute right-14 lg:right-20 font-mono text-[11px] text-blue-600 font-bold tracking-tight pointer-events-none z-20"
                 >
                     {scrollValue.toFixed(2)}
                 </motion.span>
             )}
 
-            {/* Section Label */}
-            {isSection && (
+            {/* Section Label - Desktop only */}
+            {isSection && !isMobile && (
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
-                        if (isMobile && !isRevealed) {
-                            setIsRevealed(true);
-                        } else {
-                            document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' });
-                        }
+                        document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' });
                     }}
                     className={`absolute right-14 lg:right-20 flex items-center transition-all duration-300 transform cursor-pointer pointer-events-auto outline-none z-10
             ${isActive
-                            ? `text-blue-600 font-bold translate-x-[-8px] lg:translate-x-[-12px] ${(!isMobile || isRevealed) ? 'opacity-100' : 'opacity-0'}`
+                            ? `text-blue-600 font-bold translate-x-[-8px] lg:translate-x-[-12px] opacity-100`
                             : `text-gray-500 hover:text-gray-900 font-medium translate-x-2 ${isRevealed ? 'opacity-100' : 'opacity-0'} group-hover/rail:opacity-100 group-hover/rail:translate-x-0`
                         }`}
                 >

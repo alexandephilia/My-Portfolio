@@ -403,7 +403,7 @@ export const TransformDock: React.FC = () => {
                                                             } : undefined}
                                                         >
                                                             <item.icon size={14} strokeWidth={2.5} className="relative z-10" />
-                                                            {item.id === 'music' && audioState.isPlaying && (
+                                                            {item.id === 'music' && audioState.isPlaying && activeMode !== 'music' && (
                                                                 <div className="absolute inset-0 flex items-center justify-center opacity-80 pointer-events-none">
                                                                     <DotMatrixVisualizer isPlaying={true} rows={12} />
                                                                 </div>

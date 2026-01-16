@@ -1,6 +1,6 @@
 import { Pause, Play, Repeat, Repeat1, SkipBack, SkipForward } from 'lucide-react';
 import { motion } from 'motion/react';
-import React, { useMemo } from 'react';
+import React, { useId, useMemo } from 'react';
 import { SONGS } from '../constants';
 import type { AudioState } from './TransformDock';
 
@@ -8,28 +8,42 @@ const MAX_TITLE_CHARS = 12;
 
 // Dot matrix configuration
 const MATRIX_COLS = 8;
-const MATRIX_ROWS = 4; // Default rows for standalone player
 
 interface MusicPlayerProps {
     audioState: AudioState;
 }
 
-// Dot Matrix Visualizer Component
+// CSS Keyframes for dot animation - injected once
+const DOT_ANIMATION_STYLES = `
+@keyframes dotPulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(0.7);
+        background-color: rgba(30, 58, 138, 0.4);
+    }
+    50% {
+        opacity: var(--dot-intensity, 0.9);
+        transform: scale(1);
+        background-color: rgba(59, 130, 246, 0.95);
+    }
+}
+`;
+
+// Dot Matrix Visualizer Component - CSS animation based for mobile reliability
 export const DotMatrixVisualizer: React.FC<{ isPlaying: boolean; rows?: number }> = ({
     isPlaying,
     rows = 4
 }) => {
-    // Generate random animation patterns for each dot
+    const instanceId = useId();
+
+    // Generate animation patterns for each dot
     const dotPatterns = useMemo(() => {
         return Array.from({ length: MATRIX_COLS * rows }, (_, i) => {
             const col = i % MATRIX_COLS;
             const row = Math.floor(i / MATRIX_COLS);
-            // Create wave-like pattern based on column position
             const baseDelay = col * 0.08;
-            // Adjust rowOffset and intensity based on the new 'rows' prop
             const centerRow = (rows - 1) / 2;
             const rowOffset = Math.abs(row - centerRow) * 0.05;
-            // Higher probability of being "on" for center rows
             const maxDistance = Math.max(centerRow, rows - 1 - centerRow) || 1;
             const normalizedDistance = Math.abs(row - centerRow) / maxDistance;
             const intensity = 1 - normalizedDistance * 0.4;
@@ -41,56 +55,34 @@ export const DotMatrixVisualizer: React.FC<{ isPlaying: boolean; rows?: number }
         });
     }, [rows]);
 
-    // Generate a stable key for the visualizer based on play state
-    // This forces Framer Motion to restart animations on mobile when remounting
-    const visualizerKey = `visualizer-${isPlaying ? 'playing' : 'paused'}-${rows}`;
-
     return (
-        <div
-            key={visualizerKey}
-            className="grid gap-[1.5px]"
-            style={{
-                gridTemplateColumns: `repeat(${MATRIX_COLS}, 1fr)`,
-                gridTemplateRows: `repeat(${rows}, 1fr)`,
-            }}
-        >
-            {dotPatterns.map((pattern, i) => (
-                <motion.div
-                    key={`dot-${i}-${isPlaying}`}
-                    className="w-[3px] h-[3px] rounded-full"
-                    initial={isPlaying ? {
-                        opacity: 0.3,
-                        scale: 0.7,
-                        backgroundColor: 'rgba(30, 58, 138, 0.4)',
-                    } : {
-                        opacity: 0.4,
-                        scale: 0.7,
-                        backgroundColor: 'rgba(100, 116, 139, 0.5)',
-                    }}
-                    animate={isPlaying ? {
-                        opacity: [0.3, pattern.intensity, 0.3],
-                        scale: [0.7, 1, 0.7],
-                        backgroundColor: [
-                            'rgba(30, 58, 138, 0.4)',
-                            'rgba(59, 130, 246, 0.95)',
-                            'rgba(30, 58, 138, 0.4)',
-                        ],
-                    } : {
-                        opacity: 0.4,
-                        scale: 0.7,
-                        backgroundColor: 'rgba(100, 116, 139, 0.5)',
-                    }}
-                    transition={isPlaying ? {
-                        repeat: Infinity,
-                        duration: pattern.duration,
-                        delay: pattern.delay,
-                        ease: 'easeInOut',
-                    } : {
-                        duration: 0.3,
-                    }}
-                />
-            ))}
-        </div>
+        <>
+            <style>{DOT_ANIMATION_STYLES}</style>
+            <div
+                className="grid gap-[1.5px]"
+                style={{
+                    gridTemplateColumns: `repeat(${MATRIX_COLS}, 1fr)`,
+                    gridTemplateRows: `repeat(${rows}, 1fr)`,
+                }}
+            >
+                {dotPatterns.map((pattern, i) => (
+                    <div
+                        key={`${instanceId}-dot-${i}`}
+                        className="w-[3px] h-[3px] rounded-full"
+                        style={{
+                            '--dot-intensity': pattern.intensity,
+                            animation: isPlaying
+                                ? `dotPulse ${pattern.duration}s ease-in-out ${pattern.delay}s infinite`
+                                : 'none',
+                            opacity: isPlaying ? undefined : 0.4,
+                            transform: isPlaying ? undefined : 'scale(0.7)',
+                            backgroundColor: isPlaying ? undefined : 'rgba(100, 116, 139, 0.5)',
+                            willChange: isPlaying ? 'transform, opacity' : 'auto',
+                        } as React.CSSProperties}
+                    />
+                ))}
+            </div>
+        </>
     );
 };
 

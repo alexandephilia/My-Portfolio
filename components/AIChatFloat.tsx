@@ -290,12 +290,39 @@ Now be entertaining, you beautiful bastard.`
                 />
             </div>
 
+            {/* Custom Matrix Scrollbar Styles */}
+            <style>{`
+                .chat-matrix-scroll::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .chat-matrix-scroll::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .chat-matrix-scroll::-webkit-scrollbar-thumb {
+                    background-color: transparent;
+                    background-image: radial-gradient(
+                        circle at center,
+                        rgba(59, 130, 246, 0.45) 1.2px,
+                        transparent 1.2px
+                    );
+                    background-size: 6px 6px;
+                    background-repeat: repeat-y;
+                }
+                .chat-matrix-scroll:hover::-webkit-scrollbar-thumb {
+                    background-image: radial-gradient(
+                        circle at center,
+                        rgba(59, 130, 246, 0.8) 1.5px,
+                        transparent 1.5px
+                    );
+                }
+            `}</style>
+
             {/* Scrollable container */}
             <div
-                className={`flex-1 overscroll-contain pt-12 ${messages.length > 0 ? 'overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-blue-400/30 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-blue-500/40' : 'overflow-hidden'}`}
+                className={`flex-1 overscroll-contain pt-12 chat-matrix-scroll ${messages.length > 0 ? 'overflow-y-auto' : 'overflow-hidden'}`}
                 style={{
-                    WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 3rem)',
-                    maskImage: 'linear-gradient(to bottom, transparent, black 3rem)'
+                    WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 4rem)',
+                    maskImage: 'linear-gradient(to bottom, transparent, black 4rem)'
                 }}
                 onWheel={(e) => { if (messages.length > 0) e.stopPropagation(); }}
                 onTouchStart={(e) => e.stopPropagation()}

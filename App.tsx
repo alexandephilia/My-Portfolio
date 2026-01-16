@@ -12,7 +12,6 @@ import { ExperimentShowcase } from './components/ExperimentShowcase';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
-import { MusicDock } from './components/MusicDock';
 import { ProjectCard } from './components/ProjectCard';
 import { ScrollTimeline } from './components/ScrollTimeline';
 import { SectionWrapper } from './components/SectionWrapper';
@@ -20,6 +19,7 @@ import { Skills } from './components/Skills';
 import { StackInsights } from './components/StackInsights';
 import { Tabs } from './components/Tabs';
 import { TopBlur } from './components/TopBlur';
+import { TransformDock } from './components/TransformDock';
 import { Writings } from './components/Writings';
 import { PROJECTS } from './constants';
 
@@ -154,146 +154,146 @@ export default function App() {
                 onContextMenu={(e) => e.preventDefault()}
                 onDragStart={(e) => e.preventDefault()}
             >
-            <div className="relative max-w-[740px] mx-auto border-x border-dashed border-gray-200 bg-[#FAFAFA] min-h-screen flex flex-col">
+                <div className="relative max-w-[740px] mx-auto border-x border-dashed border-gray-200 bg-[#FAFAFA] min-h-screen flex flex-col">
 
-                <motion.div
-                    variants={isFirstLoad ? containerVariants : {}}
-                    initial="hidden"
-                    animate="visible"
-                    className="flex flex-col"
-                >
-                    <motion.div variants={isFirstLoad ? itemVariants : {}}>
-                        <Header />
+                    <motion.div
+                        variants={isFirstLoad ? containerVariants : {}}
+                        initial="hidden"
+                        animate="visible"
+                        className="flex flex-col"
+                    >
+                        <motion.div variants={isFirstLoad ? itemVariants : {}}>
+                            <Header />
+                        </motion.div>
+
+                        <main className="flex flex-col">
+                            <SectionWrapper id="hero">
+                                <Hero />
+                            </SectionWrapper>
+
+                            <SectionWrapper id="projects">
+                                <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+                            </SectionWrapper>
+
+                            <SectionWrapper className="relative z-20">
+                                <section className="border-b border-dashed border-gray-200 overflow-visible">
+                                    <AnimatePresence mode="wait">
+                                        <motion.div
+                                            key={activeTab}
+                                            initial="hidden"
+                                            animate="visible"
+                                            exit="exit"
+                                            className="overflow-visible"
+                                            variants={{
+                                                hidden: {
+                                                    opacity: 0,
+                                                    filter: 'blur(14px)',
+                                                    y: 15,
+                                                    scale: 0.98,
+                                                    willChange: "transform, opacity, filter"
+                                                },
+                                                visible: {
+                                                    opacity: 1,
+                                                    filter: 'blur(0px)',
+                                                    y: 0,
+                                                    scale: 1,
+                                                    transition: {
+                                                        staggerChildren: 0.15,
+                                                        delayChildren: 0.1,
+                                                        duration: 0.6,
+                                                        ease: [0.16, 1, 0.3, 1]
+                                                    }
+                                                },
+                                                exit: {
+                                                    opacity: 0,
+                                                    filter: 'blur(8px)',
+                                                    y: -10,
+                                                    transition: {
+                                                        duration: 0.3,
+                                                        ease: "easeIn"
+                                                    }
+                                                }
+                                            }}
+                                            style={{ willChange: 'opacity, filter, transform' }}
+                                        >
+                                            {activeTab === 'Writings' ? (
+                                                <div className="bg-[#FAFAFA]">
+                                                    <Writings />
+                                                </div>
+                                            ) : activeTab === 'Components' ? (
+                                                <div className="bg-[#FAFAFA]">
+                                                    <ComponentShowcase />
+                                                </div>
+                                            ) : activeTab === 'Experiment' ? (
+                                                <div className="bg-[#FAFAFA]">
+                                                    <ExperimentShowcase />
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col gap-6 p-6 md:p-8 overflow-visible">
+                                                    {displayProjects.length > 0 ? (
+                                                        displayProjects.map((project) => (
+                                                            <ProjectCard key={project.id} project={project} />
+                                                        ))
+                                                    ) : (
+                                                        <motion.div
+                                                            variants={{
+                                                                hidden: { opacity: 0, y: 10 },
+                                                                visible: { opacity: 1, y: 0 }
+                                                            }}
+                                                            className="py-20 text-center text-gray-400 bg-white rounded-[32px] border border-gray-100"
+                                                        >
+                                                            <p>No projects found in this category yet.</p>
+                                                        </motion.div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </motion.div>
+                                    </AnimatePresence>
+                                </section>
+                            </SectionWrapper>
+
+                            <SectionWrapper id="experience">
+                                <Experience />
+                            </SectionWrapper>
+                            <SectionWrapper id="education">
+                                <Education />
+                            </SectionWrapper>
+                            <SectionWrapper id="skills">
+                                <Skills />
+                            </SectionWrapper>
+                            <SectionWrapper>
+                                <StackInsights />
+                            </SectionWrapper>
+                            <SectionWrapper id="contact">
+                                <Contact />
+                            </SectionWrapper>
+                            <SectionWrapper>
+                                <BeyondWork />
+                            </SectionWrapper>
+                        </main>
+
+                        <SectionWrapper>
+                            <Footer />
+                        </SectionWrapper>
                     </motion.div>
+                    <DraggableSticker
+                        id="global-sticker-1"
+                        src="/sticker_1.png"
+                        className="bottom-70 -right-[-15rem] md:bottom-35 md:-right-[-32rem]"
+                        peelFrom="top"
+                    />
+                </div>
 
-                    <main className="flex flex-col">
-                        <SectionWrapper id="hero">
-                            <Hero />
-                        </SectionWrapper>
+                {/* Transform Dock - Music + AI Chat */}
+                <TransformDock />
 
-                        <SectionWrapper id="projects">
-                            <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-                        </SectionWrapper>
+                {/* Progressive Viewport Blur */}
+                <TopBlur />
+                <BottomBlur />
 
-                        <SectionWrapper className="relative z-20">
-                            <section className="border-b border-dashed border-gray-200 overflow-visible">
-                                <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key={activeTab}
-                                        initial="hidden"
-                                        animate="visible"
-                                        exit="exit"
-                                        className="overflow-visible"
-                                        variants={{
-                                            hidden: {
-                                                opacity: 0,
-                                                filter: 'blur(14px)',
-                                                y: 15,
-                                                scale: 0.98,
-                                                willChange: "transform, opacity, filter"
-                                            },
-                                            visible: {
-                                                opacity: 1,
-                                                filter: 'blur(0px)',
-                                                y: 0,
-                                                scale: 1,
-                                                transition: {
-                                                    staggerChildren: 0.15,
-                                                    delayChildren: 0.1,
-                                                    duration: 0.6,
-                                                    ease: [0.16, 1, 0.3, 1]
-                                                }
-                                            },
-                                            exit: {
-                                                opacity: 0,
-                                                filter: 'blur(8px)',
-                                                y: -10,
-                                                transition: {
-                                                    duration: 0.3,
-                                                    ease: "easeIn"
-                                                }
-                                            }
-                                        }}
-                                        style={{ willChange: 'opacity, filter, transform' }}
-                                    >
-                                        {activeTab === 'Writings' ? (
-                                            <div className="bg-[#FAFAFA]">
-                                                <Writings />
-                                            </div>
-                                        ) : activeTab === 'Components' ? (
-                                            <div className="bg-[#FAFAFA]">
-                                                <ComponentShowcase />
-                                            </div>
-                                        ) : activeTab === 'Experiment' ? (
-                                            <div className="bg-[#FAFAFA]">
-                                                <ExperimentShowcase />
-                                            </div>
-                                        ) : (
-                                            <div className="flex flex-col gap-6 p-6 md:p-8 overflow-visible">
-                                                {displayProjects.length > 0 ? (
-                                                    displayProjects.map((project) => (
-                                                        <ProjectCard key={project.id} project={project} />
-                                                    ))
-                                                ) : (
-                                                    <motion.div
-                                                        variants={{
-                                                            hidden: { opacity: 0, y: 10 },
-                                                            visible: { opacity: 1, y: 0 }
-                                                        }}
-                                                        className="py-20 text-center text-gray-400 bg-white rounded-[32px] border border-gray-100"
-                                                    >
-                                                        <p>No projects found in this category yet.</p>
-                                                    </motion.div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </motion.div>
-                                </AnimatePresence>
-                            </section>
-                        </SectionWrapper>
-
-                        <SectionWrapper id="experience">
-                            <Experience />
-                        </SectionWrapper>
-                        <SectionWrapper id="education">
-                            <Education />
-                        </SectionWrapper>
-                        <SectionWrapper id="skills">
-                            <Skills />
-                        </SectionWrapper>
-                        <SectionWrapper>
-                            <StackInsights />
-                        </SectionWrapper>
-                        <SectionWrapper id="contact">
-                            <Contact />
-                        </SectionWrapper>
-                        <SectionWrapper>
-                            <BeyondWork />
-                        </SectionWrapper>
-                    </main>
-
-                    <SectionWrapper>
-                        <Footer />
-                    </SectionWrapper>
-                </motion.div>
-                <DraggableSticker 
-                    id="global-sticker-1"
-                    src="/sticker_1.png"
-                    className="bottom-70 -right-[-15rem] md:bottom-35 md:-right-[-32rem]"
-                    peelFrom="top"
-                />
+                {/* Global Progressive Timeline */}
+                <ScrollTimeline />
             </div>
-
-            {/* Minimalist Music Dock */}
-            <MusicDock />
-
-            {/* Progressive Viewport Blur */}
-            <TopBlur />
-            <BottomBlur />
-
-            {/* Global Progressive Timeline */}
-            <ScrollTimeline />
-        </div>
         </>
     );
 }

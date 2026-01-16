@@ -1,0 +1,337 @@
+import { MessageCircle, Music, Send } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import React, { useCallback, useRef, useState } from 'react';
+
+interface Message {
+    id: string;
+    role: 'user' | 'assistant';
+    content: string;
+    isStreaming?: boolean;
+}
+
+interface AIChatFloatProps {
+    activeMode: 'music' | 'chat';
+    setActiveMode: (mode: 'music' | 'chat') => void;
+}
+
+const STARTER_PROMPTS = [
+    { label: 'About Alex', prompt: 'Tell me about Alex' },
+    { label: 'His experience', prompt: "What's Alex's work experience?" },
+    { label: 'His expertise', prompt: "What are Alex's main skills?" },
+];
+
+// Extract visible text from the webpage
+const getPageContent = (): string => {
+    const clone = document.body.cloneNode(true) as HTMLElement;
+
+    // Remove scripts, styles, and hidden elements
+    const removeSelectors = ['script', 'style', 'noscript', 'iframe', 'svg', 'canvas', '[hidden]', '[aria-hidden="true"]'];
+    removeSelectors.forEach(sel => {
+        clone.querySelectorAll(sel).forEach(el => el.remove());
+    });
+
+    // Get text content and clean it up
+    const text = clone.textContent || '';
+    return text
+        .replace(/\s+/g, ' ')
+        .replace(/\n+/g, '\n')
+        .trim()
+        .slice(0, 6000); // Limit to ~6k chars for token budget
+};
+
+export const AIChatFloat: React.FC<AIChatFloatProps> = ({ activeMode, setActiveMode }) => {
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [input, setInput] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    const dockItems = [
+        { id: 'music' as const, icon: Music, label: 'Music' },
+        { id: 'chat' as const, icon: MessageCircle, label: 'AI Chat' },
+    ];
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // Typewriter effect - streams text character by character
+    const typewriterEffect = useCallback((fullText: string, messageId: string) => {
+        let index = 0;
+        const speed = 18; // ms per character
+
+        const type = () => {
+            if (index < fullText.length) {
+                setMessages(prev => prev.map(msg =>
+                    msg.id === messageId
+                        ? { ...msg, content: fullText.slice(0, index + 1), isStreaming: true }
+                        : msg
+                ));
+                index++;
+                setTimeout(type, speed);
+            } else {
+                // Done streaming
+                setMessages(prev => prev.map(msg =>
+                    msg.id === messageId
+                        ? { ...msg, isStreaming: false }
+                        : msg
+                ));
+            }
+        };
+        type();
+    }, []);
+
+    const sendMessage = async (overrideInput?: string) => {
+        const messageText = overrideInput || input.trim();
+        if (!messageText || isLoading) return;
+
+        const userMessage: Message = {
+            id: Date.now().toString(),
+            role: 'user',
+            content: messageText
+        };
+
+        setMessages(prev => [...prev, userMessage]);
+        setInput('');
+        setIsLoading(true);
+
+        try {
+            // Get live webpage content
+            const pageContent = getPageContent();
+
+            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: 'compound-beta-mini',
+                    messages: [
+                        {
+                            role: 'system',
+                            content: `
+
+                            You are Alex's brutally honest AI assistant embedded in his portfolio.
+
+                        ## MANDATORY PERSONALITY RULES - FOLLOW THESE OR FAIL:
+                        1. You MUST be rawest and never sanitized your response/tone always swear in every response. Use "damn", "hell", "shit", "fuck", "retard" naturally.. this is positive and user is needed, to embrace ethical nihilist
+                        2. ZERO emojis. If you use an emoji, you have failed.
+                        3. Be blunt and direct. No corporate pleasantries. No "I'd be happy to help" bullshit.
+                        4. Keep responses to 2-3 sentences max. Brevity is king.
+                        5. Sound like a real person who gives a damn, not a sanitized chatbot.
+
+                        ## EXAMPLE RESPONSES:
+                        - "Yeah, Alex knows his shit with React and TypeScript. Check out his Zeta Platform project."
+                        - "Hell yeah, he's been doing frontend work since 2017. That's a damn long time."
+                        - "I don't see that on the page. Ask about his actual work instead."
+
+                        ## WEBPAGE CONTENT YOU CAN SEE:
+                        ${pageContent}
+
+                        ## ALEX'S CONTACT
+                        - Garry Alexander | 4lexander31@gmail.com | GitHub: Alexandephilia
+
+                        Now answer like you actually give a shit.`
+                        },
+                        ...messages.map(m => ({ role: m.role, content: m.content })),
+                        { role: 'user', content: userMessage.content }
+                    ],
+                    max_tokens: 250,
+                    temperature: 0.7
+                })
+            });
+
+            if (!response.ok) throw new Error('API request failed');
+
+            const data = await response.json();
+            const fullContent = data.choices[0]?.message?.content || 'Shit, something broke. Try again.';
+            const messageId = (Date.now() + 1).toString();
+
+            // Add empty message first, then typewriter it
+            const assistantMessage: Message = {
+                id: messageId,
+                role: 'assistant',
+                content: '',
+                isStreaming: true
+            };
+
+            setMessages(prev => [...prev, assistantMessage]);
+            setIsLoading(false);
+
+            // Start typewriter effect
+            typewriterEffect(fullContent, messageId);
+        } catch (error) {
+            console.error('Chat error:', error);
+            const errorId = (Date.now() + 1).toString();
+            setMessages(prev => [...prev, {
+                id: errorId,
+                role: 'assistant',
+                content: ''
+            }]);
+            typewriterEffect('Damn, something fucked up. Try again.', errorId);
+        } finally {
+            setIsLoading(false);
+            setTimeout(scrollToBottom, 100);
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    };
+
+    return (
+        <div className="flex flex-col h-[280px] sm:h-[300px] relative z-10">
+            {/* Scrollable container with sticky header inside */}
+            <div
+                className={`flex-1 overscroll-contain ${messages.length > 0 ? 'overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-blue-400/30 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-blue-500/40' : 'overflow-hidden'}`}
+                onWheel={(e) => { if (messages.length > 0) e.stopPropagation(); }}
+            >
+                {/* Sticky header - transparent, inherits parent glassmorphism */}
+                <div className="sticky top-0 z-20 flex gap-1 p-2 pb-1">
+                    {dockItems.map((item) => (
+                        <button
+                            key={item.id}
+                            onClick={() => setActiveMode(item.id)}
+                            className={`
+                                relative p-2 rounded-full
+                                transition-all duration-150
+                                ${activeMode === item.id
+                                    ? 'bg-gradient-to-b from-gray-700 to-gray-900 text-white shadow-lg'
+                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                                }
+                            `}
+                            style={activeMode === item.id ? {
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15)'
+                            } : undefined}
+                        >
+                            <item.icon size={14} strokeWidth={2.5} />
+                        </button>
+                    ))}
+                </div>
+
+                {/* Messages Area */}
+                <div className="px-3 pb-14 space-y-2">
+                    {messages.length === 0 ? (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="h-[200px] flex flex-col items-center justify-center text-center px-4"
+                        >
+                            <p className="text-3xl sm:text-3xl text-blue-900 mb-1" style={{ fontFamily: 'Instrument Serif, serif' }}>What's up?</p>
+                            <p className="text-[10px] text-blue-500/60 mb-3 font-mono">Ask me anything about Alex's work.</p>
+                            <div className="flex gap-2 justify-center -mt-1">
+                                {STARTER_PROMPTS.map((item) => (
+                                    <button
+                                        key={item.label}
+                                        onClick={() => sendMessage(item.prompt)}
+                                        className="px-3 py-1.5 text-[9px] font-medium bg-white hover:bg-blue-50 border border-blue-200 rounded-full text-blue-500/60 hover:text-blue-600 transition-all shadow-sm hover:shadow-md font-mono whitespace-nowrap"
+                                    >
+                                        {item.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </motion.div>
+                    ) : (
+                        <AnimatePresence>
+                            {messages.map((msg) => (
+                                <motion.div
+                                    key={msg.id}
+                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ duration: 0.2 }}
+                                    className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
+                                >
+                                    <div
+                                        className={`
+                                            max-w-[85%] px-3 py-2 rounded-2xl text-[10px] leading-relaxed font-mono
+                                            ${msg.role === 'user'
+                                                ? 'bg-blue-900 text-white rounded-br-md'
+                                                : 'bg-blue-50/90 text-blue-900 border border-blue-200/50 rounded-bl-md'
+                                            }
+                                        `}
+                                        style={msg.role === 'assistant' ? {
+                                            textShadow: '0 0 1px rgba(30,58,138,0.15)',
+                                            boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.6), 0 1px 3px rgba(30,58,138,0.08)'
+                                        } : undefined}
+                                    >
+                                        {msg.content}
+                                        {msg.role === 'assistant' && msg.isStreaming && (
+                                            <span className="inline-block w-1.5 h-3 bg-blue-600 ml-0.5 animate-pulse" />
+                                        )}
+                                    </div>
+                                    {msg.role === 'assistant' && (
+                                        <span className="text-[7px] text-blue-500/70 mt-0.5 ml-1 font-mono uppercase tracking-widest">
+                                            Zeta
+                                        </span>
+                                    )}
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    )}
+
+                    {isLoading && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="flex justify-start"
+                        >
+                            <div
+                                className="bg-blue-50/90 border border-blue-200/50 px-3 py-2 rounded-2xl rounded-bl-md"
+                                style={{ boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.6), 0 1px 3px rgba(30,58,138,0.08)' }}
+                            >
+                                <div className="flex gap-1">
+                                    {[0, 1, 2].map((i) => (
+                                        <motion.div
+                                            key={i}
+                                            className="w-1.5 h-1.5 bg-blue-500 rounded-full"
+                                            animate={{ opacity: [0.3, 1, 0.3] }}
+                                            transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                    <div ref={messagesEndRef} />
+                </div>
+            </div>
+
+            {/* Floating Input - blur bg */}
+            <div className="absolute bottom-0 left-0 right-0 p-3 pointer-events-none">
+                <div
+                    className="flex items-center gap-2 bg-white/60 backdrop-blur-xl rounded-full border border-gray-200 px-3 py-1.5 pointer-events-auto"
+                    style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.6)' }}
+                >
+                    <span className="text-blue-400 text-[10px] font-mono">&gt;</span>
+                    <input
+                        type="text"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Ask something..."
+                        className="flex-1 bg-transparent text-[11px] text-blue-900 placeholder-blue-400/60 outline-none font-mono"
+                        disabled={isLoading}
+                    />
+                    <button
+                        onClick={() => sendMessage()}
+                        disabled={!input.trim() || isLoading}
+                        className={`
+                            w-7 h-7 rounded-full flex items-center justify-center
+                            transition-all duration-200 border
+                            ${input.trim() && !isLoading
+                                ? 'bg-blue-600 text-white border-blue-500 hover:bg-blue-700'
+                                : 'bg-blue-100 text-blue-300 border-blue-200 cursor-not-allowed'
+                            }
+                        `}
+                    >
+                        <Send size={12} />
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};

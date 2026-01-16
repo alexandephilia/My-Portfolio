@@ -4,24 +4,18 @@ import { defineConfig, loadEnv } from 'vite';
 // import { grabbySyncPlugin } from './api/grabby-plugin';
 
 export default defineConfig(async ({ mode }) => {
-    const env = loadEnv(mode, '.', '');
+    const env = loadEnv(mode, process.cwd(), '');
     const isDev = mode === 'development';
     
-    // Conditional plugin array with React as base
-    const plugins = [react()];
-
-    // Dynamically import Grabby only in development
+    // Dynamic Plugin Loader (The "Grabby" Protocol)
+    let grabbyPlugin = null;
     if (isDev) {
         try {
-           // We use a relative path import. Note: in ESM we need the extension if strictly configured, 
-           // but Vite's bundler usually handles resolution. Safe to try both or rely on Vite.
-           // @ts-ignore - The file might not exist in production build context
-           const module = await import('./api/grabby-plugin');
-           if (module && module.grabbySyncPlugin) {
-               plugins.push(module.grabbySyncPlugin());
-           }
-        } catch (e) {
-           console.warn("Grabby plugin could not be loaded (skipping for dev/build):", e);
+             // @ts-ignore: Optional dev-dependency
+            const { grabbySyncPlugin } = await import('./api/grabby-plugin');
+            grabbyPlugin = grabbySyncPlugin();
+        } catch (e) { 
+            /* Silent fail: Plugin likely missing, who cares */ 
         }
     }
 
@@ -34,8 +28,12 @@ export default defineConfig(async ({ mode }) => {
                 ignored: ['**/.grabbed_element']
             }
         },
-        plugins,
+        plugins: [
+            react(),
+            grabbyPlugin // Will be filtered if null? No, Vite plugins array handles falsy? No, it doesn't.
+        ].filter(Boolean),
         define: {
+            // RETARD ALERT: You should be using import.meta.env
             'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
             'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
         },

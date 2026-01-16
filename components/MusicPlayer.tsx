@@ -27,22 +27,19 @@ export const DotMatrixVisualizer: React.FC<{ isPlaying: boolean; rows?: number }
             // Create wave-like pattern based on column position
             const baseDelay = col * 0.08;
             // Adjust rowOffset and intensity based on the new 'rows' prop
-            // For rows = 4, center rows would be 1 and 2.
-            // Math.abs(row - (rows - 1) / 2) would give distance from center.
             const centerRow = (rows - 1) / 2;
             const rowOffset = Math.abs(row - centerRow) * 0.05;
             // Higher probability of being "on" for center rows
-            const maxDistance = Math.max(centerRow, rows - 1 - centerRow);
+            const maxDistance = Math.max(centerRow, rows - 1 - centerRow) || 1;
             const normalizedDistance = Math.abs(row - centerRow) / maxDistance;
-            const intensity = 1 - normalizedDistance * 0.4; // Adjust intensity based on distance from center
+            const intensity = 1 - normalizedDistance * 0.4;
             return {
                 delay: baseDelay + rowOffset,
                 duration: 0.4 + Math.random() * 0.3,
-                // Higher probability of being "on" for center rows
-                intensity: 1 - Math.abs(row - 2) * 0.2,
+                intensity,
             };
         });
-    }, []);
+    }, [rows]);
 
     return (
         <div
@@ -156,8 +153,8 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ audioState }) => {
 
                     <div className="flex items-center gap-2.5 h-4 mt-0.5">
                         <DotMatrixVisualizer isPlaying={isPlaying} />
-                        <button 
-                            onClick={() => setIsRepeatOne(!isRepeatOne)} 
+                        <button
+                            onClick={() => setIsRepeatOne(!isRepeatOne)}
                             className={`transition-colors active:scale-90 ${isRepeatOne ? 'text-blue-600' : 'text-blue-300'}`}
                         >
                             {isRepeatOne ? <Repeat1 size={10} /> : <Repeat size={10} />}

@@ -12,7 +12,7 @@ interface Message {
 interface AIChatFloatProps {
     activeMode: 'music' | 'chat';
     setActiveMode: (mode: 'music' | 'chat') => void;
-    onDragStart?: (e: React.MouseEvent | React.TouchEvent) => void;
+    onDragStart?: (e: React.PointerEvent | React.TouchEvent) => void;
 }
 
 const STARTER_PROMPTS = [
@@ -236,15 +236,9 @@ Now be entertaining, you beautiful bastard.`
             <div
                 data-drag-handle
                 className="absolute top-0 left-0 right-0 z-30 w-full p-2 cursor-grab active:cursor-grabbing"
-                onMouseDown={(e) => {
+                onPointerDown={(e) => {
                     const target = e.target as HTMLElement;
                     if (target.closest('button')) return;
-                    onDragStart?.(e);
-                }}
-                onTouchStart={(e) => {
-                    const target = e.target as HTMLElement;
-                    if (target.closest('button')) return;
-                    e.stopPropagation();
                     onDragStart?.(e);
                 }}
             >
@@ -256,7 +250,7 @@ Now be entertaining, you beautiful bastard.`
                             className={`
                                 relative p-2 rounded-full
                                 ${activeMode === item.id
-                                    ? 'bg-gradient-to-b from-gray-700 to-gray-900 text-white shadow-lg'
+                                    ? 'bg-linear-to-b from-gray-700 to-gray-900 text-white shadow-lg'
                                     : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100/80'
                                 }
                             `}
@@ -335,7 +329,7 @@ Now be entertaining, you beautiful bastard.`
                                                 custom={index}
                                                 variants={starterVariants}
                                                 onClick={() => sendMessage(item.prompt)}
-                                                className="px-2 py-1 text-[8px] font-bold bg-gradient-to-b from-blue-50/60 via-blue-100/50 to-blue-200/40 hover:from-blue-100/70 hover:to-blue-200/60 rounded-full text-blue-500/70 border border-blue-400/20 font-mono whitespace-nowrap active:scale-95 relative overflow-hidden group shadow-sm"
+                                                className="px-2 py-1 text-[8px] font-bold bg-linear-to-b from-blue-50/60 via-blue-100/50 to-blue-200/40 hover:from-blue-100/70 hover:to-blue-200/60 rounded-full text-blue-500/70 border border-blue-400/20 font-mono whitespace-nowrap active:scale-95 relative overflow-hidden group shadow-sm"
                                                 style={{
                                                     transform: 'translateZ(0)',
                                                     backfaceVisibility: 'hidden',
@@ -348,7 +342,7 @@ Now be entertaining, you beautiful bastard.`
                                                     willChange: 'transform, opacity'
                                                 }}
                                             >
-                                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none" />
+                                                <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none" />
                                                 {item.label}
                                             </motion.button>
                                         ))}
@@ -370,7 +364,7 @@ Now be entertaining, you beautiful bastard.`
                                     >
                                     <div
                                         className={`
-                                            max-w-[85%] px-3 py-2 rounded-2xl text-[10px] leading-relaxed font-mono break-words
+                                            max-w-[85%] px-3 py-2 rounded-2xl text-[10px] leading-relaxed font-mono wrap-break-word
                                             ${msg.role === 'user'
                                                 ? 'bg-blue-900 text-white rounded-br-md'
                                                 : 'bg-blue-50/90 text-blue-900 border border-blue-200/50 rounded-bl-md'
@@ -438,8 +432,8 @@ Now be entertaining, you beautiful bastard.`
                         flex items-center gap-2 rounded-2xl border px-3 py-1.5 pointer-events-auto
                         transition-all duration-200
                         ${isLoading 
-                            ? 'bg-gradient-to-b from-gray-100 to-gray-200 border-gray-300' 
-                            : 'bg-gradient-to-b from-white via-blue-50/30 to-blue-50/50 border-blue-200/40'
+                            ? 'bg-linear-to-b from-gray-100 to-gray-200 border-gray-300' 
+                            : 'bg-linear-to-b from-white via-blue-50/30 to-blue-50/50 border-blue-200/40'
                         }
                     `}
                     style={{ 
@@ -483,7 +477,7 @@ Now be entertaining, you beautiful bastard.`
                             w-7 h-7 rounded-full flex items-center justify-center
                             transition-all duration-200
                             ${input.trim() && !isLoading
-                                ? 'bg-gradient-to-b from-blue-500/60 to-blue-600/90 text-white border border-blue-400/50'
+                                ? 'bg-linear-to-b from-blue-500/60 to-blue-600/90 text-white border border-blue-400/50'
                                 : 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed'
                             }
                         `}

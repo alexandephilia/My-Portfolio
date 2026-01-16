@@ -1,5 +1,5 @@
 import { GripVertical, MessageCircle, Music, X } from 'lucide-react';
-import { AnimatePresence, LayoutGroup, motion, PanInfo } from 'motion/react';
+import { AnimatePresence, LayoutGroup, motion, PanInfo, useDragControls } from 'motion/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { SONGS } from '../constants';
 import { AIChatFloat } from './AIChatFloat';
@@ -58,7 +58,7 @@ export const TransformDock: React.FC = () => {
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
     const [isResetting, setIsResetting] = useState(false);
     const constraintsRef = useRef<HTMLDivElement | null>(null);
-    const dragHandleRef = useRef<boolean>(false); // Track if drag started from handle
+    const dragControls = useDragControls();
 
     // [!] LIFTED AUDIO STATE - persists across mode switches and collapse
     const [isPlaying, setIsPlaying] = useState(false);
@@ -165,9 +165,9 @@ export const TransformDock: React.FC = () => {
     };
 
     // Handler for when drag starts from the chat header
-    const handleChatDragStart = React.useCallback(() => {
-        dragHandleRef.current = true;
-    }, []);
+    const handleChatDragStart = React.useCallback((e: any) => {
+        dragControls.start(e);
+    }, [dragControls]);
 
     // Shared layoutId for the container morph
     const containerLayoutId = "dock-container";
@@ -195,31 +195,19 @@ export const TransformDock: React.FC = () => {
                 }}
                 transition={isResetting ? snapBackTransition : popInTransition}
                 drag
+                dragControls={dragControls}
+                dragListener={false}
                 dragConstraints={constraintsRef}
                 dragElastic={0.1}
                 dragMomentum={false}
-                onPointerDownCapture={(e: React.PointerEvent) => {
-                    // Check if pointer down originated from drag handle
-                    const target = e.target as HTMLElement;
-                    const isFromHandle = target.closest('[data-drag-handle]') !== null;
-                    dragHandleRef.current = isFromHandle;
-
-                    // If in chat mode and NOT from handle, prevent drag
-                    if (isExpanded && activeMode === 'chat' && !isFromHandle) {
-                        e.stopPropagation();
-                    }
-                }}
                 onDragEnd={(_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-                    if (dragHandleRef.current || !(isExpanded && activeMode === 'chat')) {
-                        setDragPosition(prev => ({
-                            x: prev.x + info.offset.x,
-                            y: prev.y + info.offset.y
-                        }));
-                    }
-                    dragHandleRef.current = false;
+                    setDragPosition(prev => ({
+                        x: prev.x + info.offset.x,
+                        y: prev.y + info.offset.y
+                    }));
                 }}
                 whileDrag={{ scale: 1.02 }}
-                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-100 touch-none select-none cursor-grab active:cursor-grabbing"
+                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-100 touch-none select-none"
                 style={{ touchAction: 'none' }}
                 onTouchStart={(e) => {
                     // Prevent page scroll when touching the dock
@@ -295,8 +283,9 @@ export const TransformDock: React.FC = () => {
                                 key="collapsed"
                                 {...blurReveal}
                                 transition={contentTransition}
-                                className="flex items-center gap-0.5 p-1"
+                                className="flex items-center gap-0.5 p-1 cursor-grab active:cursor-grabbing"
                                 layout="position"
+                                onPointerDown={(e) => dragControls.start(e)}
                             >
                                 <motion.div
                                     initial={{ opacity: 0 }}
@@ -348,10 +337,11 @@ export const TransformDock: React.FC = () => {
                                             <>
                                                 {/* Music mode header */}
                                                 <motion.div
-                                                    className="flex gap-1 p-2 pb-1 relative z-30"
+                                                    className="flex gap-1 p-2 pb-1 relative z-30 cursor-grab active:cursor-grabbing"
                                                     initial={{ opacity: 0, y: -8 }}
                                                     animate={{ opacity: 1, y: 0 }}
                                                     transition={{ duration: 0.2, delay: 0.08 }}
+                                                    onPointerDown={(e) => dragControls.start(e)}
                                                 >
                                                     {dockItems.map((item) => (
                                                         <button

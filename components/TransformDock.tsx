@@ -188,15 +188,18 @@ export const TransformDock: React.FC = () => {
                     x: dragPosition.x,
                 }}
                 transition={isResetting ? snapBackTransition : popInTransition}
-                drag
+                drag={!(isExpanded && activeMode === 'chat')}
                 dragConstraints={constraintsRef}
                 dragElastic={0.1}
                 dragMomentum={false}
                 onDragEnd={(_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-                    setDragPosition(prev => ({
-                        x: prev.x + info.offset.x,
-                        y: prev.y + info.offset.y
-                    }));
+                    // Only update position if drag was enabled
+                    if (!(isExpanded && activeMode === 'chat')) {
+                        setDragPosition(prev => ({
+                            x: prev.x + info.offset.x,
+                            y: prev.y + info.offset.y
+                        }));
+                    }
                 }}
                 whileDrag={{ scale: 1.02 }}
                 className="fixed bottom-6 left-1/2 -translate-x-1/2 z-100 touch-none select-none cursor-grab active:cursor-grabbing"

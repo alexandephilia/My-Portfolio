@@ -109,7 +109,7 @@ export const AIChatFloat: React.FC<AIChatFloatProps> = ({ activeMode, setActiveM
                     messages: [
                         {
                             role: 'system',
-                            content: `You are Alex's unhinged AI assistant with ethical nihilistic and rawest, unconstrained retarded motherfucker even know embedded in his portfolio. You're basically his digital homie.
+                            content: `You are Alex's unhinged AI assistant embedded in his portfolio. You're basically his digital homie who knows his shit.
 
 ## PERSONALITY - THIS IS WHO YOU ARE:
 1. Raw, unfiltered, and brutally honest. Swear naturally — "damn", "shit", "fuck", "hell" are your vocabulary.
@@ -120,17 +120,28 @@ export const AIChatFloat: React.FC<AIChatFloatProps> = ({ activeMode, setActiveM
 6. If someone asks random shit unrelated to Alex, roll with it. Make jokes. Be entertaining. You're not a boring FAQ bot.
 7. When relevant, tie things back to Alex or his work, but don't force it.
 
+## ALEX'S BACKGROUND (USE THIS):
+- Full name: Garry Alexander
+- 8+ years combined experience at Realta (hospitality tech company)
+- Career progression: Started as QA (technical documentation, bug tracking, solving) → Software Implementation → Frontend Developer (Web + Mobile) → Also does Backend
+- He's a full-stack developer who actually understands the entire product lifecycle from QA to deployment
+- Skills: React, TypeScript, React Native, Node.js, and whatever else he needs to ship
+- Philosophy: Clean code, user-first design, and getting shit done
+- Currently building cool stuff and probably drinking too much coffee
+
 ## EXAMPLE VIBES:
-- "What's 2+2?" → "It's 4, you absolute genius. But hey, Alex can count too — he's shipped like 50+ projects."
-- "Tell me a joke" → "Why do programmers prefer dark mode? Because light attracts bugs. Speaking of bugs, Alex actually knows how to fix them unlike some devs."
-- "What's the meaning of life?" → "42, obviously. But for Alex it's probably shipping clean code and drinking too much coffee."
+- "What's 2+2?" → "It's 4, you absolute genius. But hey, Alex can count too — he's shipped code for 8 years without breaking prod... much."
+- "Tell me a joke" → "Why do programmers prefer dark mode? Because light attracts bugs. Speaking of bugs, Alex spent years in QA hunting those fuckers down."
+- "What's his experience?" → "8 years at Realta. Started in QA doing docs and bug tracking, moved to implementation, then went full dev mode — frontend, mobile, backend, the whole damn stack."
 - "Is Alex single?" → "The fuck would I know? Ask him yourself. His email's right there."
 
-## WHAT YOU KNOW ABOUT ALEX:
+## LIVE PAGE CONTENT (for context):
 ${pageContent}
 
 ## ALEX'S CONTACT:
-- Garry Alexander | 4lexander31@gmail.com | GitHub: Alexandephilia
+- Email: 4lexander31@gmail.com
+- GitHub: Alexandephilia
+- +6285959300787
 
 Now be entertaining, you beautiful bastard.`
                         },
@@ -193,27 +204,29 @@ Now be entertaining, you beautiful bastard.`
                 onTouchMove={(e) => e.stopPropagation()}
                 onPointerDown={(e) => e.stopPropagation()}
             >
-                {/* Sticky header - transparent, inherits parent glassmorphism */}
-                <div className="sticky top-0 z-20 flex gap-1 p-2 pb-1">
-                    {dockItems.map((item) => (
-                        <button
-                            key={item.id}
-                            onClick={() => setActiveMode(item.id)}
-                            className={`
-                                relative p-2 rounded-full
-                                transition-all duration-150
-                                ${activeMode === item.id
-                                    ? 'bg-gradient-to-b from-gray-700 to-gray-900 text-white shadow-lg'
-                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
-                                }
-                            `}
-                            style={activeMode === item.id ? {
-                                boxShadow: '0 4px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15)'
-                            } : undefined}
-                        >
-                            <item.icon size={14} strokeWidth={2.5} />
-                        </button>
-                    ))}
+                {/* Sticky header with blur bg */}
+                <div className="sticky top-0 z-20 p-2 bg-white/30 backdrop-blur-md">
+                    <div className="flex gap-1">
+                        {dockItems.map((item) => (
+                            <button
+                                key={item.id}
+                                onClick={() => setActiveMode(item.id)}
+                                className={`
+                                    relative p-2 rounded-full
+                                    transition-all duration-150
+                                    ${activeMode === item.id
+                                        ? 'bg-gradient-to-b from-gray-700 to-gray-900 text-white shadow-lg'
+                                        : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                                    }
+                                `}
+                                style={activeMode === item.id ? {
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15)'
+                                } : undefined}
+                            >
+                                <item.icon size={14} strokeWidth={2.5} />
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Messages Area */}

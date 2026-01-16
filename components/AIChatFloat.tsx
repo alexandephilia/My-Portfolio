@@ -196,7 +196,32 @@ Now be entertaining, you beautiful bastard.`
 
     return (
         <div className="flex flex-col h-[280px] sm:h-[300px] relative z-10">
-            {/* Scrollable container with sticky header inside */}
+            {/* Fixed header with blur bg - OUTSIDE scroll container */}
+            <div className="relative z-20 p-2 bg-white/20 backdrop-blur-xl">
+                <div className="flex gap-1">
+                    {dockItems.map((item) => (
+                        <button
+                            key={item.id}
+                            onClick={() => setActiveMode(item.id)}
+                            className={`
+                                relative p-2 rounded-full
+                                transition-all duration-150
+                                ${activeMode === item.id
+                                    ? 'bg-gradient-to-b from-gray-700 to-gray-900 text-white shadow-lg'
+                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100/80'
+                                }
+                            `}
+                            style={activeMode === item.id ? {
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15)'
+                            } : undefined}
+                        >
+                            <item.icon size={14} strokeWidth={2.5} />
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Scrollable messages container */}
             <div
                 className={`flex-1 overscroll-contain ${messages.length > 0 ? 'overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-blue-400/30 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-blue-500/40' : 'overflow-hidden'}`}
                 onWheel={(e) => { if (messages.length > 0) e.stopPropagation(); }}
@@ -204,30 +229,6 @@ Now be entertaining, you beautiful bastard.`
                 onTouchMove={(e) => e.stopPropagation()}
                 onPointerDown={(e) => e.stopPropagation()}
             >
-                {/* Sticky header with blur bg */}
-                <div className="sticky top-0 z-20 p-2 bg-white/30 backdrop-blur-md">
-                    <div className="flex gap-1">
-                        {dockItems.map((item) => (
-                            <button
-                                key={item.id}
-                                onClick={() => setActiveMode(item.id)}
-                                className={`
-                                    relative p-2 rounded-full
-                                    transition-all duration-150
-                                    ${activeMode === item.id
-                                        ? 'bg-gradient-to-b from-gray-700 to-gray-900 text-white shadow-lg'
-                                        : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
-                                    }
-                                `}
-                                style={activeMode === item.id ? {
-                                    boxShadow: '0 4px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15)'
-                                } : undefined}
-                            >
-                                <item.icon size={14} strokeWidth={2.5} />
-                            </button>
-                        ))}
-                    </div>
-                </div>
 
                 {/* Messages Area */}
                 <div className="px-3 pb-14 space-y-2">
@@ -252,14 +253,14 @@ Now be entertaining, you beautiful bastard.`
                             </div>
                         </motion.div>
                     ) : (
-                        <AnimatePresence>
+                        <AnimatePresence initial={false}>
                             {messages.map((msg) => (
                                 <motion.div
                                     key={msg.id}
-                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    transition={{ duration: 0.2 }}
+                                    layout
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.2, layout: { duration: 0.2 } }}
                                     className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
                                 >
                                     <div

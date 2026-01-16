@@ -1,4 +1,4 @@
-import { MessageCircle, Music, Send } from 'lucide-react';
+import { MessageCircle, Music, Send, ChevronsRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useCallback, useRef, useState } from 'react';
 
@@ -16,10 +16,33 @@ interface AIChatFloatProps {
 }
 
 const STARTER_PROMPTS = [
-    { label: 'About Alex', prompt: 'Tell me about Alex' },
-    { label: 'His experience', prompt: "What's Alex's work experience?" },
-    { label: 'His expertise', prompt: "What are Alex's main skills?" },
+    { label: 'About Alex', prompt: 'Tell me about Alex?' },
+    { label: 'Experience', prompt: "What's Alex's experience?" },
+    { label: 'Skills', prompt: "What are Alex's main skills?" },
+    { label: 'Technical', prompt: "How many years of combined experience does Alex have?" },
+    { label: 'Contact', prompt: "How can I reach Alex?" },
+    { label: 'Philosophy', prompt: "What is his coding philosophy?" },
 ];
+
+const starterVariants = {
+    hidden: { opacity: 0, y: 15, scale: 0.9, willChange: 'transform, opacity' },
+    visible: (index: number) => ({
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: {
+            delay: index * 0.1,
+            duration: 0.25,
+            ease: [0.2, 0.1, 0.2, 1] as const,
+        },
+    }),
+    exit: {
+        opacity: 0,
+        y: -5,
+        scale: 0.45,
+        transition: { duration: 0.15, ease: "easeInOut" as const },
+    },
+};
 
 // Extract visible text from the webpage
 const getPageContent = (): string => {
@@ -44,12 +67,24 @@ export const AIChatFloat: React.FC<AIChatFloatProps> = React.memo(({ activeMode,
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [batchIndex, setBatchIndex] = useState(0);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const dockItems = [
         { id: 'music' as const, icon: Music, label: 'Music' },
         { id: 'chat' as const, icon: MessageCircle, label: 'AI Chat' },
     ];
+
+    // Cycle batches of 3 every 5 seconds
+    React.useEffect(() => {
+        if (messages.length > 0) return;
+        const interval = setInterval(() => {
+            setBatchIndex(prev => (prev === 0 ? 1 : 0));
+        }, 5000);
+        return () => clearInterval(interval);
+    }, [messages.length]);
+
+    const activeStarters = STARTER_PROMPTS.slice(batchIndex * 3, (batchIndex * 3) + 3);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -127,7 +162,7 @@ export const AIChatFloat: React.FC<AIChatFloatProps> = React.memo(({ activeMode,
 - Career progression: Started as QA (technical documentation, bug tracking, solving) including Hospitality, Manufacturing, Golf, Payroll, Personal HR, ERP → Software Implementation → Frontend Developer (Web + Mobile) → Also does Backend
 - He's a full-stack developer who actually understands the entire product lifecycle from QA to deployment
 - Skills: React, TypeScript, React Native, Node.js, and whatever else he needs to ship
-- Philosophy: Clean code, user-first design, and getting shit done
+- Philosophy: Always start mess, then evolving into something better (Clean code, user-first design, and getting shit done)
 - Currently building cool stuff and probably drinking too much coffee and being a fucking night owl who fucked up his sleep schedule!
 
 ## EXAMPLE VIBES:
@@ -220,7 +255,6 @@ Now be entertaining, you beautiful bastard.`
                             onClick={() => setActiveMode(item.id)}
                             className={`
                                 relative p-2 rounded-full
-                                transition-all duration-150
                                 ${activeMode === item.id
                                     ? 'bg-gradient-to-b from-gray-700 to-gray-900 text-white shadow-lg'
                                     : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100/80'
@@ -280,20 +314,46 @@ Now be entertaining, you beautiful bastard.`
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="h-[200px] flex flex-col items-center justify-center text-center px-4"
+                            className="h-[200px] flex flex-col items-center justify-start pt-8 text-center px-4"
                         >
-                            <p className="text-3xl sm:text-3xl text-blue-900 mb-1" style={{ fontFamily: 'Instrument Serif, serif' }}>What's up?</p>
+                            <p className="text-3xl md:text-4xl lg:text-5xl text-blue-900 mb-4" style={{ fontFamily: 'Instrument Serif, serif' }}>What's up?</p>
                             <p className="text-[10px] text-blue-500/60 mb-3 font-mono">Ask me anything about Alex's work.</p>
-                            <div className="flex gap-2 justify-center -mt-1">
-                                {STARTER_PROMPTS.map((item) => (
-                                    <button
-                                        key={item.label}
-                                        onClick={() => sendMessage(item.prompt)}
-                                        className="px-3 py-1.5 text-[9px] font-medium bg-white hover:bg-blue-50 border border-blue-200 rounded-full text-blue-500/60 hover:text-blue-600 transition-all shadow-sm hover:shadow-md font-mono whitespace-nowrap"
+                            
+                            <div className="flex flex-col items-center justify-start h-14 -mt-0.5 relative">
+                                <AnimatePresence mode="popLayout" initial={false}>
+                                    <motion.div 
+                                        key={batchIndex}
+                                        className="flex gap-1.5 justify-center items-center"
+                                        initial="hidden"
+                                        animate="visible"
+                                        exit="exit"
+                                        style={{ willChange: 'transform, opacity' }}
                                     >
-                                        {item.label}
-                                    </button>
-                                ))}
+                                        {activeStarters.map((item, index) => (
+                                            <motion.button
+                                                key={item.label}
+                                                custom={index}
+                                                variants={starterVariants}
+                                                onClick={() => sendMessage(item.prompt)}
+                                                className="px-2 py-1 text-[8px] font-bold bg-gradient-to-b from-blue-50/60 via-blue-100/50 to-blue-200/40 hover:from-blue-100/70 hover:to-blue-200/60 rounded-full text-blue-500/70 border border-blue-400/20 font-mono whitespace-nowrap active:scale-95 relative overflow-hidden group shadow-sm"
+                                                style={{
+                                                    transform: 'translateZ(0)',
+                                                    backfaceVisibility: 'hidden',
+                                                    WebkitFontSmoothing: 'antialiased',
+                                                    boxShadow: `
+                                                        0 1px 4px rgba(59,130,246,0.08),
+                                                        inset 0 1px 0 rgba(255,255,255,0.9),
+                                                        inset 0 -1px 1.5px rgba(59,130,246,0.03)
+                                                    `,
+                                                    willChange: 'transform, opacity'
+                                                }}
+                                            >
+                                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none" />
+                                                {item.label}
+                                            </motion.button>
+                                        ))}
+                                    </motion.div>
+                                </AnimatePresence>
                             </div>
                         </motion.div>
                     ) : (
@@ -371,20 +431,45 @@ Now be entertaining, you beautiful bastard.`
                 </div>
             </div>
 
-            {/* Floating Input - blur bg */}
+            {/* Floating Input - Gradient with Shine */}
             <div className="absolute bottom-0 left-0 right-0 p-3 pointer-events-none">
                 <div
-                    className="flex items-center gap-2 bg-white/60 backdrop-blur-xl rounded-full border border-gray-200 px-3 py-1.5 pointer-events-auto"
-                    style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.6)' }}
+                    className={`
+                        flex items-center gap-2 rounded-2xl border px-3 py-1.5 pointer-events-auto
+                        transition-all duration-200
+                        ${isLoading 
+                            ? 'bg-gradient-to-b from-gray-100 to-gray-200 border-gray-300' 
+                            : 'bg-gradient-to-b from-white via-blue-50/30 to-blue-50/50 border-blue-200/40'
+                        }
+                    `}
+                    style={{ 
+                        boxShadow: isLoading 
+                            ? '0 2px 8px rgba(0,0,0,0.06), inset 0 1px 2px rgba(0,0,0,0.05)' 
+                            : `
+                                0 2px 4px rgba(30,58,138,0.06),
+                                inset 0 1px 0 rgba(255,255,255,0.9),
+                                inset 0 -1.5px 2px rgba(30,58,138,0.05),
+                                0 0 0 1px rgba(30,58,138,0.02)
+                            `
+                    }}
                 >
-                    <span className="text-blue-400 text-[10px] font-mono">&gt;</span>
+                    <div className={`transition-colors ${isLoading ? 'text-gray-300' : 'text-blue-400/60'}`}>
+                        <ChevronsRight size={12} />
+                    </div>
                     <input
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Ask something..."
-                        className="flex-1 bg-transparent text-[11px] text-blue-900 placeholder-blue-400/60 outline-none font-mono"
+                        className={`
+                            flex-1 bg-transparent text-[11px] outline-none font-mono
+                            transition-colors
+                            ${isLoading 
+                                ? 'text-gray-400 placeholder-gray-400/50' 
+                                : 'text-blue-900 placeholder-blue-400/60'
+                            }
+                        `}
                         disabled={isLoading}
                         autoComplete="off"
                         autoCorrect="off"
@@ -396,12 +481,20 @@ Now be entertaining, you beautiful bastard.`
                         disabled={!input.trim() || isLoading}
                         className={`
                             w-7 h-7 rounded-full flex items-center justify-center
-                            transition-all duration-200 border
+                            transition-all duration-200
                             ${input.trim() && !isLoading
-                                ? 'bg-blue-600 text-white border-blue-500 hover:bg-blue-700'
-                                : 'bg-blue-100 text-blue-300 border-blue-200 cursor-not-allowed'
+                                ? 'bg-gradient-to-b from-blue-500/60 to-blue-600/90 text-white border border-blue-400/50'
+                                : 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed'
                             }
                         `}
+                        style={input.trim() && !isLoading ? {
+                            boxShadow: `
+                                0 2px 4px rgba(59,130,246,0.3),
+                                inset 0 1px 0 rgba(255,255,255,0.3),
+                                inset 0 -1px 2px rgba(0,0,0,0.2),
+                                0 0 0 1px rgba(59,130,246,0.1)
+                            `
+                        } : undefined}
                     >
                         <Send size={12} />
                     </button>

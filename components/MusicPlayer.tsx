@@ -79,17 +79,17 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ audioState }) => {
     const shouldScroll = currentSong.title.length > MAX_TITLE_CHARS;
 
     return (
-        <div className="p-2">
-            <div className="flex items-center gap-3">
+        <div className="p-3">
+            <div className="flex items-center gap-4">
                 {/* Album Art */}
                 <div className="relative flex-shrink-0">
                     <div className={`
-                        w-14 h-14 bg-gray-900 rounded-[14px]
+                        w-12 h-12 bg-gray-900 rounded-xl
                         flex items-center justify-center
                         shadow-lg overflow-hidden
-                        border-[3px] border-blue-500/20 ring-1 ring-blue-900/10
+                        border border-blue-500/10 ring-1 ring-blue-900/5
                         transition-transform duration-300
-                        ${isPlaying ? 'scale-[1.02]' : 'scale-100'}
+                        ${isPlaying ? 'scale-[1.05]' : 'scale-100'}
                     `}>
                         <img
                             src={currentSong.coverUrl}
@@ -100,17 +100,17 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ audioState }) => {
                         <div
                             className="absolute inset-0 pointer-events-none"
                             style={{
-                                background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 30%, transparent 50%, rgba(255,255,255,0.05) 80%, rgba(255,255,255,0.15) 100%)',
+                                background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.05) 40%, transparent 60%, rgba(255,255,255,0.1) 100%)',
                             }}
                         />
                     </div>
                 </div>
 
                 {/* Info Section */}
-                <div className="min-w-[100px] flex flex-col gap-1">
+                <div className="flex-1 min-w-0 flex flex-col gap-0.5">
                     <div className="flex flex-col">
                         <div
-                            className="overflow-hidden whitespace-nowrap relative h-4 flex items-center w-[100px]"
+                            className="overflow-hidden whitespace-nowrap relative h-4 flex items-center w-full"
                             style={shouldScroll ? {
                                 maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
                                 WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
@@ -143,29 +143,38 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ audioState }) => {
                         </span>
                     </div>
 
-                    <div className="flex items-center gap-3 h-5">
-                        {/* Dot Matrix Visualizer */}
+                    <div className="flex items-center gap-2.5 h-4 mt-0.5">
                         <DotMatrixVisualizer isPlaying={isPlaying} />
-
-                        <button onClick={() => setIsRepeatOne(!isRepeatOne)} className={`p-1 ${isRepeatOne ? 'text-blue-600' : 'text-blue-300'}`}>
-                            {isRepeatOne ? <Repeat1 size={12} /> : <Repeat size={12} />}
+                        <button 
+                            onClick={() => setIsRepeatOne(!isRepeatOne)} 
+                            className={`transition-colors active:scale-90 ${isRepeatOne ? 'text-blue-600' : 'text-blue-300'}`}
+                        >
+                            {isRepeatOne ? <Repeat1 size={10} /> : <Repeat size={10} />}
                         </button>
                     </div>
                 </div>
 
                 {/* Controls */}
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5 pr-1">
                     <button onClick={prevSong} className="p-1.5 active:scale-90 transition-transform group">
-                        <SkipBack size={14} className="stroke-gray-400 fill-gray-400 group-hover:stroke-gray-600 group-hover:fill-gray-600 transition-colors" />
+                        <SkipBack size={13} className="stroke-gray-400 fill-gray-400 group-hover:stroke-gray-600 group-hover:fill-gray-600 transition-colors" />
                     </button>
                     <button
                         onClick={togglePlay}
-                        className="w-10 h-10 rounded-full bg-gradient-to-b from-white to-blue-50/80 border border-blue-200/80 shadow-md flex items-center justify-center text-blue-900 hover:scale-105 active:scale-95 transition-transform"
+                        className="w-10 h-10 rounded-full bg-gradient-to-b from-white to-gray-50 flex items-center justify-center text-black hover:scale-105 active:scale-95 transition-all border border-blue-50/50"
+                        style={{
+                            boxShadow: `
+                                0 4px 10px -2px rgba(30,58,138,0.1),
+                                inset 0 1.5px 0px rgba(255,255,255,1),
+                                inset 0 -2px 3px rgba(30,58,138,0.04),
+                                0 0 0 1px rgba(30,58,138,0.02)
+                            `
+                        }}
                     >
-                        {isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" className="ml-0.5" />}
+                        {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" className="ml-0.5" />}
                     </button>
                     <button onClick={nextSong} className="p-1.5 active:scale-90 transition-transform group">
-                        <SkipForward size={14} className="stroke-gray-400 fill-gray-400 group-hover:stroke-gray-600 group-hover:fill-gray-600 transition-colors" />
+                        <SkipForward size={13} className="stroke-gray-400 fill-gray-400 group-hover:stroke-gray-600 group-hover:fill-gray-600 transition-colors" />
                     </button>
                 </div>
             </div>

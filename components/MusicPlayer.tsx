@@ -41,8 +41,13 @@ export const DotMatrixVisualizer: React.FC<{ isPlaying: boolean; rows?: number }
         });
     }, [rows]);
 
+    // Generate a stable key for the visualizer based on play state
+    // This forces Framer Motion to restart animations on mobile when remounting
+    const visualizerKey = `visualizer-${isPlaying ? 'playing' : 'paused'}-${rows}`;
+
     return (
         <div
+            key={visualizerKey}
             className="grid gap-[1.5px]"
             style={{
                 gridTemplateColumns: `repeat(${MATRIX_COLS}, 1fr)`,
@@ -51,8 +56,17 @@ export const DotMatrixVisualizer: React.FC<{ isPlaying: boolean; rows?: number }
         >
             {dotPatterns.map((pattern, i) => (
                 <motion.div
-                    key={i}
+                    key={`dot-${i}-${isPlaying}`}
                     className="w-[3px] h-[3px] rounded-full"
+                    initial={isPlaying ? {
+                        opacity: 0.3,
+                        scale: 0.7,
+                        backgroundColor: 'rgba(30, 58, 138, 0.4)',
+                    } : {
+                        opacity: 0.4,
+                        scale: 0.7,
+                        backgroundColor: 'rgba(100, 116, 139, 0.5)',
+                    }}
                     animate={isPlaying ? {
                         opacity: [0.3, pattern.intensity, 0.3],
                         scale: [0.7, 1, 0.7],

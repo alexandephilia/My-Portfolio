@@ -3,8 +3,7 @@ import { AnimatePresence, LayoutGroup, motion, PanInfo, useDragControls } from '
 import React, { useEffect, useRef, useState } from 'react';
 import { SONGS } from '../constants';
 import { AIChatFloat } from './AIChatFloat';
-import { MusicPlayer, DotMatrixVisualizer } from './MusicPlayer';
-import { ScrollTimeline } from './ScrollTimeline';
+import { DotMatrixVisualizer, MusicPlayer } from './MusicPlayer';
 
 type DockMode = 'music' | 'chat';
 
@@ -95,7 +94,7 @@ export const TransformDock: React.FC = () => {
             window.removeEventListener('click', handleFirstInteraction);
             window.removeEventListener('touchstart', handleFirstInteraction);
         };
-        
+
         // Sync state with actual audio events (crucial for mobile persistence)
         const handlePlay = () => setIsPlaying(true);
         const handlePause = () => setIsPlaying(false);
@@ -241,13 +240,34 @@ export const TransformDock: React.FC = () => {
                     {isExpanded && (
                         <motion.button
                             initial={{ opacity: 0, scale: 0.5 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.5 }}
-                            transition={{ duration: 0.15 }}
+                            animate={{
+                                opacity: 1,
+                                scale: [0.5, 1.12, 1],
+                                transition: {
+                                    opacity: {
+                                        duration: 0.65,
+                                        delay: 0.08,
+                                        ease: 'easeOut',
+                                    },
+                                    scale: {
+                                        duration: 0.4,
+                                        delay: 0.18,
+                                        ease: [0.34, 1.56, 0.64, 1],
+                                    }
+                                }
+                            }}
+                            exit={{
+                                opacity: 0,
+                                scale: 0.5,
+                                transition: {
+                                    duration: 0.01,
+                                    ease: 'easeIn'
+                                }
+                            }}
                             onClick={handleCollapse}
-                            className="absolute -top-2 -right-2 z-50 w-6 h-6 rounded-full bg-white border border-gray-200 shadow-lg flex items-center justify-center text-gray-500 hover:text-gray-900 hover:scale-110 active:scale-95 transition-transform pointer-events-auto"
+                            className="absolute -top-0.5 -right-1 z-50 w-5 h-5 rounded-full bg-white border border-gray-200 shadow-lg flex items-center justify-center text-gray-500 hover:text-gray-900 hover:scale-110 active:scale-95 transition-transform pointer-events-auto"
                         >
-                            <X size={12} strokeWidth={2.5} />
+                            <X size={10} strokeWidth={2.5} />
                         </motion.button>
                     )}
                 </AnimatePresence>
@@ -262,9 +282,9 @@ export const TransformDock: React.FC = () => {
                         border border-white/40
                         overflow-hidden
                     "
-                style={{
-                    borderRadius: 28,
-                    boxShadow: `
+                    style={{
+                        borderRadius: 28,
+                        boxShadow: `
                         0 0 0 1px rgba(255,255,255,0.4),
                         0 8px 16px -4px rgba(0,0,0,0.1),
                         0 20px 40px -8px rgba(0,0,0,0.12),
@@ -272,8 +292,8 @@ export const TransformDock: React.FC = () => {
                         inset 0 -10px 20px -5px rgba(255,255,255,0.9),
                         inset 0 -1px 0 rgba(255,255,255,1)
                     `,
-                    background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.15) 60%, rgba(255, 255, 255, 0.7) 100%)'
-                }}
+                        background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.15) 60%, rgba(255, 255, 255, 0.7) 100%)'
+                    }}
                     transition={springTransition}
                 >
                     {/* Inner highlight - top edge glow */}

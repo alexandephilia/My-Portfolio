@@ -58,6 +58,7 @@ export const TransformDock: React.FC = () => {
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
     const [isResetting, setIsResetting] = useState(false);
     const constraintsRef = useRef<HTMLDivElement | null>(null);
+    const dragHandleRef = useRef<boolean>(false); // Track if drag started from handle
 
     // [!] LIFTED AUDIO STATE - persists across mode switches and collapse
     const [isPlaying, setIsPlaying] = useState(false);
@@ -163,6 +164,11 @@ export const TransformDock: React.FC = () => {
         setTimeout(() => setIsResetting(false), 300);
     };
 
+    // Handler for when drag starts from the chat header
+    const handleChatDragStart = React.useCallback(() => {
+        dragHandleRef.current = true;
+    }, []);
+
     // Shared layoutId for the container morph
     const containerLayoutId = "dock-container";
 
@@ -177,7 +183,7 @@ export const TransformDock: React.FC = () => {
                 style={{ display: 'none' }}
             />
 
-            <div ref={constraintsRef} className="fixed inset-0 pointer-events-none z-[99]" />
+            <div ref={constraintsRef} className="fixed inset-0 pointer-events-none z-99" />
 
             <motion.div
                 initial={{ opacity: 0, y: 40, scale: 0.5 }}
@@ -188,18 +194,29 @@ export const TransformDock: React.FC = () => {
                     x: dragPosition.x,
                 }}
                 transition={isResetting ? snapBackTransition : popInTransition}
-                drag={!(isExpanded && activeMode === 'chat')}
+                drag
                 dragConstraints={constraintsRef}
                 dragElastic={0.1}
                 dragMomentum={false}
+                onPointerDownCapture={(e: React.PointerEvent) => {
+                    // Check if pointer down originated from drag handle
+                    const target = e.target as HTMLElement;
+                    const isFromHandle = target.closest('[data-drag-handle]') !== null;
+                    dragHandleRef.current = isFromHandle;
+
+                    // If in chat mode and NOT from handle, prevent drag
+                    if (isExpanded && activeMode === 'chat' && !isFromHandle) {
+                        e.stopPropagation();
+                    }
+                }}
                 onDragEnd={(_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-                    // Only update position if drag was enabled
-                    if (!(isExpanded && activeMode === 'chat')) {
+                    if (dragHandleRef.current || !(isExpanded && activeMode === 'chat')) {
                         setDragPosition(prev => ({
                             x: prev.x + info.offset.x,
                             y: prev.y + info.offset.y
                         }));
                     }
+                    dragHandleRef.current = false;
                 }}
                 whileDrag={{ scale: 1.02 }}
                 className="fixed bottom-6 left-1/2 -translate-x-1/2 z-100 touch-none select-none cursor-grab active:cursor-grabbing"
@@ -344,7 +361,7 @@ export const TransformDock: React.FC = () => {
                                                                 relative p-2 rounded-full
                                                                 transition-all duration-150
                                                                 ${activeMode === item.id
-                                                                    ? 'bg-gradient-to-b from-gray-700 to-gray-900 text-white shadow-lg'
+                                                                    ? 'bg-linear-to-b from-gray-700 to-gray-900 text-white shadow-lg'
                                                                     : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
                                                                 }
                                                             `}
@@ -359,7 +376,11 @@ export const TransformDock: React.FC = () => {
                                                 <MusicPlayer audioState={audioState} />
                                             </>
                                         ) : (
-                                            <AIChatFloat activeMode={activeMode} setActiveMode={setActiveMode} />
+                                            <AIChatFloat
+                                                activeMode={activeMode}
+                                                setActiveMode={setActiveMode}
+                                                onDragStart={handleChatDragStart}
+                                            />
                                         )}
                                     </motion.div>
                                 </AnimatePresence>

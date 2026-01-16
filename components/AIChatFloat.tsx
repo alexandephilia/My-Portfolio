@@ -12,6 +12,7 @@ interface Message {
 interface AIChatFloatProps {
     activeMode: 'music' | 'chat';
     setActiveMode: (mode: 'music' | 'chat') => void;
+    onDragStart?: (e: React.MouseEvent | React.TouchEvent) => void;
 }
 
 const STARTER_PROMPTS = [
@@ -39,7 +40,7 @@ const getPageContent = (): string => {
         .slice(0, 6000); // Limit to ~6k chars for token budget
 };
 
-export const AIChatFloat: React.FC<AIChatFloatProps> = ({ activeMode, setActiveMode }) => {
+export const AIChatFloat: React.FC<AIChatFloatProps> = React.memo(({ activeMode, setActiveMode, onDragStart }) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -195,9 +196,23 @@ Now be entertaining, you beautiful bastard.`
     };
 
     return (
-        <div className="flex flex-col h-[280px] sm:h-[300px] relative z-10">
-            {/* Fixed header with blur bg - OUTSIDE scroll container */}
-            <div className="relative z-20 p-2 bg-white/20 backdrop-blur-xl">
+        <div className="flex flex-col h-[280px] sm:h-[300px] w-full relative z-10">
+            {/* Header - Absolute & Draggable */}
+            <div
+                data-drag-handle
+                className="absolute top-0 left-0 right-0 z-30 w-full p-2 cursor-grab active:cursor-grabbing"
+                onMouseDown={(e) => {
+                    const target = e.target as HTMLElement;
+                    if (target.closest('button')) return;
+                    onDragStart?.(e);
+                }}
+                onTouchStart={(e) => {
+                    const target = e.target as HTMLElement;
+                    if (target.closest('button')) return;
+                    e.stopPropagation();
+                    onDragStart?.(e);
+                }}
+            >
                 <div className="flex gap-1">
                     {dockItems.map((item) => (
                         <button
@@ -221,15 +236,44 @@ Now be entertaining, you beautiful bastard.`
                 </div>
             </div>
 
-            {/* Scrollable messages container */}
+
+
+            {/* Progressive Blur Overlay - Stacking 2 layers for depth */}
+            <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
+                {/* Layer 1: Wider, softer blur */}
+                <div 
+                    className="absolute top-0 inset-x-0 h-20"
+                    style={{
+                        backdropFilter: 'blur(2px)',
+                        WebkitBackdropFilter: 'blur(2px)',
+                        maskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
+                        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)'
+                    }}
+                />
+                {/* Layer 2: Tighter, stronger blur */}
+                <div 
+                    className="absolute top-0 inset-x-0 h-12"
+                    style={{
+                        backdropFilter: 'blur(12px)',
+                        WebkitBackdropFilter: 'blur(12px)',
+                        maskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
+                        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)'
+                    }}
+                />
+            </div>
+
+            {/* Scrollable container */}
             <div
-                className={`flex-1 overscroll-contain ${messages.length > 0 ? 'overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-blue-400/30 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-blue-500/40' : 'overflow-hidden'}`}
+                className={`flex-1 overscroll-contain pt-12 ${messages.length > 0 ? 'overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-blue-400/30 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-blue-500/40' : 'overflow-hidden'}`}
+                style={{
+                    WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 3rem)',
+                    maskImage: 'linear-gradient(to bottom, transparent, black 3rem)'
+                }}
                 onWheel={(e) => { if (messages.length > 0) e.stopPropagation(); }}
                 onTouchStart={(e) => e.stopPropagation()}
                 onTouchMove={(e) => e.stopPropagation()}
                 onPointerDown={(e) => e.stopPropagation()}
             >
-
                 {/* Messages Area */}
                 <div className="px-3 pb-14 space-y-2">
                     {messages.length === 0 ? (
@@ -257,15 +301,14 @@ Now be entertaining, you beautiful bastard.`
                             {messages.map((msg) => (
                                 <motion.div
                                     key={msg.id}
-                                    layout
                                     initial={{ opacity: 0, y: 8 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.2, layout: { duration: 0.2 } }}
+                                    transition={{ duration: 0.2 }}
                                     className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
                                 >
                                     <div
                                         className={`
-                                            max-w-[85%] px-3 py-2 rounded-2xl text-[10px] leading-relaxed font-mono
+                                            max-w-[85%] px-3 py-2 rounded-2xl text-[10px] leading-relaxed font-mono break-words
                                             ${msg.role === 'user'
                                                 ? 'bg-blue-900 text-white rounded-br-md'
                                                 : 'bg-blue-50/90 text-blue-900 border border-blue-200/50 rounded-bl-md'
@@ -282,9 +325,16 @@ Now be entertaining, you beautiful bastard.`
                                         )}
                                     </div>
                                     {msg.role === 'assistant' && (
-                                        <span className="text-[7px] text-blue-500/70 mt-0.5 ml-1 font-mono uppercase tracking-widest">
-                                            Zeta
-                                        </span>
+                                        <div 
+                                            className="mt-1.5 ml-1 inline-flex items-center px-1.5 py-0.5 rounded-full bg-blue-50/50 border border-blue-50/50"
+                                            style={{
+                                                boxShadow: '0 2px 3px 0px rgba(59, 130, 246, 0.15), inset 0 0 4px rgba(255, 255, 255, 0.8)'
+                                            }}
+                                        >
+                                            <span className="text-[6px] font-bold text-blue-600/60 font-mono uppercase tracking-widest leading-none">
+                                                Zeta Assistant
+                                            </span>
+                                        </div>
                                     )}
                                 </motion.div>
                             ))}
@@ -356,4 +406,6 @@ Now be entertaining, you beautiful bastard.`
             </div>
         </div>
     );
-};
+});
+
+AIChatFloat.displayName = 'AIChatFloat';

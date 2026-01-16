@@ -330,7 +330,7 @@ Now be entertaining, you beautiful bastard.`
                 onPointerDown={(e) => e.stopPropagation()}
             >
                 {/* Messages Area */}
-                <div className="px-3 pb-14">
+                <div className="px-3 pb-20">
                     {messages.length === 0 ? (
                         <motion.div
                             initial={{ opacity: 0 }}

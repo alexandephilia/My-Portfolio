@@ -266,9 +266,8 @@ Now be entertaining, you beautiful bastard.`
 
 
 
-            {/* Progressive Blur Overlay - Stacking 2 layers for depth */}
+            {/* Top Progressive Blur Overlay */}
             <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
-                {/* Layer 1: Wider, softer blur */}
                 <div 
                     className="absolute top-0 inset-x-0 h-20"
                     style={{
@@ -278,7 +277,6 @@ Now be entertaining, you beautiful bastard.`
                         WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)'
                     }}
                 />
-                {/* Layer 2: Tighter, stronger blur */}
                 <div 
                     className="absolute top-0 inset-x-0 h-12"
                     style={{
@@ -286,6 +284,19 @@ Now be entertaining, you beautiful bastard.`
                         WebkitBackdropFilter: 'blur(12px)',
                         maskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
                         WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)'
+                    }}
+                />
+            </div>
+
+            {/* Bottom Progressive Blur Overlay */}
+            <div className="absolute bottom-5 left-0 right-0 z-20 pointer-events-none h-16">
+                <div 
+                    className="absolute bottom-0 inset-x-0 h-full"
+                    style={{
+                        backdropFilter: 'blur(8px)',
+                        WebkitBackdropFilter: 'blur(8px)',
+                        maskImage: 'linear-gradient(to top, black 40%, transparent 100%)',
+                        WebkitMaskImage: 'linear-gradient(to top, black 40%, transparent 100%)'
                     }}
                 />
             </div>
@@ -321,8 +332,8 @@ Now be entertaining, you beautiful bastard.`
             <div
                 className={`flex-1 overscroll-contain pt-12 chat-matrix-scroll ${messages.length > 0 ? 'overflow-y-auto' : 'overflow-hidden'}`}
                 style={{
-                    WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 4rem)',
-                    maskImage: 'linear-gradient(to bottom, transparent, black 4rem)'
+                    WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 4rem, black calc(100% - 6rem), transparent 100%)',
+                    maskImage: 'linear-gradient(to bottom, transparent 0%, black 4rem, black calc(100% - 6rem), transparent 100%)'
                 }}
                 onWheel={(e) => { if (messages.length > 0) e.stopPropagation(); }}
                 onTouchStart={(e) => e.stopPropagation()}
@@ -391,16 +402,18 @@ Now be entertaining, you beautiful bastard.`
                                     >
                                     <div
                                         className={`
-                                            max-w-[85%] px-3 py-2 rounded-2xl text-[10px] leading-relaxed font-mono wrap-break-word
+                                            max-w-[85%] px-3 py-2 rounded-2xl text-[10px] leading-relaxed font-mono wrap-break-word transition-all duration-200
                                             ${msg.role === 'user'
-                                                ? 'bg-blue-900 text-white rounded-br-md'
+                                                ? 'bg-blue-600/80 text-white rounded-br-md border border-blue-500/30'
                                                 : 'bg-blue-50/90 text-blue-900 border border-blue-200/50 rounded-bl-md'
                                             }
                                         `}
-                                        style={msg.role === 'assistant' ? {
-                                            textShadow: '0 0 1px rgba(30,58,138,0.15)',
-                                            boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.6), 0 1px 3px rgba(30,58,138,0.08)'
-                                        } : undefined}
+                                        style={{
+                                            textShadow: msg.role === 'user' ? '0 1px 1px rgba(0,0,0,0.2)' : '0 0 1px rgba(30,58,138,0.15)',
+                                            boxShadow: msg.role === 'user'
+                                                ? 'inset 0 1px 2px rgba(255,255,255,0.4), 0 1px 3px rgba(0,0,0,0.1)'
+                                                : 'inset 0 1px 2px rgba(255,255,255,0.6), 0 1px 3px rgba(30,58,138,0.08)'
+                                        }}
                                     >
                                         {msg.content}
                                         {msg.role === 'assistant' && msg.isStreaming && (
@@ -453,7 +466,7 @@ Now be entertaining, you beautiful bastard.`
             </div>
 
             {/* Floating Input - Gradient with Shine */}
-            <div className="absolute bottom-0 left-0 right-0 p-3 pointer-events-none">
+            <div className="absolute bottom-0 left-0 right-0 p-3 pointer-events-none z-30">
                 <div
                     className={`
                         flex items-center gap-2 rounded-2xl border px-3 py-1.5 pointer-events-auto

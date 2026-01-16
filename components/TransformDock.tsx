@@ -63,9 +63,24 @@ export const TransformDock: React.FC = () => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentSongIndex, setCurrentSongIndex] = useState(0);
     const [isRepeatOne, setIsRepeatOne] = useState(false);
+    const [shouldAutoPlay, setShouldAutoPlay] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    const isRepeatOneRef = useRef(isRepeatOne);
+
+    // Keep ref in sync with state for use in event handlers
+    useEffect(() => {
+        isRepeatOneRef.current = isRepeatOne;
+    }, [isRepeatOne]);
 
     const currentSong = SONGS[currentSongIndex];
+
+    // Handle autoplay after song change (waits for src to update)
+    useEffect(() => {
+        if (shouldAutoPlay && audioRef.current) {
+            audioRef.current.play().catch(console.error);
+            setShouldAutoPlay(false);
+        }
+    }, [currentSongIndex, shouldAutoPlay]);
 
     // Audio element lives at parent level - never unmounts
     useEffect(() => {
@@ -100,19 +115,20 @@ export const TransformDock: React.FC = () => {
     const nextSong = () => {
         setCurrentSongIndex((prev) => (prev + 1) % SONGS.length);
         setIsPlaying(true);
-        setTimeout(() => audioRef.current?.play().catch(console.error), 0);
+        setShouldAutoPlay(true);
     };
 
     const prevSong = () => {
         setCurrentSongIndex((prev) => (prev - 1 + SONGS.length) % SONGS.length);
         setIsPlaying(true);
-        setTimeout(() => audioRef.current?.play().catch(console.error), 0);
+        setShouldAutoPlay(true);
     };
 
     const handleEnded = () => {
-        if (isRepeatOne && audioRef.current) {
+        // Use ref to get current value, not stale closure
+        if (isRepeatOneRef.current && audioRef.current) {
             audioRef.current.currentTime = 0;
-            audioRef.current.play();
+            audioRef.current.play().catch(console.error);
         } else {
             nextSong();
         }

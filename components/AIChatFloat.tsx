@@ -234,6 +234,46 @@ Now be entertaining, you beautiful bastard.`
 
     return (
         <div className="flex flex-col h-[280px] sm:h-[300px] w-full relative z-10">
+            {/* Header - Absolute & Draggable */}
+            <div
+                data-drag-handle
+                className="absolute top-0 left-0 right-0 z-30 w-full p-2 cursor-grab active:cursor-grabbing"
+                onPointerDown={(e) => {
+                    const target = e.target as HTMLElement;
+                    if (target.closest('button')) return;
+                    onDragStart?.(e);
+                }}
+            >
+                <div className="flex gap-1">
+                    {dockItems.map((item) => (
+                        <button
+                            key={item.id}
+                            onClick={() => setActiveMode(item.id)}
+                            className={`
+                                relative p-2 rounded-full overflow-hidden
+                                transition-all duration-150
+                                ${activeMode === item.id
+                                    ? 'bg-linear-to-b from-gray-700 to-gray-900 text-white shadow-lg'
+                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100/80'
+                                }
+                            `}
+                            style={activeMode === item.id ? {
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15)'
+                            } : undefined}
+                        >
+                            <item.icon size={14} strokeWidth={2.5} className="relative z-10" />
+                            {item.id === 'music' && isPlaying && (
+                                <div className="absolute inset-0 flex items-center justify-center opacity-80 pointer-events-none">
+                                    <DotMatrixVisualizer isPlaying={true} rows={12} />
+                                </div>
+                            )}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+
+
             {/* Top Progressive Blur Overlay */}
             <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
                 <div 
@@ -298,7 +338,7 @@ Now be entertaining, you beautiful bastard.`
 
             {/* Scrollable container */}
             <div
-                className={`flex-1 overscroll-contain pt-4 chat-matrix-scroll ${messages.length > 0 ? 'overflow-y-auto' : 'overflow-hidden'}`}
+                className={`flex-1 overscroll-contain pt-12 chat-matrix-scroll ${messages.length > 0 ? 'overflow-y-auto' : 'overflow-hidden'}`}
                 style={{
                     WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 4rem, black calc(100% - 6rem), transparent 100%)',
                     maskImage: 'linear-gradient(to bottom, transparent 0%, black 4rem, black calc(100% - 6rem), transparent 100%)'

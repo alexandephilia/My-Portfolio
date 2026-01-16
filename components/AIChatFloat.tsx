@@ -1,6 +1,7 @@
-import { MessageCircle, Music, Send, ChevronsRight } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
-import React, { useCallback, useRef, useState } from 'react';
+import { LucideIcon, MessageCircle, Music, Send, ChevronsRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { DotMatrixVisualizer } from './MusicPlayer';
 
 interface Message {
     id: string;
@@ -13,6 +14,7 @@ interface AIChatFloatProps {
     activeMode: 'music' | 'chat';
     setActiveMode: (mode: 'music' | 'chat') => void;
     onDragStart?: (e: React.PointerEvent | React.TouchEvent) => void;
+    isPlaying?: boolean;
 }
 
 const STARTER_PROMPTS = [
@@ -63,7 +65,7 @@ const getPageContent = (): string => {
         .slice(0, 6000); // Limit to ~6k chars for token budget
 };
 
-export const AIChatFloat: React.FC<AIChatFloatProps> = React.memo(({ activeMode, setActiveMode, onDragStart }) => {
+export const AIChatFloat: React.FC<AIChatFloatProps> = React.memo(({ activeMode, setActiveMode, onDragStart, isPlaying = false }) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -248,7 +250,8 @@ Now be entertaining, you beautiful bastard.`
                             key={item.id}
                             onClick={() => setActiveMode(item.id)}
                             className={`
-                                relative p-2 rounded-full
+                                relative p-2 rounded-full overflow-hidden
+                                transition-all duration-150
                                 ${activeMode === item.id
                                     ? 'bg-linear-to-b from-gray-700 to-gray-900 text-white shadow-lg'
                                     : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100/80'
@@ -258,7 +261,12 @@ Now be entertaining, you beautiful bastard.`
                                 boxShadow: '0 4px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15)'
                             } : undefined}
                         >
-                            <item.icon size={14} strokeWidth={2.5} />
+                            <item.icon size={14} strokeWidth={2.5} className="relative z-10" />
+                            {item.id === 'music' && isPlaying && (
+                                <div className="absolute inset-0 flex items-center justify-center opacity-80 pointer-events-none">
+                                    <DotMatrixVisualizer isPlaying={true} rows={12} />
+                                </div>
+                            )}
                         </button>
                     ))}
                 </div>

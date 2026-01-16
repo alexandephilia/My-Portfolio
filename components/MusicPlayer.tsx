@@ -8,22 +8,33 @@ const MAX_TITLE_CHARS = 12;
 
 // Dot matrix configuration
 const MATRIX_COLS = 8;
-const MATRIX_ROWS = 3;
+const MATRIX_ROWS = 4; // Default rows for standalone player
 
 interface MusicPlayerProps {
     audioState: AudioState;
 }
 
 // Dot Matrix Visualizer Component
-const DotMatrixVisualizer: React.FC<{ isPlaying: boolean }> = ({ isPlaying }) => {
+export const DotMatrixVisualizer: React.FC<{ isPlaying: boolean; rows?: number }> = ({
+    isPlaying,
+    rows = 4
+}) => {
     // Generate random animation patterns for each dot
     const dotPatterns = useMemo(() => {
-        return Array.from({ length: MATRIX_COLS * MATRIX_ROWS }, (_, i) => {
+        return Array.from({ length: MATRIX_COLS * rows }, (_, i) => {
             const col = i % MATRIX_COLS;
             const row = Math.floor(i / MATRIX_COLS);
             // Create wave-like pattern based on column position
             const baseDelay = col * 0.08;
-            const rowOffset = Math.abs(row - 1) * 0.05; // Center rows animate first
+            // Adjust rowOffset and intensity based on the new 'rows' prop
+            // For rows = 4, center rows would be 1 and 2.
+            // Math.abs(row - (rows - 1) / 2) would give distance from center.
+            const centerRow = (rows - 1) / 2;
+            const rowOffset = Math.abs(row - centerRow) * 0.05;
+            // Higher probability of being "on" for center rows
+            const maxDistance = Math.max(centerRow, rows - 1 - centerRow);
+            const normalizedDistance = Math.abs(row - centerRow) / maxDistance;
+            const intensity = 1 - normalizedDistance * 0.4; // Adjust intensity based on distance from center
             return {
                 delay: baseDelay + rowOffset,
                 duration: 0.4 + Math.random() * 0.3,
@@ -35,10 +46,10 @@ const DotMatrixVisualizer: React.FC<{ isPlaying: boolean }> = ({ isPlaying }) =>
 
     return (
         <div
-            className="grid gap-[2px]"
+            className="grid gap-[1.5px]"
             style={{
                 gridTemplateColumns: `repeat(${MATRIX_COLS}, 1fr)`,
-                gridTemplateRows: `repeat(${MATRIX_ROWS}, 1fr)`,
+                gridTemplateRows: `repeat(${rows}, 1fr)`,
             }}
         >
             {dotPatterns.map((pattern, i) => (

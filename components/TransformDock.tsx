@@ -3,7 +3,8 @@ import { AnimatePresence, LayoutGroup, motion, PanInfo, useDragControls } from '
 import React, { useEffect, useRef, useState } from 'react';
 import { SONGS } from '../constants';
 import { AIChatFloat } from './AIChatFloat';
-import { MusicPlayer } from './MusicPlayer';
+import { MusicPlayer, DotMatrixVisualizer } from './MusicPlayer';
+import { ScrollTimeline } from './ScrollTimeline';
 
 type DockMode = 'music' | 'chat';
 
@@ -307,12 +308,17 @@ export const TransformDock: React.FC = () => {
                                         onClick={() => handleExpand(item.id)}
                                         whileHover={{ scale: 1.08 }}
                                         whileTap={{ scale: 0.95 }}
-                                        className="relative w-9 h-9 rounded-[12px] flex items-center justify-center hover:bg-white/80 hover:shadow-md transition-all duration-150"
+                                        className="relative w-9 h-9 rounded-[12px] flex items-center justify-center hover:bg-white/80 hover:shadow-md transition-all duration-150 overflow-hidden"
                                     >
                                         <item.icon
                                             size={18}
-                                            className="text-gray-600"
+                                            className="text-gray-600 relative z-10"
                                         />
+                                        {item.id === 'music' && audioState.isPlaying && (
+                                            <div className="absolute inset-0 flex items-center justify-center opacity-80 pointer-events-none">
+                                                <DotMatrixVisualizer isPlaying={true} rows={12} />
+                                            </div>
+                                        )}
                                     </motion.button>
                                 ))}
                             </motion.div>
@@ -350,7 +356,7 @@ export const TransformDock: React.FC = () => {
                                                             key={item.id}
                                                             onClick={() => setActiveMode(item.id)}
                                                             className={`
-                                                                relative p-2 rounded-full
+                                                                relative p-2 rounded-full overflow-hidden
                                                                 transition-all duration-150
                                                                 ${activeMode === item.id
                                                                     ? 'bg-linear-to-b from-gray-700 to-gray-900 text-white shadow-lg'
@@ -361,7 +367,12 @@ export const TransformDock: React.FC = () => {
                                                                 boxShadow: '0 4px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15)'
                                                             } : undefined}
                                                         >
-                                                            <item.icon size={14} strokeWidth={2.5} />
+                                                            <item.icon size={14} strokeWidth={2.5} className="relative z-10" />
+                                                            {item.id === 'music' && audioState.isPlaying && (
+                                                                <div className="absolute inset-0 flex items-center justify-center opacity-80 pointer-events-none">
+                                                                    <DotMatrixVisualizer isPlaying={true} rows={12} />
+                                                                </div>
+                                                            )}
                                                         </button>
                                                     ))}
                                                 </motion.div>
@@ -372,6 +383,7 @@ export const TransformDock: React.FC = () => {
                                                 activeMode={activeMode}
                                                 setActiveMode={setActiveMode}
                                                 onDragStart={handleChatDragStart}
+                                                isPlaying={audioState.isPlaying}
                                             />
                                         )}
                                     </motion.div>

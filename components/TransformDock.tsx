@@ -185,6 +185,16 @@ export const TransformDock: React.FC = () => {
                 whileDrag={{ scale: 1.02 }}
                 className="fixed bottom-6 left-1/2 -translate-x-1/2 z-100 touch-none select-none cursor-grab active:cursor-grabbing"
                 style={{ touchAction: 'none' }}
+                onTouchStart={(e) => {
+                    // Prevent page scroll when touching the dock
+                    if (isExpanded) {
+                        e.stopPropagation();
+                    }
+                }}
+                onTouchMove={(e) => {
+                    // Prevent page scroll during drag or when expanded
+                    e.stopPropagation();
+                }}
             >
                 {/* Close button - OUTSIDE the overflow container so it doesn't get clipped */}
                 <AnimatePresence>
@@ -285,8 +295,9 @@ export const TransformDock: React.FC = () => {
                                 key={`expanded-${activeMode}`}
                                 {...blurReveal}
                                 transition={contentTransition}
-                                className="w-[340px] relative"
+                                className="w-[340px] relative overscroll-contain"
                                 layout="position"
+                                onTouchMove={(e) => e.stopPropagation()}
                             >
                                 {/* Content area - isolated from layout animation */}
                                 <AnimatePresence mode="wait" initial={false}>

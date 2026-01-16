@@ -332,62 +332,71 @@ export const TransformDock: React.FC = () => {
                                 layout="position"
                                 onTouchMove={(e) => e.stopPropagation()}
                             >
-                                {/* Content area - isolated from layout animation */}
-                                <AnimatePresence mode="wait" initial={false}>
+                                {/* Mode Header - Shared across both modes for consistency */}
+                                <motion.div
+                                    className="flex gap-1 p-2 pb-1 relative z-50 cursor-grab active:cursor-grabbing"
+                                    initial={{ opacity: 0, y: -8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.2, delay: 0.08 }}
+                                    onPointerDown={(e) => dragControls.start(e)}
+                                >
+                                    {dockItems.map((item) => (
+                                        <button
+                                            key={item.id}
+                                            onClick={() => setActiveMode(item.id)}
+                                            className={`
+                                                relative p-2 rounded-full overflow-hidden
+                                                transition-all duration-150
+                                                ${activeMode === item.id
+                                                    ? 'bg-linear-to-b from-gray-700 to-gray-900 text-white shadow-lg'
+                                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                                                }
+                                            `}
+                                            style={activeMode === item.id ? {
+                                                boxShadow: '0 4px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15)'
+                                            } : undefined}
+                                        >
+                                            <item.icon size={14} strokeWidth={2.5} className="relative z-10" />
+                                            {item.id === 'music' && audioState.isPlaying && (
+                                                <div className="absolute inset-0 flex items-center justify-center opacity-80 pointer-events-none">
+                                                    <DotMatrixVisualizer isPlaying={true} rows={12} />
+                                                </div>
+                                            )}
+                                        </button>
+                                    ))}
+                                </motion.div>
+
+                                {/* Persistent Content Stack */}
+                                <div className="relative h-full">
                                     <motion.div
-                                        key={activeMode}
-                                        initial={{ opacity: 0, filter: 'blur(6px)' }}
-                                        animate={{ opacity: 1, filter: 'blur(0px)' }}
-                                        exit={{ opacity: 0, filter: 'blur(6px)' }}
-                                        transition={{ duration: 0.18 }}
+                                        animate={{ 
+                                            opacity: activeMode === 'music' ? 1 : 0,
+                                            scale: activeMode === 'music' ? 1 : 0.95,
+                                            filter: activeMode === 'music' ? 'blur(0px)' : 'blur(8px)',
+                                        }}
+                                        transition={{ duration: 0.2 }}
+                                        className={activeMode === 'music' ? 'relative z-10' : 'absolute inset-0 z-0 pointer-events-none'}
                                     >
-                                        {activeMode === 'music' ? (
-                                            <>
-                                                {/* Music mode header */}
-                                                <motion.div
-                                                    className="flex gap-1 p-2 pb-1 relative z-30 cursor-grab active:cursor-grabbing"
-                                                    initial={{ opacity: 0, y: -8 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    transition={{ duration: 0.2, delay: 0.08 }}
-                                                    onPointerDown={(e) => dragControls.start(e)}
-                                                >
-                                                    {dockItems.map((item) => (
-                                                        <button
-                                                            key={item.id}
-                                                            onClick={() => setActiveMode(item.id)}
-                                                            className={`
-                                                                relative p-2 rounded-full overflow-hidden
-                                                                transition-all duration-150
-                                                                ${activeMode === item.id
-                                                                    ? 'bg-linear-to-b from-gray-700 to-gray-900 text-white shadow-lg'
-                                                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
-                                                                }
-                                                            `}
-                                                            style={activeMode === item.id ? {
-                                                                boxShadow: '0 4px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15)'
-                                                            } : undefined}
-                                                        >
-                                                            <item.icon size={14} strokeWidth={2.5} className="relative z-10" />
-                                                            {item.id === 'music' && audioState.isPlaying && (
-                                                                <div className="absolute inset-0 flex items-center justify-center opacity-80 pointer-events-none">
-                                                                    <DotMatrixVisualizer isPlaying={true} rows={12} />
-                                                                </div>
-                                                            )}
-                                                        </button>
-                                                    ))}
-                                                </motion.div>
-                                                <MusicPlayer audioState={audioState} />
-                                            </>
-                                        ) : (
-                                            <AIChatFloat
-                                                activeMode={activeMode}
-                                                setActiveMode={setActiveMode}
-                                                onDragStart={handleChatDragStart}
-                                                isPlaying={audioState.isPlaying}
-                                            />
-                                        )}
+                                        <MusicPlayer audioState={audioState} />
                                     </motion.div>
-                                </AnimatePresence>
+
+                                    <motion.div
+                                        animate={{ 
+                                            opacity: activeMode === 'chat' ? 1 : 0,
+                                            scale: activeMode === 'chat' ? 1 : 0.95,
+                                            filter: activeMode === 'chat' ? 'blur(0px)' : 'blur(8px)',
+                                        }}
+                                        transition={{ duration: 0.2 }}
+                                        className={activeMode === 'chat' ? 'relative z-10' : 'absolute inset-0 z-0 pointer-events-none'}
+                                    >
+                                        <AIChatFloat
+                                            activeMode={activeMode}
+                                            setActiveMode={setActiveMode}
+                                            onDragStart={handleChatDragStart}
+                                            isPlaying={audioState.isPlaying}
+                                        />
+                                    </motion.div>
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>

@@ -337,7 +337,7 @@ Now be entertaining, you beautiful bastard.`
                             animate={{ opacity: 1 }}
                             className="h-[200px] flex flex-col items-center justify-start pt-8 text-center px-4"
                         >
-                            <p className="text-3xl md:text-4xl lg:text-5xl text-blue-900 mb-4" style={{ fontFamily: 'Instrument Serif, serif' }}>What's up?</p>
+                            <p className="text-5xl md:text-6xl lg:text-7xl text-blue-900 mb-4" style={{ fontFamily: 'Instrument Serif, serif' }}>What's up?</p>
                             <p className="text-[10px] text-blue-500/60 mb-3 font-mono">Ask me anything about Alex's work.</p>
                             
                             <div className="flex flex-col items-center justify-start h-14 -mt-0.5 relative">

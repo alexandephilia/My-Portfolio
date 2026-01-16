@@ -122,8 +122,8 @@ export const AIChatFloat: React.FC<AIChatFloatProps> = ({ activeMode, setActiveM
 
 ## ALEX'S BACKGROUND (USE THIS):
 - Full name: Garry Alexander
-- 8+ years combined experience at Realta (hospitality tech company)
-- Career progression: Started as QA (technical documentation, bug tracking, solving) → Software Implementation → Frontend Developer (Web + Mobile) → Also does Backend
+- 8+ years combined experience at Realta (IT Software Consultant)
+- Career progression: Started as QA (technical documentation, bug tracking, solving) including Hospitality, Manufacturing, Golf, Payroll, Personal HR, ERP → Software Implementation → Frontend Developer (Web + Mobile) → Also does Backend
 - He's a full-stack developer who actually understands the entire product lifecycle from QA to deployment
 - Skills: React, TypeScript, React Native, Node.js, and whatever else he needs to ship
 - Philosophy: Clean code, user-first design, and getting shit done

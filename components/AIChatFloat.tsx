@@ -275,7 +275,7 @@ Now be entertaining, you beautiful bastard.`
                 onPointerDown={(e) => e.stopPropagation()}
             >
                 {/* Messages Area */}
-                <div className="px-3 pb-14 space-y-2">
+                <div className="px-3 pb-14">
                     {messages.length === 0 ? (
                         <motion.div
                             initial={{ opacity: 0 }}
@@ -298,14 +298,16 @@ Now be entertaining, you beautiful bastard.`
                         </motion.div>
                     ) : (
                         <AnimatePresence initial={false}>
-                            {messages.map((msg) => (
-                                <motion.div
-                                    key={msg.id}
-                                    initial={{ opacity: 0, y: 8 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
-                                >
+                            {messages.map((msg, index) => {
+                                const isSequence = index > 0 && messages[index - 1].role === msg.role;
+                                return (
+                                    <motion.div
+                                        key={msg.id}
+                                        initial={{ opacity: 0, y: 8 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                        className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} ${index === 0 ? 'mt-0' : (isSequence ? 'mt-1.5' : 'mt-6')}`}
+                                    >
                                     <div
                                         className={`
                                             max-w-[85%] px-3 py-2 rounded-2xl text-[10px] leading-relaxed font-mono break-words
@@ -337,7 +339,8 @@ Now be entertaining, you beautiful bastard.`
                                         </div>
                                     )}
                                 </motion.div>
-                            ))}
+                                );
+                            })}
                         </AnimatePresence>
                     )}
 

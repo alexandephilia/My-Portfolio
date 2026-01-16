@@ -400,20 +400,20 @@ Now be entertaining, you beautiful bastard.`
 
                     {isLoading && (
                         <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="flex justify-start"
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="flex flex-col items-start mt-6"
                         >
                             <div
-                                className="bg-blue-50/90 border border-blue-200/50 px-3 py-2 rounded-2xl rounded-bl-md"
+                                className="max-w-[85%] px-3 py-2 rounded-2xl rounded-bl-md bg-blue-50/90 border border-blue-200/50"
                                 style={{ boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.6), 0 1px 3px rgba(30,58,138,0.08)' }}
                             >
-                                <div className="flex gap-1">
+                                <div className="flex gap-1 py-1">
                                     {[0, 1, 2].map((i) => (
                                         <motion.div
                                             key={i}
-                                            className="w-1.5 h-1.5 bg-blue-500 rounded-full"
-                                            animate={{ opacity: [0.3, 1, 0.3] }}
+                                            className="w-1.5 h-1.5 bg-blue-500/60 rounded-full"
+                                            animate={{ opacity: [0.3, 1, 0.3], scale: [0.9, 1.1, 0.9] }}
                                             transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
                                         />
                                     ))}
@@ -432,18 +432,18 @@ Now be entertaining, you beautiful bastard.`
                         flex items-center gap-2 rounded-2xl border px-3 py-1.5 pointer-events-auto
                         transition-all duration-200
                         ${isLoading 
-                            ? 'bg-linear-to-b from-gray-100 to-gray-200 border-gray-300' 
-                            : 'bg-linear-to-b from-white via-blue-50/30 to-blue-50/50 border-blue-200/40'
+                            ? 'bg-gray-100 border-gray-300' 
+                            : 'bg-linear-to-b from-white to-gray-50 border-gray-200/60'
                         }
                     `}
                     style={{ 
                         boxShadow: isLoading 
-                            ? '0 2px 8px rgba(0,0,0,0.06), inset 0 1px 2px rgba(0,0,0,0.05)' 
+                            ? '0 2px 8px rgba(0,0,0,0.1), inset 0 1px 2px rgba(0,0,0,0.05)' 
                             : `
-                                0 2px 4px rgba(30,58,138,0.06),
-                                inset 0 1px 0 rgba(255,255,255,0.9),
-                                inset 0 -1.5px 2px rgba(30,58,138,0.05),
-                                0 0 0 1px rgba(30,58,138,0.02)
+                                0 4px 12px rgba(0,0,0,0.03),
+                                0 1px 2px rgba(0,0,0,0.02),
+                                inset 0 2px 4px rgba(0,0,0,0.05),
+                                inset 0 1px 0 rgba(255,255,255,1)
                             `
                     }}
                 >

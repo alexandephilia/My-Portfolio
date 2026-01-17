@@ -165,7 +165,7 @@ const FolderIcon: React.FC<FolderIconProps> = ({ category, index, isOtherExpande
                     rounded-[18px] md:rounded-[24px]
                     border border-gray-200/60
                     shadow-[inset_0_1px_1.5px_rgba(255,255,255,1),0_8px_20px_-10px_rgba(0,0,0,0.05)]
-                    transition-all duration-300 ${!isOtherExpanded ? 'group-hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.12)]' : ''}
+                    duration-300 ${!isOtherExpanded ? 'group-hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.12)]' : ''}
                 `}>
                     <div className="
                         w-16 h-16 md:w-21 md:h-21
@@ -295,7 +295,7 @@ const FolderIcon: React.FC<FolderIconProps> = ({ category, index, isOtherExpande
                                                             border border-white
                                                 shadow-[0_4px_10px_rgba(0,0,0,0.08),inset_0_2px_1px_rgba(255,255,255,1)]                                            flex items-center justify-center 
                                                             text-gray-600 hover:text-gray-900 
-                                                            transition-all duration-300
+                                                             duration-300
                                                             active:scale-95 active:shadow-inner
                                                             relative z-50
                                                         "
@@ -342,7 +342,6 @@ const FolderIcon: React.FC<FolderIconProps> = ({ category, index, isOtherExpande
                                                                     shadow-[0_8px_20px_-6px_rgba(0,0,0,0.08),0_4px_8px_-2px_rgba(0,0,0,0.04),inset_0_2px_3px_rgba(255,255,255,1),inset_0_-2px_3px_rgba(0,0,0,0.02)]
                                                                     flex items-center justify-center
                                                                     p-2 md:p-2.5
-                                                                    transition-all duration-300
                                                                 ">
                                                                     {iconUrl ? (
                                                                         <motion.img 
@@ -421,7 +420,7 @@ const PhilosophySection: React.FC = () => {
                         <img
                             src="/philosophy.png"
                             alt="Thinking Philosophy"
-                            className="w-full h-full object-cover select-none grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 rounded-[inherit]"
+                            className="w-full h-full object-cover select-none grayscale-[0.2] group-hover:grayscale-0 duration-1000 rounded-[inherit]"
                             draggable={false}
                         />
                         <div className="absolute inset-0 shadow-[inset_0_2px_15px_rgba(0,0,0,0.05)] pointer-events-none rounded-[inherit]" />

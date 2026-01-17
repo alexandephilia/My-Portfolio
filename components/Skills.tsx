@@ -122,8 +122,8 @@ export const Skills: React.FC = () => {
                         key={index}
                         category={category}
                         index={index}
-                        isOtherExpanded={anyExpanded !== null && anyExpanded !== index}
-                        setGlobalExpanded={(val) => setAnyExpanded(val ? index : null)}
+                        anyExpanded={anyExpanded}
+                        setAnyExpanded={setAnyExpanded}
                     />
                 ))}
             </div>
@@ -136,27 +136,26 @@ export const Skills: React.FC = () => {
 interface FolderIconProps {
     category: SkillCategory;
     index: number;
-    isOtherExpanded: boolean;
-    setGlobalExpanded: (val: boolean) => void;
+    anyExpanded: number | null;
+    setAnyExpanded: (val: number | null) => void;
 }
 
-const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isOtherExpanded, setGlobalExpanded }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
+const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, anyExpanded, setAnyExpanded }) => {
+    const isExpanded = anyExpanded === index;
+    const isOtherExpanded = anyExpanded !== null && anyExpanded !== index;
 
     // Optimized event handlers
     const handleOpen = () => {
         if (typeof window !== 'undefined') {
             document.body.style.overflow = 'hidden';
-            setIsExpanded(true);
-            setGlobalExpanded(true);
+            setAnyExpanded(index);
         }
     };
 
     const handleClose = () => {
         if (typeof window !== 'undefined') {
             document.body.style.overflow = 'unset';
-            setIsExpanded(false);
-            setGlobalExpanded(false);
+            setAnyExpanded(null);
         }
     };
 

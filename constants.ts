@@ -173,12 +173,13 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
     {
         title: "Engineering",
         skills: [
-            "JavaScript",
-            "TypeScript",
-            "Node.js",
-            "Python",
+
             "React.js",
             "Next.js",
+            "TypeScript",
+            "JavaScript",
+            "Node.js",
+            "Python",
             "Vue.js",
             "HTML/CSS",
             "Markdown",

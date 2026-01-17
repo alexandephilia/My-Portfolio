@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useDevice } from './hooks/useDevice';
 
 const SECTIONS_CONFIG = [
     { id: 'hero', label: 'Home' },
@@ -13,7 +14,6 @@ const SECTIONS_CONFIG = [
 
 export const ScrollTimeline = () => {
     const { scrollYProgress } = useScroll();
-    const [scrollValue, setScrollValue] = useState(0);
     const [sectionOffsets, setSectionOffsets] = useState<Record<string, number>>({});
     const [isRevealed, setIsRevealed] = useState(false);
     const mouseYProgress = useMotionValue(-1);
@@ -56,24 +56,7 @@ export const ScrollTimeline = () => {
         };
     }, []);
 
-    useMotionValueEvent(scrollYProgress, "change", (latest) => {
-        setScrollValue(latest);
-    });
-
-    // No longer using global pointerup to auto-clear, as we want "Sticky Reveal" on mobile
-    // and explicit dismissal via backdrop click.
-
-    const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
-
-    useEffect(() => {
-        if (typeof window === 'undefined') return;
-        const handleResize = () => setWindowWidth(window.innerWidth);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    const isMobile = windowWidth < 640;
-    const isTablet = windowWidth < 1024;
+    const { isMobile, isTablet } = useDevice();
 
     const ticks = Array.from({ length: 101 });
 
@@ -143,9 +126,8 @@ export const ScrollTimeline = () => {
                             isSection={isSection}
                             smoothedProgress={smoothedProgress}
                             mouseYProgress={mouseYProgress}
-                            scrollValue={scrollValue}
+                            scrollYProgress={scrollYProgress}
                             isRevealed={isRevealed}
-                            setIsRevealed={setIsRevealed}
                             isMobile={isMobile}
                             isTablet={isTablet}
                         />;
@@ -157,7 +139,7 @@ export const ScrollTimeline = () => {
 };
 
 // Extracted Sub-component with isRevealed control
-const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseYProgress, scrollValue, isRevealed, setIsRevealed, isMobile, isTablet }: any) => {
+const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseYProgress, scrollYProgress, isRevealed, isMobile, isTablet }: any) => {
 
     const distance = useTransform([smoothedProgress, mouseYProgress], ([scroll, mouse]: any) => {
         const scrollDist = Math.abs(tickProgress - (scroll as number));
@@ -192,7 +174,10 @@ const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseY
         [isMobile && !isRevealed ? -2 : isTablet && !isRevealed ? -6 : -12, 0]
     );
 
-    const isActive = Math.abs(tickProgress - scrollValue) < 0.0051;
+    // [!] Deriving active state via transform to avoid re-renders
+    const isActiveValue = useTransform(scrollYProgress, (scroll: any) => {
+        return Math.abs(tickProgress - (scroll as number)) < 0.0051;
+    });
 
     return (
         <div key={i} className="relative flex items-center justify-end w-full h-1 lg:h-1.5 group/tick-row">
@@ -209,34 +194,19 @@ const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseY
                 />
             )}
 
-            {/* Decimal Value - Desktop only */}
-            {isActive && !isSection && !isMobile && (
-                <motion.span
-                    initial={{ opacity: 0, x: -4 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="absolute right-14 lg:right-20 font-mono text-[11px] text-blue-600 font-bold tracking-tight pointer-events-none z-20"
-                >
-                    {scrollValue.toFixed(2)}
-                </motion.span>
+            {/* Decimal Value - Desktop only - Now reacts to MotionValue */}
+            {!isSection && !isMobile && (
+                <ScrollValueLabel tickProgress={tickProgress} scrollYProgress={scrollYProgress} />
             )}
 
             {/* Section Label - Desktop only */}
             {isSection && !isMobile && (
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className={`absolute right-14 lg:right-20 flex items-center transform cursor-pointer pointer-events-auto outline-none z-10
-            ${isActive
-                            ? `text-blue-600 font-bold translate-x-[-8px] lg:translate-x-[-12px] opacity-100`
-                            : `text-gray-500 hover:text-gray-900 font-medium translate-x-2 ${isRevealed ? 'opacity-100' : 'opacity-0'} group-hover/rail:opacity-100 group-hover/rail:translate-x-0`
-                        }`}
-                >
-                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] whitespace-nowrap">
-                        {section.label}
-                    </span>
-                </button>
+                <SectionLabel 
+                    section={section} 
+                    tickProgress={tickProgress} 
+                    scrollYProgress={scrollYProgress} 
+                    isRevealed={isRevealed} 
+                />
             )}
 
             {/* The Kinetic Tick */}
@@ -246,11 +216,75 @@ const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseY
                     opacity,
                     height: scaleY,
                     x,
-                    backgroundColor: useTransform(distance, [0, 0.1], [isActive ? '#2563eb' : '#374151', '#9ca3af']),
-                    boxShadow: useTransform(distance, [0, 0.05], [isActive ? '0 0 12px rgba(37,99,235,0.8)' : '0 0 0px rgba(0,0,0,0)', '0 0 0px rgba(0,0,0,0)'])
+                    backgroundColor: useTransform([distance, scrollYProgress], ([d, s]: any) => {
+                        const active = Math.abs(tickProgress - (s as number)) < 0.0051;
+                        if (active) return '#2563eb';
+                        return d < 0.1 ? '#374151' : '#9ca3af';
+                    }),
+                    boxShadow: useTransform([distance, scrollYProgress], ([d, s]: any) => {
+                        const active = Math.abs(tickProgress - (s as number)) < 0.0051;
+                        if (active && (d as number) < 0.05) return '0 0 12px rgba(37,99,235,0.8)';
+                        return '0 0 0px rgba(0,0,0,0)';
+                    })
                 }}
                 className="pointer-events-none rounded-full z-0"
             />
         </div>
     );
 };
+
+// Small isolated component for the scroll percentage to avoid parent re-renders
+const ScrollValueLabel = ({ tickProgress, scrollYProgress }: any) => {
+    const [localValue, setLocalValue] = useState<string | null>(null);
+
+    useMotionValueEvent(scrollYProgress, "change", (latest: any) => {
+        const value = latest as number;
+        const isActive = Math.abs(tickProgress - value) < 0.0051;
+        if (isActive) {
+            setLocalValue(value.toFixed(2));
+        } else if (localValue !== null) {
+            setLocalValue(null);
+        }
+    });
+
+    if (localValue === null) return null;
+
+    return (
+        <motion.span
+            initial={{ opacity: 0, x: -4 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="absolute right-14 lg:right-20 font-mono text-[11px] text-blue-600 font-bold tracking-tight pointer-events-none z-20"
+        >
+            {localValue}
+        </motion.span>
+    );
+};
+
+// Small isolated component for the section label
+const SectionLabel = ({ section, tickProgress, scrollYProgress, isRevealed }: any) => {
+    const [isActive, setIsActive] = useState(false);
+
+    useMotionValueEvent(scrollYProgress, "change", (latest: any) => {
+        const active = Math.abs(tickProgress - (latest as number)) < 0.0051;
+        if (active !== isActive) setIsActive(active);
+    });
+
+    return (
+        <button
+            onClick={(e) => {
+                e.stopPropagation();
+                document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className={`absolute right-14 lg:right-20 flex items-center transform cursor-pointer pointer-events-auto outline-none z-10 transition-all duration-200
+            ${isActive
+                    ? `text-blue-600 font-bold translate-x-[-8px] lg:translate-x-[-12px] opacity-100`
+                    : `text-gray-500 hover:text-gray-900 font-medium translate-x-2 ${isRevealed ? 'opacity-100' : 'opacity-0'} group-hover/rail:opacity-100 group-hover/rail:translate-x-0`
+                }`}
+        >
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] whitespace-nowrap">
+                {section.label}
+            </span>
+        </button>
+    );
+};
+

@@ -2,22 +2,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUp, Sparkles } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { CONTACT_INFO } from '../constants';
-import { DraggableSticker } from './DraggableSticker';
 import { antiFlickerStyle, blurOnlyVariants, viewportSettings } from './animations';
-
-// Hook to detect mobile viewport
-const useIsMobile = () => {
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
-
-    return isMobile;
-};
+import { useDevice } from './hooks/useDevice';
 
 export const Footer: React.FC = () => {
     // Fallback email if constant isn't found
@@ -26,7 +12,7 @@ export const Footer: React.FC = () => {
 
     const [showAlternate, setShowAlternate] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
-    const isMobile = useIsMobile();
+    const { isMobile } = useDevice();
 
     // Responsive widths - idle needs to fit "LET'S BUILD AND SHIP TOGETHER" + icon
     const idleWidth = isMobile ? 200 : 295;
@@ -147,6 +133,7 @@ export const Footer: React.FC = () => {
                                         type: "spring",
                                         stiffness: 300,
                                         damping: 15,
+                                        max: 360,
                                     },
                                     scale: {
                                         type: "spring",

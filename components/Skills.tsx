@@ -39,7 +39,7 @@ const TECH_ICON_URLS: Record<string, string> = {
     "Node.js": "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/2/nodejs-icon-alt-c9winwkuvxhsx1mkbcex8.png/nodejs-icon-alt-htav2s8jaxvvaonoj27yz.png?_a=DATAg1AAZAA0",
     "Python": "https://www.svgrepo.com/show/452091/python.svg",
     "React.js": "https://www.svgrepo.com/show/452092/react.svg",
-    "Next.js": "https://www.svgrepo.com/show/354113/nextjs-icon.svg",
+    "Next.js": "https://marcbruederlin.gallerycdn.vsassets.io/extensions/marcbruederlin/next-icons/0.1.0/1723747598319/Microsoft.VisualStudio.Services.Icons.Default",
     "Vue.js": "https://www.svgrepo.com/show/452130/vue.svg",
     "HTML/CSS": "https://www.svgrepo.com/show/452228/html-5.svg",
     "Markdown": "https://www.svgrepo.com/show/330890/markdown.svg",
@@ -112,21 +112,25 @@ export const Skills: React.FC = () => {
             </motion.h2>
 
             {/* Premium Wrapped Tray for Folders */}
-            <div className="
-                flex flex-wrap md:flex-nowrap items-start justify-center 
-                gap-x-8 gap-y-12 md:gap-x-12 
-                relative z-10 w-full mb-20 
-            ">
+            <motion.div 
+                variants={staggerContainerVariants}
+                className="
+                    flex flex-wrap md:flex-nowrap items-start justify-center 
+                    gap-x-8 gap-y-12 md:gap-x-12 
+                    relative z-10 w-full mb-20 
+                "
+            >
                 {SKILL_CATEGORIES.map((category, index) => (
                     <FolderIcon
                         key={index}
                         category={category}
                         index={index}
-                        anyExpanded={anyExpanded}
-                        setAnyExpanded={setAnyExpanded}
+                        anyExpanded={anyExpanded !== null}
+                        isOtherExpanded={anyExpanded !== null && anyExpanded !== index}
+                        setGlobalExpanded={(val) => setAnyExpanded(val ? index : null)}
                     />
                 ))}
-            </div>
+            </motion.div>
 
             <MacMiniSection />
         </motion.section>
@@ -136,26 +140,28 @@ export const Skills: React.FC = () => {
 interface FolderIconProps {
     category: SkillCategory;
     index: number;
-    anyExpanded: number | null;
-    setAnyExpanded: (val: number | null) => void;
+    anyExpanded: boolean;
+    isOtherExpanded: boolean;
+    setGlobalExpanded: (val: boolean) => void;
 }
 
-const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, anyExpanded, setAnyExpanded }) => {
-    const isExpanded = anyExpanded === index;
-    const isOtherExpanded = anyExpanded !== null && anyExpanded !== index;
+const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, anyExpanded, isOtherExpanded, setGlobalExpanded }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
 
     // Optimized event handlers
     const handleOpen = () => {
         if (typeof window !== 'undefined') {
             document.body.style.overflow = 'hidden';
-            setAnyExpanded(index);
+            setIsExpanded(true);
+            setGlobalExpanded(true);
         }
     };
 
     const handleClose = () => {
         if (typeof window !== 'undefined') {
             document.body.style.overflow = 'unset';
-            setAnyExpanded(null);
+            setIsExpanded(false);
+            setGlobalExpanded(false);
         }
     };
 
@@ -163,17 +169,22 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
         <>
             <motion.div 
                 layoutId={`folder-${index}`}
-                variants={staggerItemVariants}
                 onClick={handleOpen}
-                whileHover={{ scale: 1.03, y: -4 }}
+                whileHover={!anyExpanded ? { scale: 1.03, y: -4 } : {}}
                 transition={FOLDER_SPRING}
-                animate={{ 
-                    filter: isOtherExpanded ? 'blur(4px)' : 'blur(0px)',
-                    opacity: isOtherExpanded ? 0.4 : 1,
-                    scale: isOtherExpanded ? 0.95 : 1
-                }}
+                initial="hidden"
+                animate={isOtherExpanded ? { 
+                    filter: 'blur(8px)',
+                    opacity: 0.4,
+                    scale: 0.92,
+                    y: 0 
+                } : "visible"}
+                variants={staggerItemVariants}
                 className="flex flex-col items-center gap-5 cursor-pointer group shrink-0"
-                style={{ willChange: "transform, opacity, filter" }}
+                style={{ 
+                    willChange: "transform, opacity, filter",
+                    zIndex: isOtherExpanded ? 0 : 10
+                }}
             >
                 <div className={`
                     relative overflow-hidden
@@ -209,55 +220,29 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
                     ">
                         {/* Internal Rim Light */}
                         <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white to-transparent opacity-80" />
-                    <div className="grid grid-cols-2 gap-1.5 w-full h-full p-0.5">
-                        {/* 3 Main Icons (Top-Left, Top-Right, Bottom-Left) */}
-                        {[0, 1, 2].map((i) => {
-                            const skill = category.skills[i];
-                            const iconUrl = skill ? TECH_ICON_URLS[skill] : null;
-                            
-                            return (
-                                <motion.div 
-                                    key={i}
-                                    layoutId={`${category.title}-${skill}-icon-container`}
-                                    className="aspect-square w-full rounded-[10px] md:rounded-[12px] bg-linear-to-b from-gray-50 to-gray-200/50 border border-black/5 flex items-center justify-center overflow-hidden relative shadow-sm"
-                                    style={{ opacity: 1 }}
-                                >
-                                    {iconUrl ? (
-                                        <motion.img 
-                                            layoutId={`${category.title}-${skill}-icon`}
-                                            src={iconUrl} 
-                                            alt={skill} 
-                                            className={`object-contain ${
-                                                (skill === "REST API" || skill === "Blockchain") 
-                                                ? "w-full h-full scale-115" 
-                                                : "w-[90%] h-[90%]"
-                                            }`}
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full bg-gray-50/50" />
-                                    )}
-                                </motion.div>
-                            );
-                        })}
-
-                        {/* Mini Grid for Remaining Icons (Bottom-Right) - Individual Icons */}
-                        <div className="aspect-square w-full grid grid-cols-2 gap-1">
-                            {[3, 4, 5, 6].map((i) => {
+                        <div className="grid grid-cols-2 gap-1.5 w-full h-full p-0.5">
+                            {/* 3 Main Icons (Top-Left, Top-Right, Bottom-Left) */}
+                            {[0, 1, 2].map((i) => {
                                 const skill = category.skills[i];
                                 const iconUrl = skill ? TECH_ICON_URLS[skill] : null;
                                 
                                 return (
                                     <motion.div 
-                                        key={i} 
+                                        key={i}
                                         layoutId={`${category.title}-${skill}-icon-container`}
-                                        className="aspect-square w-full rounded-[4px] md:rounded-[5px] bg-linear-to-b from-gray-50 to-gray-200/50 border border-black/5 flex items-center justify-center shadow-xs overflow-hidden"
+                                        className="aspect-square w-full rounded-[10px] md:rounded-[12px] bg-linear-to-b from-gray-50 to-gray-200/50 border border-black/5 flex items-center justify-center overflow-hidden relative shadow-sm"
+                                        style={{ opacity: 1 }}
                                     >
                                         {iconUrl ? (
                                             <motion.img 
                                                 layoutId={`${category.title}-${skill}-icon`}
                                                 src={iconUrl} 
                                                 alt={skill} 
-                                                className="w-full h-full p-0.5 object-contain" 
+                                                className={`object-contain ${
+                                                    (skill === "REST API" || skill === "Blockchain") 
+                                                    ? "w-full h-full scale-115" 
+                                                    : "w-[90%] h-[90%]"
+                                                }`}
                                             />
                                         ) : (
                                             <div className="w-full h-full bg-gray-50/50" />
@@ -265,8 +250,34 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
                                     </motion.div>
                                 );
                             })}
+
+                            {/* Mini Grid for Remaining Icons (Bottom-Right) - Individual Icons */}
+                            <div className="aspect-square w-full grid grid-cols-2 gap-1">
+                                {[3, 4, 5, 6].map((i) => {
+                                    const skill = category.skills[i];
+                                    const iconUrl = skill ? TECH_ICON_URLS[skill] : null;
+                                    
+                                    return (
+                                        <motion.div 
+                                            key={i} 
+                                            layoutId={`${category.title}-${skill}-icon-container`}
+                                            className="aspect-square w-full rounded-[4px] md:rounded-[5px] bg-linear-to-b from-gray-50 to-gray-200/50 border border-black/5 flex items-center justify-center shadow-xs overflow-hidden"
+                                        >
+                                            {iconUrl ? (
+                                                <motion.img 
+                                                    layoutId={`${category.title}-${skill}-icon`}
+                                                    src={iconUrl} 
+                                                    alt={skill} 
+                                                    className="w-full h-full p-0.5 object-contain" 
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-gray-50/50" />
+                                            )}
+                                        </motion.div>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </div>
 
@@ -312,111 +323,93 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
                                 border border-white/80
                                 flex flex-col
                             ">
-                                            <div className="px-10 py-8 md:px-14 md:py-14 flex flex-col gap-6">
-                                                <div className="flex items-center justify-between">
-                                                    <motion.h3 
-                                                        layoutId={`title-${index}`}
-                                                        className="text-xl md:text-2xl font-black text-gray-900 tracking-tight"
-                                                        transition={FOLDER_SPRING}
-                                                    >
-                                                        {category.title}
-                                                    </motion.h3>
-                                                    <motion.button 
-                                                        initial={{ opacity: 0, scale: 0.8 }}
-                                                        animate={{ opacity: 1, scale: 1 }}
-                                                        exit={{ opacity: 0, scale: 0.8 }}
-                                                        onClick={handleClose}
-                                                        className="
-                                                            w-11 h-11 rounded-full 
-                                                            bg-linear-to-br from-[#FFFFFF] via-[#F8F9FA] to-[#E9ECEF]
-                                                            border border-white
-                                                shadow-[0_4px_10px_rgba(0,0,0,0.08),inset_0_2px_1px_rgba(255,255,255,1)]                                            flex items-center justify-center 
-                                                            text-gray-600 hover:text-gray-900 
-                                                            active:scale-95 active:shadow-inner
-                                                            relative z-50
-                                                        "
-                                                    >
-                                                        <X size={20} />
-                                                    </motion.button>
-                                                </div>
-    
-                                                {/* iOS Grid Layout - Compact Icons */}
-                                                <div className="grid grid-cols-3 gap-y-10 gap-x-6">
-                                                    {category.skills.map((skill, i) => {
-                                                        const iconUrl = TECH_ICON_URLS[skill];
-                                                        // Only use layout transition for the first 7 icons that appear in the folder preview
-                                                        const isTracked = i < 7;
-                                                        
-                                                        return (
-                                                            <motion.div 
-                                                                key={i}
-                                                                layoutId={isTracked ? `${category.title}-${skill}-icon-container` : undefined}
-                                                                initial={!isTracked ? { opacity: 0, scale: 0.8, filter: 'blur(8px)' } : false}
+                                <div className="px-10 py-8 md:px-14 md:py-14 flex flex-col gap-6">
+                                    <div className="flex items-center justify-center">
+                                        <motion.h3 
+                                            layoutId={`title-${index}`}
+                                            className="text-xl md:text-2xl font-black text-gray-900 tracking-tight"
+                                            transition={FOLDER_SPRING}
+                                        >
+                                            {category.title}
+                                        </motion.h3>
+                                    </div>
+
+                                    {/* iOS Grid Layout - Compact Icons */}
+                                    <div className="grid grid-cols-3 gap-y-10 gap-x-6">
+                                        {category.skills.map((skill, i) => {
+                                            const iconUrl = TECH_ICON_URLS[skill];
+                                            const isTracked = i < 7;
+                                            
+                                            return (
+                                                <motion.div 
+                                                    key={i}
+                                                    layoutId={isTracked ? `${category.title}-${skill}-icon-container` : undefined}
+                                                    initial={!isTracked ? { opacity: 0, scale: 0.8, filter: 'blur(8px)' } : false}
+                                                    animate={isTracked ? {
+                                                        opacity: 1,
+                                                        scale: [1, 1.1, 1],
+                                                        filter: ["blur(0px)", "blur(6px)", "blur(0px)"],
+                                                    } : { opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                                                    exit={isTracked ? {
+                                                        scale: [1, 1.1, 1],
+                                                        filter: ["blur(0px)", "blur(6px)", "blur(0px)"],
+                                                        transition: { duration: 0.4 }
+                                                    } : {}}
+                                                    transition={isTracked ? {
+                                                        ...FOLDER_SPRING,
+                                                        filter: { duration: 0.4, times: [0, 0.4, 1] },
+                                                        scale: { duration: 0.4, times: [0, 0.4, 1] }
+                                                    } : { ...FOLDER_SPRING, delay: 0.15 + (i * 0.03) }}
+                                                    className="flex flex-col items-center gap-2 group/app"
+                                                    style={{ willChange: "transform, filter" }}
+                                                >
+                                                    <div className="
+                                                        w-12 h-12 md:w-16 md:h-16
+                                                        rounded-full
+                                                        bg-linear-to-br from-white via-white to-gray-50
+                                                        border border-gray-100/30
+                                                        shadow-[0_8px_20px_-6px_rgba(0,0,0,0.08),0_4px_8px_-2px_rgba(0,0,0,0.04),inset_0_2px_3px_rgba(255,255,255,1),inset_0_-2px_3px_rgba(0,0,0,0.02)]
+                                                        flex items-center justify-center
+                                                        p-2 md:p-2.5
+                                                    ">
+                                                        {iconUrl ? (
+                                                            <motion.img 
+                                                                layoutId={isTracked ? `${category.title}-${skill}-icon` : undefined}
+                                                                src={iconUrl} 
+                                                                alt={skill} 
+                                                                className={`object-contain ${
+                                                                    (skill === "REST API" || skill === "Blockchain" || skill === "JavaScript")
+                                                                    ? "w-full h-full scale-125"
+                                                                    : "w-[85%] h-[85%] scale-110"
+                                                                }`}
                                                                 animate={isTracked ? {
-                                                                    opacity: 1,
-                                                                    scale: [1, 1.1, 1],
-                                                                    filter: ["blur(0px)", "blur(6px)", "blur(0px)"],
-                                                                } : { opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                                                                    filter: ["brightness(1)", "brightness(1.5)", "brightness(1)"],
+                                                                } : {}}
                                                                 exit={isTracked ? {
-                                                                    scale: [1, 1.1, 1],
-                                                                    filter: ["blur(0px)", "blur(6px)", "blur(0px)"],
+                                                                    filter: ["brightness(1)", "brightness(1.5)", "brightness(1)"],
                                                                     transition: { duration: 0.4 }
                                                                 } : {}}
-                                                                transition={isTracked ? {
-                                                                    ...FOLDER_SPRING,
-                                                                    filter: { duration: 0.4, times: [0, 0.4, 1] },
-                                                                    scale: { duration: 0.4, times: [0, 0.4, 1] }
-                                                                } : { ...FOLDER_SPRING, delay: 0.15 + (i * 0.03) }}
-                                                                className="flex flex-col items-center gap-2 group/app"
+                                                                transition={FOLDER_SPRING}
                                                                 style={{ willChange: "transform, filter" }}
-                                                            >
-                                                                <div className="
-                                                                    w-12 h-12 md:w-16 md:h-16
-                                                                    rounded-full
-                                                                    bg-linear-to-br from-white via-white to-gray-50
-                                                                    border border-gray-100/30
-                                                                    shadow-[0_8px_20px_-6px_rgba(0,0,0,0.08),0_4px_8px_-2px_rgba(0,0,0,0.04),inset_0_2px_3px_rgba(255,255,255,1),inset_0_-2px_3px_rgba(0,0,0,0.02)]
-                                                                    flex items-center justify-center
-                                                                    p-2 md:p-2.5
-                                                                ">
-                                                                    {iconUrl ? (
-                                                                        <motion.img 
-                                                                            layoutId={isTracked ? `${category.title}-${skill}-icon` : undefined}
-                                                                            src={iconUrl} 
-                                                                            alt={skill} 
-                                                                            className={`object-contain ${
-                                                                                (skill === "REST API" || skill === "Blockchain")
-                                                                                ? "w-full h-full scale-125"
-                                                                                : "w-[85%] h-[85%] scale-110"
-                                                                            }`}
-                                                                            animate={isTracked ? {
-                                                                                filter: ["brightness(1)", "brightness(1.5)", "brightness(1)"],
-                                                                            } : {}}
-                                                                            exit={isTracked ? {
-                                                                                filter: ["brightness(1)", "brightness(1.5)", "brightness(1)"],
-                                                                                transition: { duration: 0.4 }
-                                                                            } : {}}
-                                                                            transition={FOLDER_SPRING}
-                                                                            style={{ willChange: "transform, filter" }}
-                                                                        />
-                                                                    ) : (
-                                                                        <div className="w-2 h-2 rounded-full bg-gray-200" />
-                                                                    )}
-                                                                </div>
-                                                                <motion.span 
-                                                                    layoutId={isTracked ? `${category.title}-${skill}-text` : undefined}
-                                                                    initial={!isTracked ? { opacity: 0, y: 5 } : false}
-                                                                    animate={{ opacity: 1, y: 0 }}
-                                                                    transition={FOLDER_SPRING}
-                                                                    className="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-tighter text-center leading-tight"
-                                                                >
-                                                                    {skill}
-                                                                </motion.span>
-                                                            </motion.div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
+                                                            />
+                                                        ) : (
+                                                            <div className="w-2 h-2 rounded-full bg-gray-200" />
+                                                        )}
+                                                    </div>
+                                                    <motion.span 
+                                                        layoutId={isTracked ? `${category.title}-${skill}-text` : undefined}
+                                                        initial={!isTracked ? { opacity: 0, y: 5 } : false}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        transition={FOLDER_SPRING}
+                                                        className="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-tighter text-center leading-tight"
+                                                    >
+                                                        {skill}
+                                                    </motion.span>
+                                                </motion.div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
                             </div>
                         </motion.div>
                     </div>
@@ -440,15 +433,18 @@ const PhilosophySection: React.FC = () => {
                 Philosophy
             </motion.h2>
 
-            <div className="
-                relative
-                w-full
-                rounded-2xl md:rounded-[32px]
-                bg-transparent
-                border border-dashed border-gray-200/60
-                group
-                overflow-visible
-            ">
+            <motion.div
+                variants={popRevealVariants}
+                className="
+                    relative
+                    w-full
+                    rounded-2xl md:rounded-[32px]
+                    bg-transparent
+                    border border-dashed border-gray-200/60
+                    group
+                    overflow-visible
+                "
+            >
                 <div className="absolute -top-4 -left-4 z-20 p-2.5 bg-[#FAFAFA] rounded-full border border-dashed border-gray-300 shadow-sm">
                     <Quote size={20} className="text-gray-400 fill-gray-100 rotate-180" />
                 </div>
@@ -468,7 +464,7 @@ const PhilosophySection: React.FC = () => {
                         <div className="absolute inset-0 shadow-[inset_0_2px_15px_rgba(0,0,0,0.05)] pointer-events-none rounded-[inherit]" />
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </motion.div>
     );
 };

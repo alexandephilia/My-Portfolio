@@ -135,15 +135,6 @@ export default function App() {
 
     return (
         <>
-            <style>{`
-                html, body {
-                    scrollbar-width: none;
-                    -ms-overflow-style: none;
-                }
-                html::-webkit-scrollbar, body::-webkit-scrollbar {
-                    display: none;
-                }
-            `}</style>
             <div
                 className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans relative overflow-x-hidden"
                 style={{

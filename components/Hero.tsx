@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import {
     SiDocker,
@@ -6,19 +6,7 @@ import {
     SiTailwindcss
 } from 'react-icons/si';
 import { antiFlickerStyle } from './animations';
-
-const useIsDesktop = () => {
-    const [isDesktop, setIsDesktop] = useState(false);
-
-    useEffect(() => {
-        const check = () => setIsDesktop(window.innerWidth >= 768);
-        check();
-        window.addEventListener('resize', check);
-        return () => window.removeEventListener('resize', check);
-    }, []);
-
-    return isDesktop;
-};
+import { useDevice } from './hooks/useDevice';
 
 // Custom Vite icon with gradient
 const ViteIcon: React.FC<{ size?: number }> = ({ size = 24 }) => (
@@ -103,7 +91,7 @@ interface IconScatterProps {
 const IconScatter: React.FC<IconScatterProps> = ({ children, icons, externalOpen = false }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isTouched, setIsTouched] = useState(false);
-    const isDesktop = useIsDesktop();
+    const { isDesktop } = useDevice();
     const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     // Determine final open state
@@ -254,41 +242,99 @@ const RevealHighlight: React.FC<{
 );
 
 export const Hero: React.FC = () => {
-    const isDesktop = useIsDesktop();
+    const { isDesktop } = useDevice();
     const [revealSequence, setRevealSequence] = useState({ agnostic: false, adaptive: false });
 
+    // Pointer tracking for parallax grid
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    // Smooth transition for the parallax movement
+    const smoothX = useSpring(mouseX, { stiffness: 50, damping: 20 });
+    const smoothY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+
+    // Transform mouse position to subtle grid shifts (Opposition move)
+    const gridX = useTransform(smoothX, [0, 800], [15, -15]);
+    const gridY = useTransform(smoothY, [0, 600], [15, -15]);
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!isDesktop) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        mouseX.set(e.clientX - rect.left);
+        mouseY.set(e.clientY - rect.top);
+    };
+
+    // Optimize: Single sequential execution for reveal logic
     useEffect(() => {
-        let isMounted = true;
+        let active = true;
         
-        const runSequence = async () => {
-            // Initial delay wait for main text reveal
+        const trigger = async () => {
             await new Promise(r => setTimeout(r, 1200));
-            if (!isMounted) return;
-
-            // 1. Show Agnostic
-            setRevealSequence(prev => ({ ...prev, agnostic: true }));
+            if (!active) return;
+            setRevealSequence(s => ({ ...s, agnostic: true }));
+            
             await new Promise(r => setTimeout(r, 1200));
-            if (!isMounted) return;
-            setRevealSequence(prev => ({ ...prev, agnostic: false }));
-
-            // Gap
-            await new Promise(r => setTimeout(r, 200));
-            if (!isMounted) return;
-
-            // 2. Show Adaptive
-            setRevealSequence(prev => ({ ...prev, adaptive: true }));
+            if (!active) return;
+            setRevealSequence(s => ({ ...s, agnostic: false, adaptive: true }));
+            
             await new Promise(r => setTimeout(r, 1200));
-            if (!isMounted) return;
-            setRevealSequence(prev => ({ ...prev, adaptive: false }));
+            if (!active) return;
+            setRevealSequence(s => ({ ...s, adaptive: false }));
         };
 
-        runSequence();
-
-        return () => { isMounted = false; };
+        trigger();
+        return () => { active = false; };
     }, []);
 
     return (
-        <div className="p-6 md:p-10 border-b border-dashed border-gray-200 bg-[#FAFAFA]">
+        <div 
+            className="p-6 md:p-10 border-b border-dashed border-gray-200 bg-[#FAFAFA] relative overflow-hidden group/hero"
+            onMouseMove={handleMouseMove}
+        >
+            {/* Asymmetric Grid Layers */}
+            <div className="absolute -inset-x-[10%] -inset-y-[10%] pointer-events-none z-0">
+                {/* Base Grid - Constant Visibility */}
+                <motion.div 
+                    className="absolute inset-0 opacity-[0.15]"
+                    style={{ x: gridX, y: gridY }}
+                >
+                    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <pattern id="hero-grid-base" width="50" height="50" patternUnits="userSpaceOnUse">
+                                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(74,108,196,0.5)" strokeWidth="1" />
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#hero-grid-base)" />
+                    </svg>
+                </motion.div>
+
+                {/* Blue Ghost Trail Grid - Reactive to Pointer */}
+                <motion.div 
+                    className="absolute inset-0 opacity-80"
+                    style={{ 
+                        x: gridX, 
+                        y: gridY,
+                        maskImage: useTransform([smoothX, smoothY], ([x, y]: any) => 
+                            `radial-gradient(400px circle at ${x}px ${y}px, black 0%, transparent 65%)`
+                        ),
+                        WebkitMaskImage: useTransform([smoothX, smoothY], ([x, y]: any) => 
+                            `radial-gradient(400px circle at ${x}px ${y}px, black 0%, transparent 65%)`
+                        ),
+                    }}
+                >
+                    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <pattern id="hero-grid-ghost" width="50" height="50" patternUnits="userSpaceOnUse">
+                                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(37,99,235,0.2)" strokeWidth="2" />
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#hero-grid-ghost)" />
+                    </svg>
+                </motion.div>
+            </div>
+
+            {/* Content Layer - ensuring it stays above background */}
+            <div className="relative z-10 pointer-events-none md:pointer-events-auto">
             <motion.div
                 initial={{ opacity: 0, filter: 'blur(14px)', y: 10 }}
                 animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
@@ -355,6 +401,7 @@ export const Hero: React.FC = () => {
                     </p>
                 </div>
             </motion.div>
+            </div>
         </div>
     );
 };

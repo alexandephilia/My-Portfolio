@@ -225,7 +225,7 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
             "Netlify",
             "Puppeteer",
             "AWS",
-            "Nginx"
+            "Unit Testing"
         ]
     },
     {

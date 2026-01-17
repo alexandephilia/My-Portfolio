@@ -76,7 +76,7 @@ const TECH_ICON_URLS: Record<string, string> = {
     "GitHub": "https://cdn.worldvectorlogo.com/logos/github-icon-2.svg",
     "Cloudflare": "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/cloudflare-icon.png",
     "AWS": "https://www.svgrepo.com/show/376356/aws.svg",
-    "Nginx": "https://www.svgrepo.com/show/373924/nginx.svg",
+    "Unit Testing": "https://external-preview.redd.it/V77U-n3OuvNr2I14hRYUcyXBJ1C9dEMV3HUt3dAIViw.png?auto=webp&s=20d05cf394bd203741ddfdffa904af94fdd90544",
 
     // Tools
     "Cursor IDE": "https://custom.typingmind.com/assets/models/cursor.png", // Add your URL

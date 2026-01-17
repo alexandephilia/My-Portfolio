@@ -180,7 +180,7 @@ export const MusicDock: React.FC = () => {
                         <motion.div
                             initial={{ width: 64 }}
                             animate={{
-                                width: isMinimized ? 64 : 'min(380px, calc(100vw - 48px))',
+                                width: isMinimized ? 64 : 'min(310px, calc(100vw - 64px))',
                             }}
                             transition={{
                                 type: 'spring',
@@ -309,7 +309,7 @@ export const MusicDock: React.FC = () => {
                                             >
                                                 <div className="flex flex-col">
                                                     <div
-                                                        className="overflow-hidden whitespace-nowrap relative h-4 flex items-center w-[100px]"
+                                                        className="overflow-hidden whitespace-nowrap relative h-4 flex items-center w-[85px]"
                                                         style={shouldScroll ? {
                                                             maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
                                                             WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'

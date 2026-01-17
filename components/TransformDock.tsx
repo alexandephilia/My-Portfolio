@@ -363,7 +363,7 @@ export const TransformDock: React.FC = () => {
                                 key={`expanded-${activeMode}`}
                                 {...blurReveal}
                                 transition={contentTransition}
-                                className="w-[340px] relative overscroll-contain"
+                                className="w-[min(310px,calc(100vw-64px))] relative overscroll-contain"
                                 layout="position"
                                 onTouchMove={(e) => e.stopPropagation()}
                             >

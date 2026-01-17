@@ -101,7 +101,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ audioState }) => {
                         p-[1.5px] 
                         bg-linear-to-b from-white to-gray-200
                         rounded-[14px]
-                        shadow-[0_10px_20px_-5px_rgba(0,0,0,0.35),0_6px_8px_-4px_rgba(0,0,0,0.2)] 
+                        shadow-[0_5px_10px_-5px_rgba(0,0,0,0.35),0_6px_8px_-4px_rgba(0,0,0,0.2)] 
                         transition-transform duration-300
                         overflow-hidden
                         ${isPlaying ? 'scale-[1.05]' : 'scale-100'}

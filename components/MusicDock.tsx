@@ -203,77 +203,80 @@ export const MusicDock: React.FC = () => {
                         >
                             <div className="flex items-center p-1">
                                 {/* Album Art - draggable area when minimized */}
-                                <div className="relative flex-shrink-0">
-                                    <div
-                                        className={`
-                                            w-14 h-14
-                                            bg-gray-900
-                                            flex items-center justify-center
-                                            shadow-lg
-                                            overflow-hidden
-                                            border-[3px] border-white/20
-                                            ring-1 ring-black/10
-                                            rounded-[14px]
-                                            transition-transform duration-300
-                                            ${isPlaying && !isMinimized ? 'scale-[1.02]' : 'scale-100'}
-                                        `}
-                                    >
-                                        <img
-                                            src={currentSong.coverUrl}
-                                            className={`w-full h-full object-cover transition-transform duration-1000 pointer-events-none select-none ${isPlaying ? 'scale-110' : 'scale-100'}`}
-                                            alt={currentSong.title}
-                                            draggable={false}
-                                        />
-
-                                        {/* Shiny glossy overlay */}
+                                <div className="relative shrink-0">
+                                    {/* Gradient Frame Wrapper */}
+                                    <div className="
+                                        relative
+                                        p-[1.5px] 
+                                        bg-linear-to-b from-white to-gray-200
+                                        rounded-[14px]
+                                        shadow-[0_12px_30px_-6px_rgba(0,0,0,0.4),0_8px_16px_-8px_rgba(0,0,0,0.3)]
+                                        transition-all duration-500
+                                        overflow-hidden
+                                        ${isPlaying && !isMinimized ? 'scale-[1.05]' : 'scale-100'}
+                                    ">
+                                        {/* Floating Album Art Container */}
                                         <div
-                                            className="absolute inset-0 pointer-events-none"
-                                            style={{
-                                                background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 30%, transparent 50%, rgba(255,255,255,0.05) 80%, rgba(255,255,255,0.15) 100%)',
-                                            }}
-                                        />
+                                            className="
+                                                w-14 h-14
+                                                flex items-center justify-center
+                                                overflow-hidden
+                                                rounded-[12.5px]
+                                                relative
+                                            "
+                                        >
+                                            <img
+                                                src={currentSong.coverUrl}
+                                                className="w-full h-full object-cover pointer-events-none select-none"
+                                                alt={currentSong.title}
+                                                draggable={false}
+                                            />
 
-                                        {/* Playing Indicator - Only shown when minimized to avoid cluttering expanded view */}
-                                        <AnimatePresence>
-                                            {isPlaying && isMinimized && (
-                                                <motion.div
-                                                    initial={{ opacity: 0 }}
-                                                    animate={{ opacity: 1 }}
-                                                    exit={{ opacity: 0 }}
-                                                    className="absolute bottom-1 right-1 flex items-center gap-0.5 h-2.5 px-1 rounded-full bg-black/40 backdrop-blur-md pointer-events-none"
-                                                >
-                                                    {[...Array(3)].map((_, i) => (
-                                                        <motion.div
-                                                            key={i}
-                                                            animate={{ height: [2, 8, 2] }}
-                                                            transition={{ repeat: Infinity, duration: 0.5 + (i * 0.1) }}
-                                                            className="w-0.5 bg-white/80 rounded-full"
-                                                        />
-                                                    ))}
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
+                                            {/* Subtle depth mask */}
+                                            <div className="absolute inset-0 bg-black/5 pointer-events-none" />
+
+                                            {/* Playing Indicator */}
+                                            <AnimatePresence>
+                                                {isPlaying && isMinimized && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
+                                                        exit={{ opacity: 0 }}
+                                                        className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 h-2.5 px-1.5 rounded-full bg-black/40 backdrop-blur-md pointer-events-none ring-1 ring-white/10"
+                                                    >
+                                                        {[...Array(3)].map((_, i) => (
+                                                            <motion.div
+                                                                key={i}
+                                                                animate={{ height: [2, 7, 2] }}
+                                                                transition={{ repeat: Infinity, duration: 0.5 + (i * 0.1) }}
+                                                                className="w-0.5 bg-white/90 rounded-full"
+                                                            />
+                                                        ))}
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+
+                                        {/* Play/Pause button - Moved inside the rounded frame for perfect clipping */}
+                                        {isMinimized && (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    togglePlay();
+                                                }}
+                                                onPointerDown={(e) => e.stopPropagation()}
+                                                className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/40 active:bg-black/50 backdrop-blur-[1px] transition-colors duration-150"
+                                            >
+                                                {isPlaying ? (
+                                                    <Pause size={20} fill="white" className="text-white drop-shadow-md" />
+                                                ) : (
+                                                    <Play size={20} fill="white" className="text-white ml-0.5 drop-shadow-md" />
+                                                )}
+                                            </button>
+                                        )}
                                     </div>
 
-                                    {/* Play/Pause button - only when minimized, positioned to not block drag */}
-                                    {isMinimized && (
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                togglePlay();
-                                            }}
-                                            onPointerDown={(e) => e.stopPropagation()}
-                                            className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/40 active:bg-black/50 backdrop-blur-[1px] transition-colors duration-150 rounded-[14px]"
-                                        >
-                                            {isPlaying ? (
-                                                <Pause size={20} fill="white" className="text-white drop-shadow-md" />
-                                            ) : (
-                                                <Play size={20} fill="white" className="text-white ml-0.5 drop-shadow-md" />
-                                            )}
-                                        </button>
-                                    )}
-
-                                    {/* Drag indicator when minimized */}
+                                    {/* Drag indicator when minimized - remains outside for separate opacity/UX */}
                                     {isMinimized && (
                                         <div className="absolute -left-1 top-1/2 -translate-y-1/2 opacity-30">
                                             <GripVertical size={10} className="text-gray-600" />

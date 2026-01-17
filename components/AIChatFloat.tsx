@@ -1,4 +1,4 @@
-import { LucideIcon, MessageCircle, Music, Send, ChevronsRight } from 'lucide-react';
+import { LucideIcon, BotMessageSquare, Music, Send, ChevronsRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { DotMatrixVisualizer } from './MusicPlayer';
@@ -74,7 +74,7 @@ export const AIChatFloat: React.FC<AIChatFloatProps> = React.memo(({ activeMode,
 
     const dockItems = [
         { id: 'music' as const, icon: Music, label: 'Music' },
-        { id: 'chat' as const, icon: MessageCircle, label: 'AI Chat' },
+        { id: 'chat' as const, icon: BotMessageSquare, label: 'AI Chat' },
     ];
 
     // Cycle batches of 3 every 5 seconds

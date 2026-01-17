@@ -1,4 +1,4 @@
-import { GripVertical, MessageCircle, Music, X } from 'lucide-react';
+import { GripVertical, BotMessageSquare, Music, X } from 'lucide-react';
 import { AnimatePresence, LayoutGroup, motion, PanInfo, useDragControls } from 'motion/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { SONGS } from '../constants';
@@ -163,7 +163,7 @@ export const TransformDock: React.FC = () => {
 
     const dockItems = [
         { id: 'music' as DockMode, icon: Music, label: 'Music' },
-        { id: 'chat' as DockMode, icon: MessageCircle, label: 'AI Chat' },
+        { id: 'chat' as DockMode, icon: BotMessageSquare, label: 'AI Chat' },
     ];
 
     const handleExpand = (mode: DockMode) => {

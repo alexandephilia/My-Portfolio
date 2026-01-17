@@ -95,28 +95,31 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ audioState }) => {
     return (
         <div className="p-3">
             <div className="flex items-center gap-4">
-                {/* Album Art */}
-                <div className="relative flex-shrink-0">
+                <div className="relative shrink-0">
+                    {/* Gradient Frame Wrapper */}
                     <div className={`
-                        w-12 h-12 bg-gray-900 rounded-xl
-                        flex items-center justify-center
-                        shadow-lg overflow-hidden
-                        border border-blue-500/10 ring-1 ring-blue-900/5
+                        p-[1.5px] 
+                        bg-linear-to-b from-white to-gray-200
+                        rounded-[14px]
+                        shadow-[0_10px_20px_-5px_rgba(0,0,0,0.35),0_6px_8px_-4px_rgba(0,0,0,0.2)] 
                         transition-transform duration-300
+                        overflow-hidden
                         ${isPlaying ? 'scale-[1.05]' : 'scale-100'}
                     `}>
-                        <img
-                            src={currentSong.coverUrl}
-                            className={`w-full h-full object-cover transition-transform duration-1000 pointer-events-none select-none ${isPlaying ? 'scale-110' : 'scale-100'}`}
-                            alt={currentSong.title}
-                            draggable={false}
-                        />
-                        <div
-                            className="absolute inset-0 pointer-events-none"
-                            style={{
-                                background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.05) 40%, transparent 60%, rgba(255,255,255,0.1) 100%)',
-                            }}
-                        />
+                        <div className="
+                            w-10 h-10 rounded-[12.5px]
+                            flex items-center justify-center
+                            overflow-hidden
+                        ">
+                            <img
+                                src={currentSong.coverUrl}
+                                className={`w-full h-full object-cover transition-transform duration-1000 pointer-events-none select-none ${isPlaying ? 'scale-110' : 'scale-100'}`}
+                                alt={currentSong.title}
+                                draggable={false}
+                            />
+                            {/* Subtle depth mask */}
+                            <div className="absolute inset-0 bg-black/5 pointer-events-none" />
+                        </div>
                     </div>
                 </div>
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform, useVelocity, MotionValue } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'motion/react';
+import { useEffect, useState } from 'react';
 import { useDevice } from './hooks/useDevice';
 
 const SECTIONS_CONFIG = [
@@ -18,11 +18,10 @@ export const ScrollTimeline = () => {
     const [isRevealed, setIsRevealed] = useState(false);
     const mouseYProgress = useMotionValue(-1);
 
-    // Smooth spring for the indicator move (Physics Source)
-    // Damping 25: Adds notable overshoot/bounce to the position itself
+    // Smooth spring for the indicator move
     const smoothedProgress = useSpring(scrollYProgress, {
-        damping: 22,
-        stiffness: 90,
+        damping: 30,
+        stiffness: 200,
         restDelta: 0.001
     });
 
@@ -108,15 +107,9 @@ export const ScrollTimeline = () => {
                         mouseYProgress.set(-1);
                     }}
                 >
-                    {/* GLOBAL FLOATING INDICATOR */}
-                    <FloatingScrollIndicator
-                        progressValues={smoothedProgress} // Using SPRING physics
-                        sectionOffsets={sectionOffsets}
-                        isMobile={isMobile}
-                    />
-
                     {ticks.map((_, i) => {
                         const tickProgress = i / 100;
+                        // Surgical fix: Map section to the single closest tick to prevent duplicates
                         const section = SECTIONS_CONFIG.find(s => {
                             const offset = sectionOffsets[s.id];
                             if (offset === undefined) return false;
@@ -145,88 +138,7 @@ export const ScrollTimeline = () => {
     );
 };
 
-// --- Components ---
-
-// 1. Floating Scroll Indicator (ULTRA-ELASTIC JELLY)
-// - Uses useVelocity to distort text based on speed
-const FloatingScrollIndicator = ({ progressValues, sectionOffsets, isMobile }: any) => {
-    if (isMobile) return null;
-
-    const yPercent = useTransform(progressValues, [0, 1], ["0%", "100%"]);
-    
-    // 1. Calculate Velocity
-    const velocity = useVelocity(progressValues);
-    
-    // 2. High-Oscillation Spring for "Wobble" Effect
-    // OVERDRIVE: Lower damping (7) + High stiffness (220) = High energy "ringing" oscillation
-    const smoothVelocity = useSpring(velocity, { 
-        damping: 7, 
-        stiffness: 220,
-        mass: 0.5
-    });
-
-    // 3. Deformations (High G-Force Simulation)
-    // Tamed Skew: Keeping text characters appearing "normal" (very subtle tilt)
-    const skewY = useTransform(smoothVelocity, [-3, 3], [-6, 6]); 
-    
-    // Extreme Stretch (ScaleY) and Squash (ScaleX)
-    const scaleY = useTransform(smoothVelocity, (v) => 1 + Math.abs(v as number) * 1);
-    const scaleX = useTransform(smoothVelocity, (v) => 1 / (1 + Math.abs(v as number) * 1.6));
-    
-    // Rotation: The primary source of the "Wavy" pull
-    const rotate = useTransform(smoothVelocity, [-3, 3], [-32, 32]); 
-    
-    // High-Intensity Lag
-    const yLag = useTransform(smoothVelocity, [-3, 3], [22, -22]);
-    const yCombined = useTransform(yLag, (lag) => `calc(-50% + ${lag}px)`);
-
-    const numberRef = useRef<HTMLSpanElement>(null);
-
-    useMotionValueEvent(progressValues, "change", (latest) => {
-        if (numberRef.current) {
-            numberRef.current.innerText = (latest as number).toFixed(2);
-        }
-    });
-
-    const opacity = useTransform(progressValues, (current: number) => {
-        let minDist = 1;
-        const offsets = Object.values(sectionOffsets) as number[];
-        for (let i = 0; i < offsets.length; i++) {
-            const dist = Math.abs(current - offsets[i]);
-            if (dist < minDist) minDist = dist;
-        }
-        if (minDist < 0.02) return 0;
-        if (minDist < 0.05) return (minDist - 0.02) / 0.03;
-        return 1;
-    });
-
-    return (
-        <motion.div
-            style={{ 
-                top: yPercent, 
-                // Removed marginTop: '-50%' (CSS margin-top percent is relative to width, which was WRONG)
-                // Use y transform instead for proper centering
-                y: yCombined,
-                opacity,
-                skewY, 
-                scaleY, 
-                scaleX,
-                rotate,
-            }}
-            className="absolute right-8 lg:right-12 pointer-events-none z-20 flex items-center justify-end pr-3 origin-right"
-        >
-            <span
-                ref={numberRef}
-                className="font-mono text-[11px] text-blue-600 font-bold tracking-tight bg-transparent block"
-            >
-                0.00
-            </span>
-        </motion.div>
-    );
-};
-
-
-// 2. Tick Row
+// Extracted Sub-component with isRevealed control
 const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseYProgress, scrollYProgress, isRevealed, isMobile, isTablet }: any) => {
 
     const distance = useTransform([smoothedProgress, mouseYProgress], ([scroll, mouse]: any) => {
@@ -235,7 +147,10 @@ const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseY
         return Math.min(scrollDist, mouseDist);
     });
 
-    const width = useTransform(distance, [0, 0.05, 0.15],
+    // Transform distance into visual properties (SOFT FADE-OUT WAVE)
+    const width = useTransform(
+        distance,
+        [0, 0.05, 0.15],
         !isRevealed
             ? isMobile
                 ? [isSection ? 12 : 6, isSection ? 8 : 4, isSection ? 6 : 2]
@@ -245,36 +160,56 @@ const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseY
             : [isSection ? 42 : 32, isSection ? 32 : 16, isSection ? 28 : 12]
     );
 
-    const opacity = useTransform(distance, [0, 0.05, 0.12, 0.2],
+    const opacity = useTransform(
+        distance,
+        [0, 0.05, 0.12, 0.2],
         [isSection ? 1 : 0.85, isSection ? 0.9 : 0.7, isSection ? 0.6 : 0.3, isSection ? 0.4 : 0.15]
     );
 
     const scaleY = useTransform(distance, [0, 0.08], [isSection ? 2 : 1, 1]);
-    const x = useTransform(distance, [0, 0.15],
-        [isMobile && !isRevealed ? -2 : isTablet && !isRevealed ? -6 : -4, 0]
+    // Translation X - very subtle on mobile unless revealed
+    const x = useTransform(
+        distance,
+        [0, 0.15],
+        [isMobile && !isRevealed ? -2 : isTablet && !isRevealed ? -6 : -12, 0]
     );
 
+    // [!] Deriving active state via transform to avoid re-renders
+    const isActiveValue = useTransform(scrollYProgress, (scroll: any) => {
+        return Math.abs(tickProgress - (scroll as number)) < 0.0051;
+    });
+
     return (
-        <div className="relative flex items-center justify-end w-full h-1 lg:h-1.5 group/tick-row">
+        <div key={i} className="relative flex items-center justify-end w-full h-1 lg:h-1.5 group/tick-row">
+            {/* Click Interaction Area - Desktop only */}
             {!isMobile && (
                 <div className="absolute inset-y-[-4px] right-0 w-12 lg:w-24 pointer-events-auto cursor-pointer z-30"
                     onClick={(e) => {
                         e.stopPropagation();
-                        // Smooth scroll
                         const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-                        if (scrollHeight > 0) window.scrollTo({ top: tickProgress * scrollHeight, behavior: 'smooth' });
+                        if (scrollHeight > 0) {
+                            window.scrollTo({ top: tickProgress * scrollHeight, behavior: 'smooth' });
+                        }
                     }}
                 />
             )}
 
+            {/* Decimal Value - Desktop only - Now reacts to MotionValue */}
+            {!isSection && !isMobile && (
+                <ScrollValueLabel tickProgress={tickProgress} scrollYProgress={scrollYProgress} />
+            )}
+
+            {/* Section Label - Desktop only */}
             {isSection && !isMobile && (
-                <SectionLabel
-                    section={section}
-                    distance={distance}
-                    isRevealed={isRevealed}
+                <SectionLabel 
+                    section={section} 
+                    tickProgress={tickProgress} 
+                    scrollYProgress={scrollYProgress} 
+                    isRevealed={isRevealed} 
                 />
             )}
 
+            {/* The Kinetic Tick */}
             <motion.div
                 style={{
                     width,
@@ -298,36 +233,58 @@ const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseY
     );
 };
 
-// 3. Section Label (WAVY PHYSICS)
-const SectionLabel = ({ section, distance, isRevealed }: { section: any, distance: MotionValue<number>, isRevealed: boolean }) => {
-    const revealedMV = useMotionValue(isRevealed ? 1 : 0);
+// Small isolated component for the scroll percentage to avoid parent re-renders
+const ScrollValueLabel = ({ tickProgress, scrollYProgress }: any) => {
+    const [localValue, setLocalValue] = useState<string | null>(null);
 
-    useEffect(() => {
-        revealedMV.set(isRevealed ? 1 : 0);
-    }, [isRevealed, revealedMV]);
+    useMotionValueEvent(scrollYProgress, "change", (latest: any) => {
+        const value = latest as number;
+        const isActive = Math.abs(tickProgress - value) < 0.0051;
+        if (isActive) {
+            setLocalValue(value.toFixed(2));
+        } else if (localValue !== null) {
+            setLocalValue(null);
+        }
+    });
 
-    const x = useTransform(distance, [0, 0.05, 0.25], [-35, -15, 0]);
-    const scale = useTransform(distance, [0, 0.05], [1.2, 1]);
-    const color = useTransform(distance, (d: number) => d < 0.02 ? '#2563eb' : '#6b7280');
-    const weight = useTransform(distance, (d: number) => d < 0.02 ? 700 : 500);
+    if (localValue === null) return null;
 
-    const opacity = useTransform([distance, revealedMV], ([d, r]) => {
-        if ((r as number) > 0.5) return 1;
-        return (d as number) < 0.03 ? 1 : 0;
+    return (
+        <motion.span
+            initial={{ opacity: 0, x: -4 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="absolute right-14 lg:right-20 font-mono text-[11px] text-blue-600 font-bold tracking-tight pointer-events-none z-20"
+        >
+            {localValue}
+        </motion.span>
+    );
+};
+
+// Small isolated component for the section label
+const SectionLabel = ({ section, tickProgress, scrollYProgress, isRevealed }: any) => {
+    const [isActive, setIsActive] = useState(false);
+
+    useMotionValueEvent(scrollYProgress, "change", (latest: any) => {
+        const active = Math.abs(tickProgress - (latest as number)) < 0.0051;
+        if (active !== isActive) setIsActive(active);
     });
 
     return (
-        <motion.button
-            style={{ x, scale, opacity, color, fontWeight: weight }}
+        <button
             onClick={(e) => {
                 e.stopPropagation();
                 document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="absolute right-14 lg:right-20 flex items-center justify-end transform cursor-pointer pointer-events-auto outline-none z-10 origin-right transition-colors"
+            className={`absolute right-14 lg:right-20 flex items-center transform cursor-pointer pointer-events-auto outline-none z-10 transition-all duration-200
+            ${isActive
+                    ? `text-blue-600 font-bold translate-x-[-8px] lg:translate-x-[-12px] opacity-100`
+                    : `text-gray-500 hover:text-gray-900 font-medium translate-x-2 ${isRevealed ? 'opacity-100' : 'opacity-0'} group-hover/rail:opacity-100 group-hover/rail:translate-x-0`
+                }`}
         >
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] whitespace-nowrap">
                 {section.label}
             </span>
-        </motion.button>
+        </button>
     );
 };
+

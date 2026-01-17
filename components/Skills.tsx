@@ -74,7 +74,7 @@ const TECH_ICON_URLS: Record<string, string> = {
     "Netlify": "https://www.svgrepo.com/show/354110/netlify.svg",
     "Puppeteer": "https://www.svgrepo.com/show/354228/puppeteer.svg",
     "GitHub": "https://cdn.worldvectorlogo.com/logos/github-icon-2.svg",
-    "Cloudflare": "https://www.svgrepo.com/show/353564/cloudflare.svg",
+    "Cloudflare": "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/cloudflare-icon.png",
     "AWS": "https://www.svgrepo.com/show/376356/aws.svg",
     "Nginx": "https://www.svgrepo.com/show/373924/nginx.svg",
 
@@ -279,7 +279,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                                                     layoutId={`${category.title}-${skill}-icon`}
                                                     src={iconUrl}
                                                     alt={skill}
-                                                    className="w-full h-full p-0.5 object-contain"
+                                                    className="w-[90%] h-[90%] object-contain"
                                                 />
                                             ) : (
                                                 <div className="w-full h-full bg-gray-50/50" />

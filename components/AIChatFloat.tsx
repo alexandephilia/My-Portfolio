@@ -18,11 +18,11 @@ interface AIChatFloatProps {
 }
 
 const STARTER_PROMPTS = [
-    { label: 'About Alex', prompt: 'Tell me about Alex?' },
-    { label: 'Experience', prompt: "What's Alex's experience?" },
-    { label: 'Skills', prompt: "What are Alex's main skills?" },
-    { label: 'Technical', prompt: "How many years of combined experience does Alex have?" },
-    { label: 'Contact', prompt: "How can I reach Alex?" },
+    { label: 'About Alex', prompt: 'Tell me about this guy?' },
+    { label: 'Experience', prompt: "What's his experience?" },
+    { label: 'Skills', prompt: "What are his main skills?" },
+    { label: 'Technical', prompt: "How many years of combined experience does he have?" },
+    { label: 'Contact', prompt: "How can I reach him?" },
     { label: 'Philosophy', prompt: "What is his coding philosophy?" },
 ];
 

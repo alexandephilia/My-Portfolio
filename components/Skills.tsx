@@ -1,27 +1,18 @@
-import { Code2, Database, Layers, Quote, Rocket, Wrench } from 'lucide-react';
+import { Code2, Database, Layers, Rocket, Wrench } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import React, { useState } from 'react';
+import React, { lazy, Suspense, memo, useState, useCallback, useMemo } from 'react';
 import { SKILL_CATEGORIES } from '../constants';
 import { SkillCategory } from '../types';
 import {
     antiFlickerStyle,
-    dailyDriverContentVariants,
-    dailyDriverPillsVariants,
-    popRevealVariants,
     sectionHeaderVariants,
     staggerContainerVariants,
     staggerItemVariants
 } from './animations';
-import ProgressiveText from './ProgressiveText';
 
-// Mapping categories to their hero icons
-const CATEGORY_ICONS: Record<string, any> = {
-    "Engineering": Code2,
-    "Frontend": Layers,
-    "Backend": Database,
-    "Deployment": Rocket,
-    "Tools": Wrench
-};
+// Lazy load heavy sections - code splitting for better performance
+const PhilosophySection = lazy(() => import('./SkillsPhilosophySection'));
+const MacMiniSection = lazy(() => import('./SkillsMacMiniSection'));
 
 // Premium shared transition config
 const FOLDER_SPRING = {
@@ -31,8 +22,47 @@ const FOLDER_SPRING = {
     mass: 1
 };
 
-// Mapping specific skills to image URLs (easy to customize)
-// Add your own SVG URLs or local paths here
+// Mobile-optimized transition - simpler and faster
+const MOBILE_SPRING = {
+    type: "spring" as const,
+    damping: 25,
+    stiffness: 300,
+    mass: 0.8
+};
+
+// Hook to detect mobile device and prefer reduced motion
+const useMobileOptimizations = () => {
+    const [isMobile, setIsMobile] = useState(false);
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+    React.useEffect(() => {
+        const checkMobile = () => {
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+        };
+
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        setPrefersReducedMotion(mediaQuery.matches);
+
+        // Listen for media query changes
+        const mediaQueryListener = (e: MediaQueryListEvent) => {
+            setPrefersReducedMotion(e.matches);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        mediaQuery.addEventListener('change', mediaQueryListener);
+
+        return () => {
+            window.removeEventListener('resize', checkMobile);
+            mediaQuery.removeEventListener('change', mediaQueryListener);
+        };
+    }, []);
+
+    return { isMobile, prefersReducedMotion };
+};
+
+// Memoized icon URLs - prevents recreation on every render
 const TECH_ICON_URLS: Record<string, string> = {
     // Engineering
     "JavaScript": "https://static.vecteezy.com/system/resources/thumbnails/048/332/149/small/js-icon-transparent-background-free-png.png",
@@ -61,11 +91,11 @@ const TECH_ICON_URLS: Record<string, string> = {
     "Blockchain": "https://png.pngtree.com/png-vector/20250324/ourmid/pngtree-blockchain-web3-logo-vector-png-image_15850717.png",
     "Prisma": "https://www.svgrepo.com/show/354210/prisma.svg",
     "REST API": "https://www.opc-router.de/wp-content/uploads/2020/05/REST_socialmedia.jpg",
-    "WebSocket": "https://www.outsystems.com/Forge_BL/rest/ComponentThumbnail/GetURL_ComponentThumbnail?ProjectImageId=17523", // Add your URL
+    "WebSocket": "https://www.outsystems.com/Forge_BL/rest/ComponentThumbnail/GetURL_ComponentThumbnail?ProjectImageId=17523",
     "MongoDB": "https://www.svgrepo.com/show/373845/mongo.svg",
     "Supabase": "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/4/supabase-icon-kpjasdqlnu8exakst6f44r.png/supabase-icon-5uqgeeqeknngv9las8zeef.png?_a=DATAg1AAZAA0",
     "Redis": "https://www.svgrepo.com/show/354272/redis.svg",
-    "Railway": "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/railway-infrastructure-platform-icon.png", // Add your URL
+    "Railway": "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/railway-infrastructure-platform-icon.png",
 
     // Deployment
     "Docker": "https://www.svgrepo.com/show/373553/docker.svg",
@@ -79,31 +109,77 @@ const TECH_ICON_URLS: Record<string, string> = {
     "Nginx": "https://www.svgrepo.com/show/373924/nginx.svg",
 
     // Tools
-    "Cursor IDE": "https://custom.typingmind.com/assets/models/cursor.png", // Add your URL
-    "Windsurf": "https://exafunction.github.io/public/brand/windsurf-black-symbol.png", // Add your URL
-    "Claude Code": "https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/claude-color.png", // Add your URL
+    "Cursor IDE": "https://custom.typingmind.com/assets/models/cursor.png",
+    "Windsurf": "https://exafunction.github.io/public/brand/windsurf-black-symbol.png",
+    "Claude Code": "https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/claude-color.png",
     "Bun": "https://icon.icepanel.io/Technology/svg/Bun.svg",
     "npm/Yarn": "https://www.svgrepo.com/show/452077/npm.svg",
     "ESLint/Prettier": "https://icon.icepanel.io/Technology/svg/ESLint.svg",
-    "Warp Terminal": "https://mvolkmann.github.io/blog/assets/warp-logo.png?v=1.1.1", // Add your URL
-    "MCP Integration": "https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/light/mcp.png", // Add your URL
-    "Kiro": "https://kiro.dev/icon.svg?fe599162bb293ea0", // Add your URL
+    "Warp Terminal": "https://mvolkmann.github.io/blog/assets/warp-logo.png?v=1.1.1",
+    "MCP Integration": "https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/light/mcp.png",
+    "Kiro": "https://kiro.dev/icon.svg?fe599162bb293ea0",
     "Vite": "https://www.svgrepo.com/show/374167/vite.svg",
 };
 
+// Memoized skill icon component for better performance
+const SkillIcon = memo(({ iconUrl, skill, className, layoutId }: { iconUrl: string | null; skill: string; className?: string; layoutId?: string }) => {
+    if (!iconUrl) {
+        return <div className="w-full h-full bg-gray-50/50" />;
+    }
+
+    return (
+        <motion.img
+            layoutId={layoutId}
+            src={iconUrl}
+            alt={skill}
+            loading="lazy"
+            className={className}
+            style={{
+                willChange: 'transform',
+                WebkitBackfaceVisibility: 'hidden',
+                backfaceVisibility: 'hidden'
+            }}
+        />
+    );
+});
+
+SkillIcon.displayName = 'SkillIcon';
+
+// Loading fallback for lazy-loaded components
+const SectionLoadingFallback = () => (
+    <div className="w-full h-48 flex items-center justify-center bg-gray-50 rounded-2xl">
+        <div className="text-gray-400 text-sm">Loading...</div>
+    </div>
+);
+
 export const Skills: React.FC = () => {
     const [expandedFolder, setExpandedFolder] = useState<number | null>(null);
+    const { isMobile, prefersReducedMotion } = useMobileOptimizations();
+
+    // Memoize viewport config to prevent recreation
+    const viewportConfig = useMemo(() => ({
+        once: true,
+        amount: 0.1
+    }), []);
+
+    // Memoize transition based on device
+    const transition = useMemo(() => 
+        isMobile || prefersReducedMotion ? MOBILE_SPRING : FOLDER_SPRING,
+        [isMobile, prefersReducedMotion]
+    );
 
     return (
         <motion.section
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
+            viewport={viewportConfig}
             variants={staggerContainerVariants}
             className="p-6 md:p-8 border-b border-dashed border-gray-200 bg-[#FAFAFA] relative overflow-visible"
             style={antiFlickerStyle}
         >
-            <PhilosophySection />
+            <Suspense fallback={<SectionLoadingFallback />}>
+                <PhilosophySection />
+            </Suspense>
 
             <motion.h2
                 variants={sectionHeaderVariants}
@@ -128,13 +204,18 @@ export const Skills: React.FC = () => {
                         index={index}
                         isExpanded={expandedFolder === index}
                         isOtherExpanded={expandedFolder !== null && expandedFolder !== index}
-                        onExpand={(index) => setExpandedFolder(index)}
-                        onClose={() => setExpandedFolder(null)}
+                        onExpand={useCallback(() => setExpandedFolder(index), [index])}
+                        onClose={useCallback(() => setExpandedFolder(null), [])}
+                        isMobile={isMobile}
+                        prefersReducedMotion={prefersReducedMotion}
+                        transition={transition}
                     />
                 ))}
             </motion.div>
 
-            <MacMiniSection />
+            <Suspense fallback={<SectionLoadingFallback />}>
+                <MacMiniSection />
+            </Suspense>
         </motion.section>
     );
 };
@@ -146,55 +227,95 @@ interface FolderIconProps {
     isOtherExpanded: boolean;
     onExpand: (index: number) => void;
     onClose: () => void;
+    isMobile: boolean;
+    prefersReducedMotion: boolean;
+    transition: any;
 }
 
-const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isExpanded, isOtherExpanded, onExpand, onClose }) => {
+const FolderIcon: React.FC<FolderIconProps> = memo(({ 
+    category, 
+    index, 
+    isExpanded, 
+    isOtherExpanded, 
+    onExpand, 
+    onClose,
+    isMobile,
+    prefersReducedMotion,
+    transition
+}) => {
     const [isHovered, setIsHovered] = useState(false);
 
-    // Optimized event handlers
-    const handleOpen = () => {
+    // Optimized event handlers with useCallback
+    const handleOpen = useCallback(() => {
         if (typeof window !== 'undefined') {
             document.body.style.overflow = 'hidden';
             onExpand(index);
         }
-    };
+    }, [onExpand, index]);
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         if (typeof window !== 'undefined') {
             document.body.style.overflow = 'unset';
             onClose();
         }
-    };
+    }, [onClose]);
 
-    const shouldBlur = isOtherExpanded && !isHovered;
+    // Skip hover effects on mobile
+    const handleMouseEnter = useCallback(() => {
+        if (!isMobile) {
+            setIsHovered(true);
+        }
+    }, [isMobile]);
+
+    const handleMouseLeave = useCallback(() => {
+        if (!isMobile) {
+            setIsHovered(false);
+        }
+    }, [isMobile]);
+
+    const shouldBlur = isOtherExpanded && !isHovered && !isMobile;
+
+    // Skip expensive animations on mobile
+    const animateProps = useMemo(() => {
+        if (prefersReducedMotion) {
+            return {
+                opacity: 1,
+                scale: 1
+            };
+        }
+
+        return shouldBlur ? {
+            filter: 'blur(5px)',
+            opacity: 0.5,
+            scale: 0.95,
+        } : {
+            filter: 'blur(0px)',
+            opacity: 1,
+            scale: 1,
+        };
+    }, [shouldBlur, prefersReducedMotion]);
+
+    const whileHoverProps = useMemo(() => {
+        if (isMobile || prefersReducedMotion || isExpanded || isOtherExpanded) {
+            return {};
+        }
+        return { scale: 1.03, y: -4 };
+    }, [isMobile, prefersReducedMotion, isExpanded, isOtherExpanded]);
 
     return (
         <>
             <motion.div
                 layoutId={`folder-${index}`}
                 onClick={handleOpen}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                whileHover={!isExpanded && !isOtherExpanded ? { scale: 1.03, y: -4 } : {}}
-                transition={{
-                    ...FOLDER_SPRING,
-                    filter: { duration: 0.3, ease: "easeOut" },
-                    opacity: { duration: 0.3, ease: "easeOut" },
-                    scale: { duration: 0.3, ease: "easeOut" }
-                }}
-                animate={shouldBlur ? {
-                    filter: 'blur(5px)',
-                    opacity: 0.5,
-                    scale: 0.95,
-                } : {
-                    filter: 'blur(0px)',
-                    opacity: 1,
-                    scale: 1,
-                }}
-                variants={!shouldBlur ? staggerItemVariants : undefined}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                whileHover={whileHoverProps}
+                transition={transition}
+                animate={animateProps}
+                variants={!shouldBlur && !prefersReducedMotion ? staggerItemVariants : undefined}
                 className="flex flex-col items-center gap-5 cursor-pointer group shrink-0"
                 style={{
-                    willChange: "transform, opacity, filter",
+                    willChange: "transform, opacity",
                     zIndex: shouldBlur ? 0 : 10
                 }}
             >
@@ -209,10 +330,12 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                         inset_0_1px_1px_rgba(255,255,255,1),
                         inset_0_-1px_1px_rgba(0,0,0,0.05)
                     ]
-                    ${!isOtherExpanded ? 'group-hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)] transition-all duration-300' : ''}
+                    ${!isOtherExpanded && !isMobile ? 'group-hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)] transition-all duration-300' : ''}
                 `}>
-                    {/* The 'Shine' Glint */}
-                    <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/60 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
+                    {/* Skip shine effect on mobile for better performance */}
+                    {!isMobile && !prefersReducedMotion && (
+                        <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/60 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
+                    )}
 
                     <div className="
                         relative
@@ -230,8 +353,10 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                         p-1.5 md:p-1
                         overflow-hidden
                     ">
-                        {/* Internal Rim Light */}
-                        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white to-transparent opacity-80" />
+                        {/* Internal Rim Light - skip on mobile */}
+                        {!isMobile && !prefersReducedMotion && (
+                            <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white to-transparent opacity-80" />
+                        )}
                         <div className="grid grid-cols-2 gap-1.5 w-full h-full p-0.5">
                             {/* 3 Main Icons (Top-Left, Top-Right, Bottom-Left) */}
                             {[0, 1, 2].map((i) => {
@@ -245,19 +370,15 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                                         className="aspect-square w-full rounded-[10px] md:rounded-[12px] bg-linear-to-b from-gray-50 to-gray-200/50 border border-black/5 flex items-center justify-center overflow-hidden relative shadow-sm"
                                         style={{ opacity: 1 }}
                                     >
-                                        {iconUrl ? (
-                                            <motion.img
-                                                layoutId={`${category.title}-${skill}-icon`}
-                                                src={iconUrl}
-                                                alt={skill}
-                                                className={`object-contain ${(skill === "REST API" || skill === "Blockchain")
-                                                    ? "w-full h-full scale-115"
-                                                    : "w-[90%] h-[90%]"
-                                                    }`}
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full bg-gray-50/50" />
-                                        )}
+                                        <SkillIcon
+                                            iconUrl={iconUrl}
+                                            skill={skill}
+                                            layoutId={`${category.title}-${skill}-icon`}
+                                            className={`object-contain ${(skill === "REST API" || skill === "Blockchain")
+                                                ? "w-full h-full scale-115"
+                                                : "w-[90%] h-[90%]"
+                                                }`}
+                                        />
                                     </motion.div>
                                 );
                             })}
@@ -274,16 +395,12 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                                             layoutId={`${category.title}-${skill}-icon-container`}
                                             className="aspect-square w-full rounded-[4px] md:rounded-[5px] bg-linear-to-b from-gray-50 to-gray-200/50 border border-black/5 flex items-center justify-center shadow-xs overflow-hidden"
                                         >
-                                            {iconUrl ? (
-                                                <motion.img
-                                                    layoutId={`${category.title}-${skill}-icon`}
-                                                    src={iconUrl}
-                                                    alt={skill}
-                                                    className="w-[90%] h-[90%] object-contain"
-                                                />
-                                            ) : (
-                                                <div className="w-full h-full bg-gray-50/50" />
-                                            )}
+                                            <SkillIcon
+                                                iconUrl={iconUrl}
+                                                skill={skill}
+                                                layoutId={`${category.title}-${skill}-icon`}
+                                                className="w-[90%] h-[90%] object-contain"
+                                            />
                                         </motion.div>
                                     );
                                 })}
@@ -296,7 +413,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                     layoutId={`title-${index}`}
                     animate={{ scale: 1, opacity: 1 }}
                     className="text-[9px] md:text-[11px] font-black text-gray-400 group-hover:text-gray-900 uppercase tracking-widest text-center"
-                    transition={FOLDER_SPRING}
+                    transition={transition}
                     style={{
                         WebkitFontSmoothing: 'antialiased',
                         backfaceVisibility: 'hidden',
@@ -329,7 +446,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                                 pointer-events-auto
                                 overflow-hidden
                             "
-                            transition={FOLDER_SPRING}
+                            transition={transition}
                         >
                             <div className="
                                 relative
@@ -346,7 +463,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                                             layoutId={`title-${index}`}
                                             animate={{ scale: 1, opacity: 1 }}
                                             className="text-xl md:text-2xl font-black text-gray-900 tracking-tight"
-                                            transition={FOLDER_SPRING}
+                                            transition={transition}
                                             style={{
                                                 WebkitFontSmoothing: 'antialiased',
                                                 backfaceVisibility: 'hidden',
@@ -362,6 +479,40 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                                         {category.skills.map((skill, i) => {
                                             const iconUrl = TECH_ICON_URLS[skill];
                                             const isTracked = i < 7;
+
+                                            // Skip complex animations on mobile
+                                            if (isMobile || prefersReducedMotion) {
+                                                return (
+                                                    <div
+                                                        key={i}
+                                                        className="flex flex-col items-center gap-2"
+                                                    >
+                                                        <div className="
+                                                            w-12 h-12 md:w-16 md:h-16
+                                                            rounded-full
+                                                            bg-linear-to-br from-white via-white to-gray-50
+                                                            border border-gray-100/30
+                                                            shadow-[0_8px_20px_-6px_rgba(0,0,0,0.08),0_4px_8px_-2px_rgba(0,0,0,0.04),inset_0_2px_3px_rgba(255,255,255,1),inset_0_-2px_3px_rgba(0,0,0,0.02)]
+                                                            flex items-center justify-center
+                                                            p-2 md:p-2.5
+                                                        ">
+                                                            <SkillIcon
+                                                                iconUrl={iconUrl}
+                                                                skill={skill}
+                                                                className={`object-contain ${(skill === "REST API" || skill === "Blockchain" || skill === "JavaScript")
+                                                                    ? "w-full h-full scale-125"
+                                                                    : "w-[85%] h-[85%] scale-110"
+                                                                    }`}
+                                                            />
+                                                        </div>
+                                                        <span
+                                                            className="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-tighter text-center leading-tight"
+                                                        >
+                                                            {skill}
+                                                        </span>
+                                                    </div>
+                                                );
+                                            }
 
                                             return (
                                                 <motion.div
@@ -379,12 +530,12 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                                                         transition: { duration: 0.4 }
                                                     } : {}}
                                                     transition={isTracked ? {
-                                                        ...FOLDER_SPRING,
+                                                        ...transition,
                                                         filter: { duration: 0.4, times: [0, 0.4, 1] },
                                                         scale: { duration: 0.4, times: [0, 0.4, 1] }
-                                                    } : { ...FOLDER_SPRING, delay: 0.15 + (i * 0.03) }}
+                                                    } : { ...transition, delay: 0.15 + (i * 0.03) }}
                                                     className="flex flex-col items-center gap-2 group/app"
-                                                    style={{ willChange: "transform, filter" }}
+                                                    style={{ willChange: "transform" }}
                                                 >
                                                     <div className="
                                                         w-12 h-12 md:w-16 md:h-16
@@ -395,34 +546,21 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                                                         flex items-center justify-center
                                                         p-2 md:p-2.5
                                                     ">
-                                                        {iconUrl ? (
-                                                            <motion.img
-                                                                layoutId={isTracked ? `${category.title}-${skill}-icon` : undefined}
-                                                                src={iconUrl}
-                                                                alt={skill}
-                                                                className={`object-contain ${(skill === "REST API" || skill === "Blockchain" || skill === "JavaScript")
-                                                                    ? "w-full h-full scale-125"
-                                                                    : "w-[85%] h-[85%] scale-110"
-                                                                    }`}
-                                                                animate={isTracked ? {
-                                                                    filter: ["brightness(1)", "brightness(1.5)", "brightness(1)"],
-                                                                } : {}}
-                                                                exit={isTracked ? {
-                                                                    filter: ["brightness(1)", "brightness(1.5)", "brightness(1)"],
-                                                                    transition: { duration: 0.4 }
-                                                                } : {}}
-                                                                transition={FOLDER_SPRING}
-                                                                style={{ willChange: "transform, filter" }}
-                                                            />
-                                                        ) : (
-                                                            <div className="w-2 h-2 rounded-full bg-gray-200" />
-                                                        )}
+                                                        <SkillIcon
+                                                            iconUrl={iconUrl}
+                                                            skill={skill}
+                                                            layoutId={isTracked ? `${category.title}-${skill}-icon` : undefined}
+                                                            className={`object-contain ${(skill === "REST API" || skill === "Blockchain" || skill === "JavaScript")
+                                                                ? "w-full h-full scale-125"
+                                                                : "w-[85%] h-[85%] scale-110"
+                                                                }`}
+                                                        />
                                                     </div>
                                                     <motion.span
                                                         layoutId={isTracked ? `${category.title}-${skill}-text` : undefined}
                                                         initial={!isTracked ? { opacity: 0, y: 5 } : false}
                                                         animate={{ opacity: 1, y: 0 }}
-                                                        transition={FOLDER_SPRING}
+                                                        transition={transition}
                                                         className="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-tighter text-center leading-tight"
                                                     >
                                                         {skill}
@@ -441,224 +579,4 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
     );
 });
 
-const PhilosophySection: React.FC = () => {
-    return (
-        <motion.div
-            id="philosophy"
-            variants={staggerItemVariants}
-            className="mb-14 flex flex-col gap-8 w-full"
-        >
-            <motion.h2
-                variants={sectionHeaderVariants}
-                className="text-[10px] md:text-[12px] font-bold text-[rgb(74,108,196)] tracking-wider uppercase"
-            >
-                Philosophy
-            </motion.h2>
-
-            <motion.div
-                variants={staggerItemVariants}
-                className="
-                    relative
-                    w-full
-                    rounded-2xl md:rounded-[32px]
-                    bg-transparent
-                    border border-dashed border-gray-200/60
-                    group
-                    overflow-visible
-                "
-            >
-                <div className="absolute -top-4 -left-4 z-20 p-2.5 bg-[#FAFAFA] rounded-full border border-dashed border-gray-300 shadow-sm">
-                    <Quote size={20} className="text-gray-400 fill-gray-100 rotate-180" />
-                </div>
-                <div className="absolute -bottom-4 -right-4 z-20 p-2.5 bg-[#FAFAFA] rounded-full border border-dashed border-gray-300 shadow-sm">
-                    <Quote size={20} className="text-gray-400 fill-gray-100" />
-                </div>
-
-                <div className="relative z-10 w-full overflow-hidden rounded-[inherit]">
-                    <div className="relative w-full aspect-3/2 bg-white">
-                        <img
-                            src="/philosophy.png"
-                            alt="Thinking Philosophy"
-                            className="w-full h-full object-cover select-none rounded-[inherit]"
-                            style={{ transform: 'translateZ(0)', willChange: 'transform' }}
-                            draggable={false}
-                        />
-                        <div className="absolute inset-0 shadow-[inset_0_2px_15px_rgba(0,0,0,0.05)] pointer-events-none rounded-[inherit]" />
-                    </div>
-                </div>
-            </motion.div>
-        </motion.div>
-    );
-};
-
-const MacMiniSection: React.FC = () => {
-    return (
-        <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={staggerContainerVariants}
-            className="mt-20 md:mt-24 flex flex-col gap-10 items-center w-full"
-        >
-            <motion.div variants={staggerItemVariants} className="relative pb-6">
-                <motion.h3
-                    variants={{
-                        hidden: { opacity: 0, y: 10 },
-                        visible: {
-                            opacity: 1,
-                            y: 0,
-                            transition: { duration: 0.6, ease: 'easeOut' },
-                        },
-                    }}
-                    className="
-                        font-serif italic
-                        text-4xl md:text-6xl
-                        text-gray-900
-                        tracking-wide
-                        transform -rotate-3
-                        select-none
-                        relative z-10
-                    "
-                >
-                    My Daily Driver
-                </motion.h3>
-
-                <svg
-                    className="absolute w-full h-8 md:h-10 -bottom-2 md:-bottom-4 left-0 text-[rgb(74,108,196)] z-0 pointer-events-none transform -rotate-3"
-                    viewBox="0 0 182 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    preserveAspectRatio="none"
-                >
-                    <motion.path
-                        variants={{
-                            hidden: { pathLength: 0, opacity: 0 },
-                            visible: {
-                                pathLength: 1,
-                                opacity: 1,
-                                transition: { duration: 1.5, delay: 0.5, ease: 'easeInOut' },
-                            },
-                        }}
-                        d="M2 7.5C15 2 30 13 45 7.5C60 2 75 13 90 7.5C105 2 120 13 135 7.5C150 2 165 13 180 7.5"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                </svg>
-            </motion.div>
-
-            <motion.div
-                variants={staggerItemVariants}
-                className="
-                    relative
-                    w-full
-                    rounded-[32px] md:rounded-[48px]
-                    bg-linear-to-b from-white to-[#F5F5F7]
-                    border border-gray-200
-                    shadow-[inset_0_1.5px_1px_rgba(255,255,255,1),0_4px_12px_rgba(0,0,0,0.03)]
-                    overflow-hidden
-                    group
-                    flex flex-col md:flex-row items-center
-                "
-            >
-                <div
-                    className="absolute inset-0 opacity-[0.03] pointer-events-none"
-                    style={{
-                        backgroundImage: 'radial-gradient(#000 1px, transparent 1px)',
-                        backgroundSize: '16px 16px',
-                    }}
-                />
-
-                <motion.div
-                    variants={popRevealVariants}
-                    className="w-full md:w-5/12 p-8 pb-0 md:pb-8 flex items-center justify-center relative z-10"
-                >
-                    <div className="relative w-[280px] md:w-[380px] aspect-square flex items-center justify-center">
-                        <div className="absolute inset-x-4 bottom-8 h-8 bg-black/20 blur-2xl rounded-[100%] transform scale-x-75" />
-                        <motion.img
-                            src="/mac_mini.png"
-                            alt="Mac Mini M4"
-                            draggable={false}
-                            className="w-full h-full object-contain relative z-10 drop-shadow-[0_20px_40px_rgba(0,0,0,0.15)] select-none scale-[1.14] md:scale-[1.25]"
-                        />
-                    </div>
-                </motion.div>
-
-                <motion.div
-                    variants={dailyDriverContentVariants}
-                    className="w-full md:w-7/12 p-8 md:p-12 text-center md:text-left flex flex-col justify-center gap-6 relative z-10"
-                >
-                    <div className="flex flex-col gap-2">
-                        <div className="flex items-center justify-center md:justify-start gap-4">
-                            <h4 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tight">
-                                Mac mini
-                            </h4>
-                            <span className="px-3 py-1 bg-linear-to-br from-slate-800 to-slate-900 rounded-lg text-[12px] font-black text-white border border-black shadow-lg uppercase tracking-widest">
-                                M4
-                            </span>
-                        </div>
-                        <p className="text-[10px] md:text-[12px] font-black text-gray-400 uppercase tracking-[0.3em]">
-                            It's my personal station!
-                        </p>
-                    </div>
-
-                    <ProgressiveText className="text-[12px] md:text-[14px] text-gray-600 font-medium leading-relaxed max-w-md mx-auto md:mx-0">
-                        Compact yet incredibly powerful. This little machine handles my entire development stack from Backend to heavy frontend builds silently and efficiently. I use a multi-screen setup which allows me to do rapid prototyping and testing.
-                    </ProgressiveText>
-
-                    <motion.div
-                        variants={dailyDriverPillsVariants}
-                        className="flex flex-wrap gap-1.5 justify-center md:justify-start"
-                    >
-                        <SpecBadge>Apple Silicon</SpecBadge>
-                        <SpecBadge>16GB Unified</SpecBadge>
-                        <SpecBadge>512GB SSD</SpecBadge>
-                        <SpecBadge>Remote Access</SpecBadge>
-                        <SpecBadge>macOS Tahoe</SpecBadge>
-                    </motion.div>
-                </motion.div>
-            </motion.div>
-        </motion.div>
-    );
-};
-
-const SpecBadge: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <motion.span
-        variants={staggerItemVariants}
-        className="
-            relative
-            px-2.5 py-1
-            rounded-lg
-            bg-gray-100/50
-            border border-gray-200/50
-            text-[7px] md:text-[8px] font-black text-gray-500/90 tracking-[0.12em] uppercase
-            shadow-[
-                0_1px_1px_rgba(255,255,255,1),
-                inset_0_1px_2px_rgba(0,0,0,0.1),
-                inset_0_2px_4px_rgba(0,0,0,0.05)
-            ]
-            inline-flex items-center justify-center
-            overflow-hidden
-            whitespace-nowrap
-            group
-        "
-        style={{ willChange: "transform, opacity, filter" }}
-    >
-        {/* The 'Recessed' Bottom Layer */}
-        <div className="absolute inset-0 bg-linear-to-b from-gray-200 to-gray-50 opacity-40 shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)]" />
-
-        {/* The Raised Content Pill - Sitting inside the well */}
-        <div className="
-            absolute inset-[1px]
-            rounded-[7px]
-            bg-linear-to-b from-white to-[#f8f8f8]
-            shadow-[
-                0_1.5px_1px_rgba(0,0,0,0.05),
-                inset_0_1px_0_rgba(255,255,255,1)
-            ]
-        " />
-
-        <span className="relative z-10">{children}</span>
-    </motion.span>
-);
+FolderIcon.displayName = 'FolderIcon';

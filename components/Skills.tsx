@@ -75,8 +75,8 @@ const TECH_ICON_URLS: Record<string, string> = {
     "Puppeteer": "https://www.svgrepo.com/show/354228/puppeteer.svg",
     "GitHub": "https://cdn.worldvectorlogo.com/logos/github-icon-2.svg",
     "Cloudflare": "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/cloudflare-icon.png",
-    "AWS": "https://www.svgrepo.com/show/376356/aws.svg",
-    "Unit Testing": "https://external-preview.redd.it/V77U-n3OuvNr2I14hRYUcyXBJ1C9dEMV3HUt3dAIViw.png?auto=webp&s=20d05cf394bd203741ddfdffa904af94fdd90544",
+    "AWS": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/1280px-Amazon_Web_Services_Logo.svg.png",
+    "Unit Testing": "https://dashboard.snapcraft.io/site_media/appmedia/2024/01/Bash_Logo_Colored.png",
 
     // Tools
     "Cursor IDE": "https://custom.typingmind.com/assets/models/cursor.png", // Add your URL
@@ -279,7 +279,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                                                     layoutId={`${category.title}-${skill}-icon`}
                                                     src={iconUrl}
                                                     alt={skill}
-                                                    className="w-[90%] h-[90%] object-contain"
+                                                    className="w-full h-full p-0.5 object-contain"
                                                 />
                                             ) : (
                                                 <div className="w-full h-full bg-gray-50/50" />

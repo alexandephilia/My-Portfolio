@@ -12,6 +12,7 @@ import {
     dailyDriverContentVariants,
     dailyDriverPillsVariants
 } from './animations';
+import ProgressiveText from './ProgressiveText';
 
 // Mapping categories to their hero icons
 const CATEGORY_ICONS: Record<string, any> = {
@@ -172,13 +173,12 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
                 onClick={handleOpen}
                 whileHover={!anyExpanded ? { scale: 1.03, y: -4 } : {}}
                 transition={FOLDER_SPRING}
-                initial="hidden"
                 animate={isOtherExpanded ? { 
                     filter: 'blur(8px)',
                     opacity: 0.4,
                     scale: 0.92,
                     y: 0 
-                } : "visible"}
+                } : undefined}
                 variants={staggerItemVariants}
                 className="flex flex-col items-center gap-5 cursor-pointer group shrink-0"
                 style={{ 
@@ -434,7 +434,7 @@ const PhilosophySection: React.FC = () => {
             </motion.h2>
 
             <motion.div
-                variants={popRevealVariants}
+                variants={staggerItemVariants}
                 className="
                     relative
                     w-full
@@ -581,9 +581,9 @@ const MacMiniSection: React.FC = () => {
                         </p>
                     </div>
 
-                    <p className="text-[12px] md:text-[14px] text-gray-600 font-medium leading-relaxed max-w-md mx-auto md:mx-0">
+                    <ProgressiveText className="text-[12px] md:text-[14px] text-gray-600 font-medium leading-relaxed max-w-md mx-auto md:mx-0">
                         Compact yet incredibly powerful. This little machine handles my entire development stack from Backend to heavy frontend builds silently and efficiently. I use a multi-screen setup which allows me to do rapid prototyping and testing.
-                    </p>
+                    </ProgressiveText>
 
                     <motion.div 
                         variants={dailyDriverPillsVariants}

@@ -17,14 +17,20 @@
 
 /* Base styles */
 @layer base {
+    * {
+        cursor: none !important;
+    }
+
     html {
         font-family: "Nunito", sans-serif;
+        cursor: none;
     }
 
     body {
         font-family: "Nunito", sans-serif;
         background-color: #fafafa;
         color: #1e1b4b;
+        cursor: none;
         /* Hide scrollbar but keep functionality */
         scrollbar-width: none;
         -ms-overflow-style: none;

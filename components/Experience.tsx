@@ -4,6 +4,7 @@ import React from 'react';
 import { EXPERIENCE } from '../constants';
 import { antiFlickerStyle, staggerContainerVariants, staggerItemVariants } from './animations';
 import { DownloadButton } from './DownloadButton';
+import ProgressiveText from './ProgressiveText';
 
 export const Experience: React.FC = () => {
     return (
@@ -52,9 +53,9 @@ export const Experience: React.FC = () => {
                                     </a>
                                 )}
                             </motion.h3>
-                             <motion.p variants={staggerItemVariants} className="text-gray-500 text-[10px] md:text-xs leading-relaxed max-w-xl">
+                             <ProgressiveText variants={staggerItemVariants} className="text-gray-500 text-[10px] md:text-xs leading-relaxed max-w-xl">
                                 {job.description}
-                            </motion.p>
+                            </ProgressiveText>
                         </motion.div>
                         <motion.div variants={staggerItemVariants} className="text-[8px] md:text-[11px] font-medium text-gray-400 uppercase tracking-wide pt-0.5 md:pt-1">
                             {job.period}

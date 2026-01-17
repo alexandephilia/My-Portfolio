@@ -1,7 +1,9 @@
-import { motion, Variants } from 'framer-motion';
+import { motion, Variants, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import React, { useState } from 'react';
 import { Project } from '../types';
+import { useCursorStore } from './hooks/useCursorStore';
+import ProgressiveText from './ProgressiveText';
 
 interface ProjectCardProps {
     project: Project;
@@ -86,6 +88,43 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
     const Icon = project.icon;
     const [isExpanded, setIsExpanded] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const [isButtonHovered, setIsButtonHovered] = useState(false);
+    const { setHoveringButton } = useCursorStore();
+
+    // Magnetic Button Logic
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    const springConfig = { damping: 25, stiffness: 400, mass: 0.5 };
+    const springX = useSpring(mouseX, springConfig);
+    const springY = useSpring(mouseY, springConfig);
+
+    // Magnetic "Pull" for the button itself (Subtle)
+    const buttonX = useTransform(springX, [-100, 100], [-4, 4]);
+    const buttonY = useTransform(springY, [-40, 40], [-2, 2]);
+
+    // The "Overlay" (The morphing cursor) logic
+    const overlayX = useTransform(springX, [-100, 100], [-12, 12]);
+    const overlayY = useTransform(springY, [-40, 40], [-6, 6]);
+
+    const handleButtonMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        mouseX.set(e.clientX - centerX);
+        mouseY.set(e.clientY - centerY);
+    };
+
+    const handleButtonMouseEnter = () => {
+        setIsButtonHovered(true);
+        setHoveringButton(true);
+    };
+    const handleButtonMouseLeave = () => {
+        setIsButtonHovered(false);
+        setHoveringButton(false);
+        mouseX.set(0);
+        mouseY.set(0);
+    };
 
     return (
         <motion.div
@@ -230,12 +269,12 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                                         </div>
                                         {/* Description with expandable on mobile */}
                                         <div className="relative">
-                                            <p className={`text-gray-500 leading-relaxed text-[11px] md:text-xs md:line-clamp-none ${isExpanded ? '' : 'line-clamp-2'}`}>
+                                            <ProgressiveText className={`text-gray-500 leading-relaxed text-[11px] md:text-xs md:line-clamp-none ${isExpanded ? '' : 'line-clamp-2'}`}>
                                                 {project.description}
-                                            </p>
+                                            </ProgressiveText>
                                             {/* Fade gradient overlay when collapsed on mobile */}
                                             {!isExpanded && (
-                                                <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-white to-transparent pointer-events-none md:hidden" />
+                                                <div className="absolute bottom-0 left-0 right-0 h-4 bg-linear-to-t from-white to-transparent pointer-events-none md:hidden" />
                                             )}
                                         </div>
                                         {/* Read more toggle - mobile only */}
@@ -279,15 +318,77 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                                                     NDA Protected
                                                 </button>
                                             ) : project.status === 'Live' ? (
-                                                <a
+                                                <motion.a
                                                     href={project.linkUrl}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] md:text-[11px] font-bold transition-transform bg-linear-to-b from-white to-gray-100 border border-gray-200 shadow-[0_2px_4px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)] text-gray-700 hover:text-gray-900 hover:shadow-[0_3px_6px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.06)] active:shadow-sm active:translate-y-px group/btn"
+                                                    onMouseEnter={handleButtonMouseEnter}
+                                                    onMouseMove={handleButtonMouseMove}
+                                                    onMouseLeave={handleButtonMouseLeave}
+                                                    style={{ x: buttonX, y: buttonY }}
+                                                    className="
+                                                        relative flex items-center gap-1.5 px-3 py-1 rounded-md 
+                                                        text-[10px] md:text-[11px] font-bold transition-all
+                                                        bg-linear-to-b from-white to-gray-100 border border-gray-200 
+                                                        shadow-[0_2px_4px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]
+                                                        text-gray-700 active:shadow-sm active:translate-y-px 
+                                                        group/btn overflow-visible
+                                                    "
                                                 >
-                                                    View Case Study
-                                                    <ArrowRight size={12} className="text-gray-400 group-hover/btn:translate-x-1 transition-transform group-hover/btn:text-blue-500" />
-                                                </a>
+                                                    {/* The Morphing Black-Gradient Cursor Overlay */}
+                                                    <AnimatePresence mode="popLayout">
+                                                        {isButtonHovered && (
+                                                            <motion.span 
+                                                                layoutId={`btn-snap-${project.id}`}
+                                                                initial={{ opacity: 0, scale: 0.8, borderRadius: '50%', width: 12, height: 12 }}
+                                                                animate={{ 
+                                                                    opacity: 1, 
+                                                                    scale: 1, 
+                                                                    borderRadius: '6px',
+                                                                    width: 'calc(100% + 4px)',
+                                                                    height: 'calc(100% + 4px)',
+                                                                    left: -2,
+                                                                    top: -2
+                                                                }}
+                                                                exit={{ opacity: 0, scale: 0.8, borderRadius: '50%' }}
+                                                                className="absolute z-0 bg-black/95 shadow-[0_8px_20px_rgba(0,0,0,0.3)] pointer-events-none"
+                                                                style={{ 
+                                                                    x: overlayX, 
+                                                                    y: overlayY,
+                                                                }}
+                                                                transition={{ 
+                                                                    type: 'spring', 
+                                                                    damping: 30, 
+                                                                    stiffness: 400,
+                                                                    borderRadius: { duration: 0.2 },
+                                                                    width: { duration: 0.2 },
+                                                                    height: { duration: 0.2 }
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </AnimatePresence>
+                                                    
+                                                    {/* Button Content - Color Inversion */}
+                                                    <span className={`relative z-10 flex items-center gap-1.5 transition-colors duration-200 ${isButtonHovered ? 'text-white' : 'text-gray-700'}`}>
+                                                        View Case Study
+                                                        <motion.div
+                                                            animate={isButtonHovered ? {
+                                                                scale: [1, 1.15, 1],
+                                                            } : { scale: 1 }}
+                                                            transition={{
+                                                                duration: 2,
+                                                                repeat: Infinity,
+                                                                ease: "easeInOut"
+                                                            }}
+                                                        >
+                                                            <ArrowRight 
+                                                                size={12} 
+                                                                className={`transition-all duration-300 ${isButtonHovered ? 'translate-x-1 text-white' : 'text-gray-400'}`}
+                                                                strokeWidth={isButtonHovered ? 3 : 2}
+                                                            />
+                                                        </motion.div>
+                                                    </span>
+                                                </motion.a>
                                             ) : (
                                                 <span className="inline-block px-3 py-1.5 rounded-md border border-gray-200 text-gray-400 text-[10px] md:text-[11px] font-medium bg-gray-50 cursor-not-allowed">
                                                     Coming Soon

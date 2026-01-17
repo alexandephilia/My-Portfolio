@@ -6,6 +6,7 @@ import { BottomBlur } from './components/BottomBlur';
 import { ComponentShowcase } from './components/ComponentShowcase';
 import { Contact } from './components/Contact';
 import { DraggableSticker } from './components/DraggableSticker';
+import { CustomCursor } from './components/CustomCursor';
 import { Education } from './components/Education';
 import { Experience } from './components/Experience';
 import { ExperimentShowcase } from './components/ExperimentShowcase';
@@ -281,6 +282,9 @@ export default function App() {
                 {/* Progressive Viewport Blur */}
                 <TopBlur />
                 <BottomBlur />
+
+                {/* Custom Cursor */}
+                <CustomCursor />
 
                 {/* Global Progressive Timeline */}
                 <ScrollTimeline />

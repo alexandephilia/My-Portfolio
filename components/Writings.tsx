@@ -280,6 +280,7 @@ const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
                 h1: ({ children }) => <h1 className="text-2xl font-bold text-gray-900 mt-6 mb-3 first:mt-0">{children}</h1>,
                 h2: ({ children }) => <h2 className="text-xl font-bold text-gray-900 mt-5 mb-2">{children}</h2>,
                 h3: ({ children }) => <h3 className="text-lg font-semibold text-gray-900 mt-4 mb-2">{children}</h3>,
+
                 p: ({ children }) => <p className="text-gray-700 leading-[1.8] mb-4 last:mb-0">{children}</p>,
                 ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-1 text-gray-700">{children}</ul>,
                 ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-1 text-gray-700">{children}</ol>,

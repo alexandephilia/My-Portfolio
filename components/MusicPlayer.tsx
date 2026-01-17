@@ -91,7 +91,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ audioState }) => {
                         transition={{ duration: 0.3 }}
                         className="
                             p-[1.5px] 
-                            bg-linear-to-b from-white to-gray-200
+                            bg-linear-to-b from-white to-gray-200/10
                             rounded-[14px]
                             shadow-[0_5px_10px_-5px_rgba(0,0,0,0.2),0_6px_8px_-4px_rgba(0,0,0,0.2)] 
                             overflow-hidden
@@ -111,7 +111,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ audioState }) => {
                                 draggable={false}
                             />
                             {/* Subtle depth mask */}
-                            <div className="absolute inset-0 bg-black/5 pointer-events-none rounded-[12.5px]" />
+                            <div className="absolute inset-0 bg-black/2 pointer-events-none rounded-[12.5px]" />
                         </div>
                     </motion.div>
                 </div>

@@ -391,10 +391,10 @@ export const TransformDock: React.FC = () => {
                                                             key={item.id}
                                                             onClick={() => setActiveMode(item.id)}
                                                             className={`
-                                                                relative p-2 rounded-full overflow-hidden
+                                                                relative p-2 rounded-full overflow-hidden transition-all duration-200
                                                                 ${activeMode === item.id
-                                                                    ? 'bg-linear-to-b from-gray-700 to-gray-900 text-white shadow-lg'
-                                                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                                                                    ? 'bg-linear-to-b from-gray-700 to-gray-950 text-white shadow-[0_4px_12px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.2)]'
+                                                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100/80'
                                                                 }
                                                             `}
                                                             style={activeMode === item.id ? {
@@ -402,7 +402,7 @@ export const TransformDock: React.FC = () => {
                                                             } : undefined}
                                                         >
                                                             <item.icon size={14} strokeWidth={2.5} className="relative z-10" />
-                                                            {item.id === 'music' && audioState.isPlaying && activeMode !== 'music' && (
+                                                            {item.id === 'music' && audioState.isPlaying && (
                                                                 <div className="absolute inset-0 flex items-center justify-center opacity-80 pointer-events-none">
                                                                     <DotMatrixVisualizer isPlaying={true} rows={12} />
                                                                 </div>

@@ -216,13 +216,14 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
     {
         title: "Deployment",
         skills: [
+
+            "Vercel",
+            "Cloudflare",
+            "GitHub",
             "Docker",
             "Git/GitHub",
-            "Vercel",
             "Netlify",
             "Puppeteer",
-            "GitHub",
-            "Cloudflare",
             "AWS",
             "Nginx"
         ]

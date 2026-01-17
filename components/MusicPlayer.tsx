@@ -13,30 +13,13 @@ interface MusicPlayerProps {
     audioState: AudioState;
 }
 
-// CSS Keyframes for dot animation - injected once
-const DOT_ANIMATION_STYLES = `
-@keyframes dotPulse {
-    0%, 100% {
-        opacity: 0.3;
-        transform: scale(0.7);
-        background-color: rgba(30, 58, 138, 0.4);
-    }
-    50% {
-        opacity: var(--dot-intensity, 0.9);
-        transform: scale(1);
-        background-color: rgba(59, 130, 246, 0.95);
-    }
-}
-`;
-
-// Dot Matrix Visualizer Component - CSS animation based for mobile reliability
+// Dot Matrix Visualizer Component - Animated via Motion for React lifecycle sync
 export const DotMatrixVisualizer: React.FC<{ isPlaying: boolean; rows?: number }> = ({
     isPlaying,
     rows = 4
 }) => {
     const instanceId = useId();
 
-    // Generate animation patterns for each dot
     const dotPatterns = useMemo(() => {
         return Array.from({ length: MATRIX_COLS * rows }, (_, i) => {
             const col = i % MATRIX_COLS;
@@ -56,33 +39,39 @@ export const DotMatrixVisualizer: React.FC<{ isPlaying: boolean; rows?: number }
     }, [rows]);
 
     return (
-        <>
-            <style>{DOT_ANIMATION_STYLES}</style>
-            <div
-                className="grid gap-[1.5px]"
-                style={{
-                    gridTemplateColumns: `repeat(${MATRIX_COLS}, 1fr)`,
-                    gridTemplateRows: `repeat(${rows}, 1fr)`,
-                }}
-            >
-                {dotPatterns.map((pattern, i) => (
-                    <div
-                        key={`${instanceId}-dot-${i}`}
-                        className="w-[3px] h-[3px] rounded-full"
-                        style={{
-                            '--dot-intensity': pattern.intensity,
-                            animation: isPlaying
-                                ? `dotPulse ${pattern.duration}s ease-in-out ${pattern.delay}s infinite`
-                                : 'none',
-                            opacity: isPlaying ? undefined : 0.4,
-                            transform: isPlaying ? undefined : 'scale(0.7)',
-                            backgroundColor: isPlaying ? undefined : 'rgba(100, 116, 139, 0.5)',
-                            willChange: isPlaying ? 'transform, opacity' : 'auto',
-                        } as React.CSSProperties}
-                    />
-                ))}
-            </div>
-        </>
+        <div
+            className="grid gap-[1.5px]"
+            style={{
+                gridTemplateColumns: `repeat(${MATRIX_COLS}, 1fr)`,
+                gridTemplateRows: `repeat(${rows}, 1fr)`,
+            }}
+        >
+            {dotPatterns.map((pattern, i) => (
+                <motion.div
+                    key={`${instanceId}-dot-${i}`}
+                    animate={isPlaying ? {
+                        opacity: [0.3, pattern.intensity, 0.3],
+                        scale: [0.7, 1, 0.7],
+                        backgroundColor: [
+                            "rgba(30, 58, 138, 0.4)",
+                            "rgba(59, 130, 246, 0.95)",
+                            "rgba(30, 58, 138, 0.4)"
+                        ]
+                    } : {
+                        opacity: 0.4,
+                        scale: 0.7,
+                        backgroundColor: "rgba(100, 116, 139, 0.5)"
+                    }}
+                    transition={isPlaying ? {
+                        duration: pattern.duration,
+                        repeat: Infinity,
+                        delay: pattern.delay,
+                        ease: "easeInOut"
+                    } : { duration: 0.3 }}
+                    className="w-[3px] h-[3px] rounded-full"
+                />
+            ))}
+        </div>
     );
 };
 
@@ -97,30 +86,34 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ audioState }) => {
             <div className="flex items-center gap-4">
                 <div className="relative shrink-0">
                     {/* Gradient Frame Wrapper */}
-                    <div className={`
-                        p-[1.5px] 
-                        bg-linear-to-b from-white to-gray-200
-                        rounded-[14px]
-                        shadow-[0_5px_10px_-5px_rgba(0,0,0,0.2),0_6px_8px_-4px_rgba(0,0,0,0.2)] 
-                        transition-transform duration-300
-                        overflow-hidden
-                        ${isPlaying ? 'scale-[1.05]' : 'scale-100'}
-                    `}>
+                    <motion.div 
+                        animate={{ scale: isPlaying ? 1.05 : 1 }}
+                        transition={{ duration: 0.3 }}
+                        className="
+                            p-[1.5px] 
+                            bg-linear-to-b from-white to-gray-200
+                            rounded-[14px]
+                            shadow-[0_5px_10px_-5px_rgba(0,0,0,0.2),0_6px_8px_-4px_rgba(0,0,0,0.2)] 
+                            overflow-hidden
+                        "
+                    >
                         <div className="
                             w-10 h-10 rounded-[12.5px]
                             flex items-center justify-center
                             overflow-hidden
                         ">
-                            <img
+                            <motion.img
                                 src={currentSong.coverUrl}
-                                className={`w-full h-full object-cover transition-transform duration-1000 pointer-events-none select-none ${isPlaying ? 'scale-110' : 'scale-100'}`}
+                                animate={{ scale: isPlaying ? 1.1 : 1 }}
+                                transition={{ duration: 1, ease: "linear" }}
+                                className="w-full h-full object-cover pointer-events-none select-none rounded-[12.5px]"
                                 alt={currentSong.title}
                                 draggable={false}
                             />
                             {/* Subtle depth mask */}
-                            <div className="absolute inset-0 bg-black/5 pointer-events-none" />
+                            <div className="absolute inset-0 bg-black/5 pointer-events-none rounded-[12.5px]" />
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
 
                 {/* Info Section */}
@@ -162,23 +155,30 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ audioState }) => {
 
                     <div className="flex items-center gap-2.5 h-4 mt-0.5">
                         <DotMatrixVisualizer isPlaying={isPlaying} />
-                        <button
+                        <motion.button
                             onClick={() => setIsRepeatOne(!isRepeatOne)}
-                            className={`transition-colors active:scale-90 ${isRepeatOne ? 'text-blue-600' : 'text-blue-300'}`}
+                            whileTap={{ scale: 0.9 }}
+                            className={`transition-colors ${isRepeatOne ? 'text-blue-600' : 'text-blue-300'}`}
                         >
                             {isRepeatOne ? <Repeat1 size={10} /> : <Repeat size={10} />}
-                        </button>
+                        </motion.button>
                     </div>
                 </div>
 
                 {/* Controls */}
                 <div className="flex items-center gap-1.5 pr-1">
-                    <button onClick={prevSong} className="p-1.5 active:scale-90 transition-transform group">
+                    <motion.button 
+                        onClick={prevSong} 
+                        whileTap={{ scale: 0.9 }}
+                        className="p-1.5 group"
+                    >
                         <SkipBack size={13} className="stroke-gray-400 fill-gray-400 group-hover:stroke-gray-600 group-hover:fill-gray-600 transition-colors" />
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
                         onClick={togglePlay}
-                        className="w-10 h-10 rounded-full bg-gradient-to-b from-white to-gray-50 flex items-center justify-center text-black hover:scale-105 active:scale-95 transition-all border border-blue-50/50"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="w-10 h-10 rounded-full bg-gradient-to-b from-white to-gray-50 flex items-center justify-center text-black border border-blue-50/50"
                         style={{
                             boxShadow: `
                                 0 4px 10px -2px rgba(30,58,138,0.1),
@@ -189,10 +189,14 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ audioState }) => {
                         }}
                     >
                         {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" className="ml-0.5" />}
-                    </button>
-                    <button onClick={nextSong} className="p-1.5 active:scale-90 transition-transform group">
+                    </motion.button>
+                    <motion.button 
+                        onClick={nextSong} 
+                        whileTap={{ scale: 0.9 }}
+                        className="p-1.5 group"
+                    >
                         <SkipForward size={13} className="stroke-gray-400 fill-gray-400 group-hover:stroke-gray-600 group-hover:fill-gray-600 transition-colors" />
-                    </button>
+                    </motion.button>
                 </div>
             </div>
         </div>

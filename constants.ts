@@ -173,8 +173,6 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
     {
         title: "Engineering",
         skills: [
-            "Atomic Structure",
-            "Component Reusability",
             "JavaScript",
             "TypeScript",
             "Node.js",
@@ -182,7 +180,6 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
             "React.js",
             "Next.js",
             "Vue.js",
-            "Express.js",
             "HTML/CSS",
             "Markdown",
         ]
@@ -191,56 +188,50 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
         title: "Frontend",
         skills: [
             "Tailwind CSS",
-            "Bootstrap 5",
             "Shadcn UI",
             "TanStack",
             "Framer Motion",
             "GSAP",
             "Three.js",
-            "Responsive Design",
-            "Performance Optimization"
         ]
     },
     {
         title: "Backend",
         skills: [
-            "REST API",
-            "WebSocket",
             "MongoDB",
             "Supabase",
             "Redis",
-            "In-memory Fallback",
             "Railway",
-            "Multi-chain Integration"
+            "REST API",
+            "WebSocket",
         ]
     },
     {
-        title: "Founding",
+        title: "Deployment",
         skills: [
             "Docker",
-            "CI/CD",
             "Git/GitHub",
             "Vercel",
             "Netlify",
-            "Zero-downtime Deployment",
-            "Caching Strategies",
-            "API Integration",
-            "Telegraf.js",
-            "Puppeteer"
+            "Puppeteer",
+            "GitHub",
+            "Cloudflare",
+            "AWS",
+            "Nginx"
         ]
     },
     {
         title: "Tools",
         skills: [
-            "Bun",
-            "npm/Yarn",
-            "ESLint/Prettier",
             "Cursor IDE",
             "Windsurf",
             "Claude Code",
             "Warp Terminal",
             "MCP Integration",
-            "AI-Assisted Development"
+            "Kiro",
+            "Bun",
+            "npm/Yarn",
+            "ESLint/Prettier",
         ]
     }
 ];

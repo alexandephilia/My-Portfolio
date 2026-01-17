@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, PanInfo } from 'framer-motion';
+import { AnimatePresence, motion, PanInfo } from 'motion/react';
 import { GripVertical, Pause, Play, Repeat, Repeat1, SkipBack, SkipForward } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { SONGS } from '../constants';
@@ -21,8 +21,6 @@ export const MusicDock: React.FC = () => {
     const constraintsRef = useRef<HTMLDivElement | null>(null);
 
     const currentSong = SONGS[currentSongIndex];
-
-
 
     // Simple reliable check: scroll if title exceeds character threshold
     const shouldScroll = currentSong.title.length > MAX_TITLE_CHARS;
@@ -205,16 +203,20 @@ export const MusicDock: React.FC = () => {
                                 {/* Album Art - draggable area when minimized */}
                                 <div className="relative shrink-0">
                                     {/* Gradient Frame Wrapper */}
-                                    <div className="
-                                        relative
-                                        p-[1.5px] 
-                                        bg-linear-to-b from-white to-gray-200
-                                        rounded-[14px]
-                                        shadow-[0_12px_30px_-6px_rgba(0,0,0,0.4),0_8px_16px_-8px_rgba(0,0,0,0.3)]
-                                        transition-all duration-500
-                                        overflow-hidden
-                                        ${isPlaying && !isMinimized ? 'scale-[1.05]' : 'scale-100'}
-                                    ">
+                                    <motion.div 
+                                        animate={{
+                                            scale: isPlaying && !isMinimized ? 1.05 : 1
+                                        }}
+                                        transition={{ duration: 0.5 }}
+                                        className="
+                                            relative
+                                            p-[1.5px] 
+                                            bg-linear-to-b from-white to-gray-200
+                                            rounded-[14px]
+                                            shadow-[0_12px_30px_-6px_rgba(0,0,0,0.4),0_8px_16px_-8px_rgba(0,0,0,0.3)]
+                                            overflow-hidden
+                                        "
+                                    >
                                         {/* Floating Album Art Container */}
                                         <div
                                             className="
@@ -227,13 +229,13 @@ export const MusicDock: React.FC = () => {
                                         >
                                             <img
                                                 src={currentSong.coverUrl}
-                                                className="w-full h-full object-cover pointer-events-none select-none"
+                                                className="w-full h-full object-cover pointer-events-none select-none rounded-[12.5px]"
                                                 alt={currentSong.title}
                                                 draggable={false}
                                             />
 
                                             {/* Subtle depth mask */}
-                                            <div className="absolute inset-0 bg-black/5 pointer-events-none" />
+                                            <div className="absolute inset-0 bg-black/5 pointer-events-none rounded-[12.5px]" />
 
                                             {/* Playing Indicator */}
                                             <AnimatePresence>
@@ -265,7 +267,7 @@ export const MusicDock: React.FC = () => {
                                                     togglePlay();
                                                 }}
                                                 onPointerDown={(e) => e.stopPropagation()}
-                                                className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/40 active:bg-black/50 backdrop-blur-[1px] transition-colors duration-150"
+                                                className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/40 active:bg-black/50 backdrop-blur-[1px] rounded-[12.5px]"
                                             >
                                                 {isPlaying ? (
                                                     <Pause size={20} fill="white" className="text-white drop-shadow-md" />
@@ -274,7 +276,7 @@ export const MusicDock: React.FC = () => {
                                                 )}
                                             </button>
                                         )}
-                                    </div>
+                                    </motion.div>
 
                                     {/* Drag indicator when minimized - remains outside for separate opacity/UX */}
                                     {isMinimized && (
@@ -366,18 +368,28 @@ export const MusicDock: React.FC = () => {
                                                 transition={{ delay: 0.3 }}
                                                 className="flex items-center gap-1"
                                             >
-                                                <button onClick={prevSong} className="text-gray-400 hover:text-gray-900 p-1.5 active:scale-90 transition-transform">
+                                                <motion.button 
+                                                    onClick={prevSong} 
+                                                    whileTap={{ scale: 0.9 }}
+                                                    className="text-gray-400 hover:text-gray-900 p-1.5"
+                                                >
                                                     <SkipBack size={14} fill="currentColor" />
-                                                </button>
-                                                <button
+                                                </motion.button>
+                                                <motion.button
                                                     onClick={togglePlay}
-                                                    className="w-10 h-10 rounded-full bg-gradient-to-b from-white to-gray-100/80 border border-white/80 shadow-md flex items-center justify-center text-gray-900 hover:scale-105 active:scale-95 transition-transform"
+                                                    whileHover={{ scale: 1.05 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                    className="w-10 h-10 rounded-full bg-gradient-to-b from-white to-gray-100/80 border border-white/80 shadow-md flex items-center justify-center text-gray-900"
                                                 >
                                                     {isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" className="ml-0.5" />}
-                                                </button>
-                                                <button onClick={nextSong} className="text-gray-400 hover:text-gray-900 p-1.5 active:scale-90 transition-transform">
+                                                </motion.button>
+                                                <motion.button 
+                                                    onClick={nextSong} 
+                                                    whileTap={{ scale: 0.9 }}
+                                                    className="text-gray-400 hover:text-gray-900 p-1.5"
+                                                >
                                                     <SkipForward size={14} fill="currentColor" />
-                                                </button>
+                                                </motion.button>
                                             </motion.div>
                                         </motion.div>
                                     )}
@@ -386,7 +398,7 @@ export const MusicDock: React.FC = () => {
                         </motion.div>
 
                         {/* Minimize/Expand Toggle - Outside the animated container */}
-                        <button
+                        <motion.button
                             onClick={() => {
                                 if (!isMinimized) {
                                     // User is minimizing from expanded state - trigger spotlight onboarding
@@ -397,10 +409,12 @@ export const MusicDock: React.FC = () => {
                                 }
                                 setIsMinimized(!isMinimized);
                             }}
-                            className="absolute -top-1 -right-1 z-50 w-4 h-4 md:w-5 md:h-5 rounded-full bg-white/80 backdrop-blur-sm border border-white/50 shadow-md flex items-center justify-center text-gray-400 hover:text-gray-900 hover:scale-110 active:scale-95 transition-transform"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="absolute -top-1 -right-1 z-50 w-4 h-4 md:w-5 md:h-5 rounded-full bg-white/80 backdrop-blur-sm border border-white/50 shadow-md flex items-center justify-center text-gray-400 hover:text-gray-900"
                         >
                             <span className="text-[10px] font-bold">{isMinimized ? '+' : '−'}</span>
-                        </button>
+                        </motion.button>
                     </motion.div>
                 )}
             </AnimatePresence>

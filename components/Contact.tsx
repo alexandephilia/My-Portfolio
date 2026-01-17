@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import React from 'react';
 import { CONTACT_INFO } from '../constants';
-import { antiFlickerStyle, blurOnlyVariants, staggerContainerVariants, staggerItemVariants, viewportSettings } from './animations';
+import { antiFlickerStyle, blurOnlyVariants, staggerContainerVariants, staggerItemVariants } from './animations';
 
 const containerVariants = staggerContainerVariants;
 

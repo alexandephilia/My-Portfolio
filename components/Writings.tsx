@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { Bold, Code, Heading1, Heading2, Heading3, Italic, List, ListOrdered, Loader2, PenLine, Plus, Quote, Send, Trash2, X } from 'lucide-react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';

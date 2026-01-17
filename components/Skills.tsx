@@ -1,16 +1,16 @@
+import { Code2, Database, Layers, Quote, Rocket, Wrench } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Quote, X, Code2, Layers, Database, Rocket, Wrench } from 'lucide-react';
 import React, { useState } from 'react';
 import { SKILL_CATEGORIES } from '../constants';
 import { SkillCategory } from '../types';
 import {
     antiFlickerStyle,
+    dailyDriverContentVariants,
+    dailyDriverPillsVariants,
+    popRevealVariants,
     sectionHeaderVariants,
     staggerContainerVariants,
-    staggerItemVariants,
-    popRevealVariants,
-    dailyDriverContentVariants,
-    dailyDriverPillsVariants
+    staggerItemVariants
 } from './animations';
 import ProgressiveText from './ProgressiveText';
 
@@ -24,9 +24,9 @@ const CATEGORY_ICONS: Record<string, any> = {
 };
 
 // Premium shared transition config
-const FOLDER_SPRING = { 
-    type: "spring" as const, 
-    damping: 28, 
+const FOLDER_SPRING = {
+    type: "spring" as const,
+    damping: 28,
     stiffness: 260,
     mass: 1
 };
@@ -44,7 +44,7 @@ const TECH_ICON_URLS: Record<string, string> = {
     "Vue.js": "https://www.svgrepo.com/show/452130/vue.svg",
     "HTML/CSS": "https://www.svgrepo.com/show/452228/html-5.svg",
     "Markdown": "https://www.svgrepo.com/show/330890/markdown.svg",
-    
+
     // Frontend
     "Tailwind CSS": "https://www.svgrepo.com/show/374118/tailwind.svg",
     "Shadcn UI": "https://images.seeklogo.com/logo-png/51/2/shadcn-ui-logo-png_seeklogo-519786.png",
@@ -55,7 +55,7 @@ const TECH_ICON_URLS: Record<string, string> = {
     "21st": "https://ph-files.imgix.net/2aaadbb9-5b71-4869-ac7e-29405103a368.png?auto=format",
     "GSAP": "https://gsap.com/community/uploads/monthly_2020_03/tweenmax.png.cf27916e926fbb328ff214f66b4c8429.png",
     "Three.js": "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/three-js-icon.png",
-    
+
     // Backend
     "PostgreSQL": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/960px-Postgresql_elephant.svg.png",
     "Blockchain": "https://png.pngtree.com/png-vector/20250324/ourmid/pngtree-blockchain-web3-logo-vector-png-image_15850717.png",
@@ -66,7 +66,7 @@ const TECH_ICON_URLS: Record<string, string> = {
     "Supabase": "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/4/supabase-icon-kpjasdqlnu8exakst6f44r.png/supabase-icon-5uqgeeqeknngv9las8zeef.png?_a=DATAg1AAZAA0",
     "Redis": "https://www.svgrepo.com/show/354272/redis.svg",
     "Railway": "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/railway-infrastructure-platform-icon.png", // Add your URL
-    
+
     // Deployment
     "Docker": "https://www.svgrepo.com/show/373553/docker.svg",
     "Git/GitHub": "https://www.svgrepo.com/show/452210/git.svg",
@@ -77,9 +77,9 @@ const TECH_ICON_URLS: Record<string, string> = {
     "Cloudflare": "https://www.svgrepo.com/show/353564/cloudflare.svg",
     "AWS": "https://www.svgrepo.com/show/376356/aws.svg",
     "Nginx": "https://www.svgrepo.com/show/373924/nginx.svg",
-    
+
     // Tools
-     "Cursor IDE": "https://custom.typingmind.com/assets/models/cursor.png", // Add your URL
+    "Cursor IDE": "https://custom.typingmind.com/assets/models/cursor.png", // Add your URL
     "Windsurf": "https://exafunction.github.io/public/brand/windsurf-black-symbol.png", // Add your URL
     "Claude Code": "https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/claude-color.png", // Add your URL
     "Bun": "https://icon.icepanel.io/Technology/svg/Bun.svg",
@@ -92,7 +92,7 @@ const TECH_ICON_URLS: Record<string, string> = {
 };
 
 export const Skills: React.FC = () => {
-    const [anyExpanded, setAnyExpanded] = useState<number | null>(null);
+    const [expandedFolder, setExpandedFolder] = useState<number | null>(null);
 
     return (
         <motion.section
@@ -113,12 +113,12 @@ export const Skills: React.FC = () => {
             </motion.h2>
 
             {/* Premium Wrapped Tray for Folders */}
-            <motion.div 
+            <motion.div
                 variants={staggerContainerVariants}
                 className="
-                    flex flex-wrap md:flex-nowrap items-start justify-center 
-                    gap-x-8 gap-y-12 md:gap-x-12 
-                    relative z-10 w-full mb-20 
+                    flex flex-wrap md:flex-nowrap items-start justify-center
+                    gap-x-8 gap-y-12 md:gap-x-12
+                    relative z-10 w-full mb-20
                 "
             >
                 {SKILL_CATEGORIES.map((category, index) => (
@@ -126,9 +126,10 @@ export const Skills: React.FC = () => {
                         key={index}
                         category={category}
                         index={index}
-                        anyExpanded={anyExpanded !== null}
-                        isOtherExpanded={anyExpanded !== null && anyExpanded !== index}
-                        setGlobalExpanded={(val) => setAnyExpanded(val ? index : null)}
+                        isExpanded={expandedFolder === index}
+                        isOtherExpanded={expandedFolder !== null && expandedFolder !== index}
+                        onExpand={(index) => setExpandedFolder(index)}
+                        onClose={() => setExpandedFolder(null)}
                     />
                 ))}
             </motion.div>
@@ -141,49 +142,60 @@ export const Skills: React.FC = () => {
 interface FolderIconProps {
     category: SkillCategory;
     index: number;
-    anyExpanded: boolean;
+    isExpanded: boolean;
     isOtherExpanded: boolean;
-    setGlobalExpanded: (val: boolean) => void;
+    onExpand: (index: number) => void;
+    onClose: () => void;
 }
 
-const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, anyExpanded, isOtherExpanded, setGlobalExpanded }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
+const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isExpanded, isOtherExpanded, onExpand, onClose }) => {
+    const [isHovered, setIsHovered] = useState(false);
 
     // Optimized event handlers
     const handleOpen = () => {
         if (typeof window !== 'undefined') {
             document.body.style.overflow = 'hidden';
-            setIsExpanded(true);
-            setGlobalExpanded(true);
+            onExpand(index);
         }
     };
 
     const handleClose = () => {
         if (typeof window !== 'undefined') {
             document.body.style.overflow = 'unset';
-            setIsExpanded(false);
-            setGlobalExpanded(false);
+            onClose();
         }
     };
 
+    const shouldBlur = isOtherExpanded && !isHovered;
+
     return (
         <>
-            <motion.div 
+            <motion.div
                 layoutId={`folder-${index}`}
                 onClick={handleOpen}
-                whileHover={!anyExpanded ? { scale: 1.03, y: -4 } : {}}
-                transition={FOLDER_SPRING}
-                animate={isOtherExpanded ? { 
-                    filter: 'blur(8px)',
-                    opacity: 0.4,
-                    scale: 0.92,
-                    y: 0 
-                } : undefined}
-                variants={staggerItemVariants}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                whileHover={!isExpanded && !isOtherExpanded ? { scale: 1.03, y: -4 } : {}}
+                transition={{
+                    ...FOLDER_SPRING,
+                    filter: { duration: 0.3, ease: "easeOut" },
+                    opacity: { duration: 0.3, ease: "easeOut" },
+                    scale: { duration: 0.3, ease: "easeOut" }
+                }}
+                animate={shouldBlur ? {
+                    filter: 'blur(5px)',
+                    opacity: 0.5,
+                    scale: 0.95,
+                } : {
+                    filter: 'blur(0px)',
+                    opacity: 1,
+                    scale: 1,
+                }}
+                variants={!shouldBlur ? staggerItemVariants : undefined}
                 className="flex flex-col items-center gap-5 cursor-pointer group shrink-0"
-                style={{ 
+                style={{
                     willChange: "transform, opacity, filter",
-                    zIndex: isOtherExpanded ? 0 : 10
+                    zIndex: shouldBlur ? 0 : 10
                 }}
             >
                 <div className={`
@@ -201,7 +213,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
                 `}>
                     {/* The 'Shine' Glint */}
                     <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/60 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
-                    
+
                     <div className="
                         relative
                         w-16 h-16 md:w-21 md:h-21
@@ -225,24 +237,23 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
                             {[0, 1, 2].map((i) => {
                                 const skill = category.skills[i];
                                 const iconUrl = skill ? TECH_ICON_URLS[skill] : null;
-                                
+
                                 return (
-                                    <motion.div 
+                                    <motion.div
                                         key={i}
                                         layoutId={`${category.title}-${skill}-icon-container`}
                                         className="aspect-square w-full rounded-[10px] md:rounded-[12px] bg-linear-to-b from-gray-50 to-gray-200/50 border border-black/5 flex items-center justify-center overflow-hidden relative shadow-sm"
                                         style={{ opacity: 1 }}
                                     >
                                         {iconUrl ? (
-                                            <motion.img 
+                                            <motion.img
                                                 layoutId={`${category.title}-${skill}-icon`}
-                                                src={iconUrl} 
-                                                alt={skill} 
-                                                className={`object-contain ${
-                                                    (skill === "REST API" || skill === "Blockchain") 
-                                                    ? "w-full h-full scale-115" 
+                                                src={iconUrl}
+                                                alt={skill}
+                                                className={`object-contain ${(skill === "REST API" || skill === "Blockchain")
+                                                    ? "w-full h-full scale-115"
                                                     : "w-[90%] h-[90%]"
-                                                }`}
+                                                    }`}
                                             />
                                         ) : (
                                             <div className="w-full h-full bg-gray-50/50" />
@@ -256,19 +267,19 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
                                 {[3, 4, 5, 6].map((i) => {
                                     const skill = category.skills[i];
                                     const iconUrl = skill ? TECH_ICON_URLS[skill] : null;
-                                    
+
                                     return (
-                                        <motion.div 
-                                            key={i} 
+                                        <motion.div
+                                            key={i}
                                             layoutId={`${category.title}-${skill}-icon-container`}
                                             className="aspect-square w-full rounded-[4px] md:rounded-[5px] bg-linear-to-b from-gray-50 to-gray-200/50 border border-black/5 flex items-center justify-center shadow-xs overflow-hidden"
                                         >
                                             {iconUrl ? (
-                                                <motion.img 
+                                                <motion.img
                                                     layoutId={`${category.title}-${skill}-icon`}
-                                                    src={iconUrl} 
-                                                    alt={skill} 
-                                                    className="w-full h-full p-0.5 object-contain" 
+                                                    src={iconUrl}
+                                                    alt={skill}
+                                                    className="w-full h-full p-0.5 object-contain"
                                                 />
                                             ) : (
                                                 <div className="w-full h-full bg-gray-50/50" />
@@ -281,10 +292,16 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
                     </div>
                 </div>
 
-                <motion.span 
+                <motion.span
                     layoutId={`title-${index}`}
+                    animate={{ scale: 1, opacity: 1 }}
                     className="text-[9px] md:text-[11px] font-black text-gray-400 group-hover:text-gray-900 uppercase tracking-widest text-center"
                     transition={FOLDER_SPRING}
+                    style={{
+                        WebkitFontSmoothing: 'antialiased',
+                        backfaceVisibility: 'hidden',
+                        transform: 'translateZ(0)'
+                    }}
                 >
                     {category.title}
                 </motion.span>
@@ -294,9 +311,9 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
             <AnimatePresence>
                 {isExpanded && (
                     <div className="fixed inset-0 z-110 flex items-center justify-center pointer-events-none p-4">
-                        <div 
-                            className="absolute inset-0 pointer-events-auto" 
-                            onClick={handleClose} 
+                        <div
+                            className="absolute inset-0 pointer-events-auto"
+                            onClick={handleClose}
                         />
 
                         {/* Premium Outer Ring - Wrapper Div */}
@@ -325,10 +342,16 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
                             ">
                                 <div className="px-10 py-8 md:px-14 md:py-14 flex flex-col gap-6">
                                     <div className="flex items-center justify-center">
-                                        <motion.h3 
+                                        <motion.h3
                                             layoutId={`title-${index}`}
+                                            animate={{ scale: 1, opacity: 1 }}
                                             className="text-xl md:text-2xl font-black text-gray-900 tracking-tight"
                                             transition={FOLDER_SPRING}
+                                            style={{
+                                                WebkitFontSmoothing: 'antialiased',
+                                                backfaceVisibility: 'hidden',
+                                                transform: 'translateZ(0)'
+                                            }}
                                         >
                                             {category.title}
                                         </motion.h3>
@@ -339,9 +362,9 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
                                         {category.skills.map((skill, i) => {
                                             const iconUrl = TECH_ICON_URLS[skill];
                                             const isTracked = i < 7;
-                                            
+
                                             return (
-                                                <motion.div 
+                                                <motion.div
                                                     key={i}
                                                     layoutId={isTracked ? `${category.title}-${skill}-icon-container` : undefined}
                                                     initial={!isTracked ? { opacity: 0, scale: 0.8, filter: 'blur(8px)' } : false}
@@ -373,15 +396,14 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
                                                         p-2 md:p-2.5
                                                     ">
                                                         {iconUrl ? (
-                                                            <motion.img 
+                                                            <motion.img
                                                                 layoutId={isTracked ? `${category.title}-${skill}-icon` : undefined}
-                                                                src={iconUrl} 
-                                                                alt={skill} 
-                                                                className={`object-contain ${
-                                                                    (skill === "REST API" || skill === "Blockchain" || skill === "JavaScript")
+                                                                src={iconUrl}
+                                                                alt={skill}
+                                                                className={`object-contain ${(skill === "REST API" || skill === "Blockchain" || skill === "JavaScript")
                                                                     ? "w-full h-full scale-125"
                                                                     : "w-[85%] h-[85%] scale-110"
-                                                                }`}
+                                                                    }`}
                                                                 animate={isTracked ? {
                                                                     filter: ["brightness(1)", "brightness(1.5)", "brightness(1)"],
                                                                 } : {}}
@@ -396,7 +418,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, any
                                                             <div className="w-2 h-2 rounded-full bg-gray-200" />
                                                         )}
                                                     </div>
-                                                    <motion.span 
+                                                    <motion.span
                                                         layoutId={isTracked ? `${category.title}-${skill}-text` : undefined}
                                                         initial={!isTracked ? { opacity: 0, y: 5 } : false}
                                                         animate={{ opacity: 1, y: 0 }}
@@ -548,7 +570,7 @@ const MacMiniSection: React.FC = () => {
                     }}
                 />
 
-                <motion.div 
+                <motion.div
                     variants={popRevealVariants}
                     className="w-full md:w-5/12 p-8 pb-0 md:pb-8 flex items-center justify-center relative z-10"
                 >
@@ -563,7 +585,7 @@ const MacMiniSection: React.FC = () => {
                     </div>
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                     variants={dailyDriverContentVariants}
                     className="w-full md:w-7/12 p-8 md:p-12 text-center md:text-left flex flex-col justify-center gap-6 relative z-10"
                 >
@@ -585,7 +607,7 @@ const MacMiniSection: React.FC = () => {
                         Compact yet incredibly powerful. This little machine handles my entire development stack from Backend to heavy frontend builds silently and efficiently. I use a multi-screen setup which allows me to do rapid prototyping and testing.
                     </ProgressiveText>
 
-                    <motion.div 
+                    <motion.div
                         variants={dailyDriverPillsVariants}
                         className="flex flex-wrap gap-1.5 justify-center md:justify-start"
                     >
@@ -602,7 +624,7 @@ const MacMiniSection: React.FC = () => {
 };
 
 const SpecBadge: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <motion.span 
+    <motion.span
         variants={staggerItemVariants}
         className="
             relative
@@ -613,7 +635,7 @@ const SpecBadge: React.FC<{ children: React.ReactNode }> = ({ children }) => (
             text-[7px] md:text-[8px] font-black text-gray-500/90 tracking-[0.12em] uppercase
             shadow-[
                 0_1px_1px_rgba(255,255,255,1),
-                inset_0_2px_4px_rgba(0,0,0,0.1),
+                inset_0_1px_2px_rgba(0,0,0,0.1),
                 inset_0_2px_4px_rgba(0,0,0,0.05)
             ]
             inline-flex items-center justify-center
@@ -624,15 +646,15 @@ const SpecBadge: React.FC<{ children: React.ReactNode }> = ({ children }) => (
         style={{ willChange: "transform, opacity, filter" }}
     >
         {/* The 'Recessed' Bottom Layer */}
-        <div className="absolute inset-0 bg-linear-to-b from-gray-200 to-gray-50 opacity-40 shadow-[inset_0_1.5px_3px_rgba(0,0,0,0.1)]" />
+        <div className="absolute inset-0 bg-linear-to-b from-gray-200 to-gray-50 opacity-40 shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)]" />
 
         {/* The Raised Content Pill - Sitting inside the well */}
         <div className="
-            absolute inset-[1.5px] 
-            rounded-[7px] 
+            absolute inset-[1px]
+            rounded-[7px]
             bg-linear-to-b from-white to-[#f8f8f8]
             shadow-[
-                0_1.5px_3px_rgba(0,0,0,0.05),
+                0_1.5px_1px_rgba(0,0,0,0.05),
                 inset_0_1px_0_rgba(255,255,255,1)
             ]
         " />

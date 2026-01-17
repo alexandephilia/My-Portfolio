@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import React, { useState } from 'react';
 import { STACK_INSIGHTS } from '../constants';
 import { antiFlickerStyle, floatingStaggerItemVariants, sectionHeaderVariants, staggerContainerVariants } from './animations';

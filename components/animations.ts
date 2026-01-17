@@ -1,4 +1,4 @@
-import { Variants } from 'framer-motion';
+import { Variants } from 'motion/react';
 
 // Optimized blur reveal - uses GPU-accelerated properties only
 // Key insight: animate opacity and transform separately from filter

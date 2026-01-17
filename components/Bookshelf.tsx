@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
 import { Book } from '../types';
 import { floatingTopStaggerItemVariants, staggerContainerVariants } from './animations';
@@ -49,7 +49,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onSelect, isActive, onActivat
 
     return (
         <div
-            className={`relative w-[90px] md:w-[140px] aspect-[2/3] flex flex-col items-center group/book perspective-[1000px] z-0 transition-transform duration-300 ${isFloating ? 'z-50' : ''} ${isActive ? 'is-active' : ''}`}
+            className={`relative w-[90px] md:w-[140px] aspect-2/3 flex flex-col items-center group/book perspective-[1000px] z-0 transition-transform duration-300 ${isFloating ? 'z-50' : ''} ${isActive ? 'is-active' : ''}`}
             onMouseEnter={() => !isTouchDevice && setIsHovered(true)}
             onMouseLeave={() => !isTouchDevice && setIsHovered(false)}
             onClick={handleClick}
@@ -90,11 +90,11 @@ const BookCard: React.FC<BookCardProps> = ({ book, onSelect, isActive, onActivat
                         />
 
                         {/* Spine Groove Effect */}
-                        <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-gradient-to-r from-black/20 to-transparent z-30 mix-blend-multiply" />
-                        <div className="absolute left-[3px] top-0 bottom-0 w-[1px] bg-white/30 z-30" />
+                        <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-linear-to-r from-black/20 to-transparent z-30 mix-blend-multiply" />
+                        <div className="absolute left-[3px] top-0 bottom-0 w-px bg-white/30 z-30" />
 
                         {/* Surface Sheen */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-black/10 pointer-events-none mix-blend-overlay" />
+                        <div className="absolute inset-0 bg-linear-to-tr from-white/20 via-transparent to-black/10 pointer-events-none mix-blend-overlay" />
 
                         {/* Hover/Active Highlight */}
                         <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/book:opacity-100 group-[.is-active]/book:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -131,7 +131,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onSelect, isActive, onActivat
                         backgroundSize: '3px 100%'
                     }}
                 >
-                    <div className="absolute inset-0 bg-gradient-to-l from-black/10 to-transparent"></div>
+                    <div className="absolute inset-0 bg-linear-to-l from-black/10 to-transparent"></div>
                 </div>
 
                 {/* PAGES (Top) */}
@@ -258,7 +258,7 @@ export const Bookshelf: React.FC = () => {
     }, [activeBookId, isTouchDevice]);
 
     const ShelfBase = () => (
-        <div className="w-[100%] max-w-[700px] h-[20px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded-lg -mt-4 shadow-[0_9px_15px_-5px_rgba(0,0,0,0.3)] flex items-center justify-center relative z-0">
+        <div className="w-full max-w-[700px] h-[20px] bg-linear-to-r from-gray-200 via-gray-100 to-gray-200 rounded-lg -mt-4 shadow-[0_9px_15px_-5px_rgba(0,0,0,0.3)] flex items-center justify-center relative z-0">
             <div className="w-full h-[2px] bg-gray-300/50" />
         </div>
     );

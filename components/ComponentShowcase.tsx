@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { Moon, Sun } from 'lucide-react';
 import React, { useState } from 'react';
 import { BudgetCardShowcase } from './showcases/BudgetCardShowcase';

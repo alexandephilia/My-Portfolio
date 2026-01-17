@@ -1,4 +1,4 @@
-import { motion, Variants, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, Variants, useMotionValue, useSpring, useTransform, AnimatePresence } from 'motion/react';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import React, { useState } from 'react';
 import { Project } from '../types';

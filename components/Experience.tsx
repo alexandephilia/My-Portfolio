@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { ExternalLink } from 'lucide-react';
 import React from 'react';
 import { EXPERIENCE } from '../constants';

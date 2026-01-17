@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useMotionValue, useTransform, animate, useSpring } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValue, useTransform, animate, useSpring } from 'motion/react';
 import { CheckCircle2, Download, Loader2 } from 'lucide-react';
 import React, { useState, useRef, useEffect } from 'react';
 import { useDevice } from './hooks/useDevice';

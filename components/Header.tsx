@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import React from 'react';
 import { SOCIAL_LINKS } from '../constants';
 import { antiFlickerStyle, staggerContainerVariants, staggerItemVariants } from './animations';

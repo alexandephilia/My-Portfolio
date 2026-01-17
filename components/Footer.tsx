@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { ArrowUp, Sparkles } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { CONTACT_INFO } from '../constants';

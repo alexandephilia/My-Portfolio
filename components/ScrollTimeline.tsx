@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { useDevice } from './hooks/useDevice';
 

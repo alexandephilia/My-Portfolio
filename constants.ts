@@ -191,6 +191,9 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
             "Shadcn UI",
             "TanStack",
             "Framer Motion",
+            "Cult UI",
+            "Headless UI",
+            "21st",
             "GSAP",
             "Three.js",
         ]
@@ -198,12 +201,15 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
     {
         title: "Backend",
         skills: [
+            "PostgreSQL",
+            "WebSocket",
+            "Prisma",
             "MongoDB",
             "Supabase",
             "Redis",
             "Railway",
+            "Blockchain",
             "REST API",
-            "WebSocket",
         ]
     },
     {

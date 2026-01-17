@@ -265,7 +265,7 @@ export const TransformDock: React.FC = () => {
                                 }
                             }}
                             onClick={handleCollapse}
-                            className="absolute -top-0.5 -right-1 z-50 w-5 h-5 rounded-full bg-white border border-gray-200 shadow-lg flex items-center justify-center text-gray-500 hover:text-gray-900 hover:scale-110 active:scale-95 transition-transform pointer-events-auto"
+                            className="absolute -top-0.5 -right-1 z-50 w-5 h-5 rounded-full bg-white border border-gray-200 shadow-lg flex items-center justify-center text-gray-500 hover:text-gray-900 hover:scale-110 active:scale-95 pointer-events-auto"
                         >
                             <X size={10} strokeWidth={2.5} />
                         </motion.button>
@@ -343,7 +343,7 @@ export const TransformDock: React.FC = () => {
                                         onClick={() => handleExpand(item.id)}
                                         whileHover={{ scale: 1.08 }}
                                         whileTap={{ scale: 0.95 }}
-                                        className="relative w-9 h-9 rounded-[12px] flex items-center justify-center hover:bg-white/80 hover:shadow-md transition-all duration-150 overflow-hidden"
+                                        className="relative w-9 h-9 rounded-[12px] flex items-center justify-center hover:bg-white/80 hover:shadow-md overflow-hidden"
                                     >
                                         <item.icon
                                             size={18}
@@ -392,7 +392,6 @@ export const TransformDock: React.FC = () => {
                                                             onClick={() => setActiveMode(item.id)}
                                                             className={`
                                                                 relative p-2 rounded-full overflow-hidden
-                                                                transition-all duration-150
                                                                 ${activeMode === item.id
                                                                     ? 'bg-linear-to-b from-gray-700 to-gray-900 text-white shadow-lg'
                                                                     : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'

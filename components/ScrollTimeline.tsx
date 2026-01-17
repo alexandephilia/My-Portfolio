@@ -7,7 +7,6 @@ const SECTIONS_CONFIG = [
     { id: 'hero', label: 'Home' },
     { id: 'projects', label: 'Projects' },
     { id: 'experience', label: 'Experience' },
-    { id: 'philosophy', label: 'Philosophy' },
     { id: 'skills', label: 'Skills' },
     { id: 'contact', label: 'Beyond Work' },
 ];
@@ -228,7 +227,7 @@ const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseY
                         e.stopPropagation();
                         document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className={`absolute right-14 lg:right-20 flex items-center transition-all duration-300 transform cursor-pointer pointer-events-auto outline-none z-10
+                    className={`absolute right-14 lg:right-20 flex items-center transform cursor-pointer pointer-events-auto outline-none z-10
             ${isActive
                             ? `text-blue-600 font-bold translate-x-[-8px] lg:translate-x-[-12px] opacity-100`
                             : `text-gray-500 hover:text-gray-900 font-medium translate-x-2 ${isRevealed ? 'opacity-100' : 'opacity-0'} group-hover/rail:opacity-100 group-hover/rail:translate-x-0`
@@ -250,7 +249,7 @@ const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseY
                     backgroundColor: useTransform(distance, [0, 0.1], [isActive ? '#2563eb' : '#374151', '#9ca3af']),
                     boxShadow: useTransform(distance, [0, 0.05], [isActive ? '0 0 12px rgba(37,99,235,0.8)' : '0 0 0px rgba(0,0,0,0)', '0 0 0px rgba(0,0,0,0)'])
                 }}
-                className="transition-colors duration-300 pointer-events-none rounded-full z-0"
+                className="pointer-events-none rounded-full z-0"
             />
         </div>
     );

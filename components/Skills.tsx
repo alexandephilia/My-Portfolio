@@ -8,6 +8,9 @@ import {
     sectionHeaderVariants,
     staggerContainerVariants,
     staggerItemVariants,
+    popRevealVariants,
+    dailyDriverContentVariants,
+    dailyDriverPillsVariants
 } from './animations';
 
 // Mapping categories to their hero icons
@@ -43,14 +46,20 @@ const TECH_ICON_URLS: Record<string, string> = {
     
     // Frontend
     "Tailwind CSS": "https://www.svgrepo.com/show/374118/tailwind.svg",
-    "Shadcn UI": "https://images.seeklogo.com/logo-png/51/2/shadcn-ui-logo-png_seeklogo-519786.png", // Add your URL
-    "TanStack": "https://tanstack.com/images/logos/splash-light.png", // Add your URL
+    "Shadcn UI": "https://images.seeklogo.com/logo-png/51/2/shadcn-ui-logo-png_seeklogo-519786.png",
+    "TanStack": "https://tanstack.com/images/logos/splash-light.png",
     "Framer Motion": "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/vector-icons/brand-framer-motion-pk1mas1m7u9hi06fqzq77f.png/brand-framer-motion-nuunolaqtcs7zlblwkjs.png?_a=DATAg1AAZAA0",
-    "GSAP": "https://gsap.com/community/uploads/monthly_2020_03/tweenmax.png.cf27916e926fbb328ff214f66b4c8429.png", // Add your URL
+    "Cult UI": "https://www.cult-ui.com/favicon.ico",
+    "Headless UI": "https://images.seeklogo.com/logo-png/43/2/headless-ui-logo-png_seeklogo-434970.png",
+    "21st": "https://ph-files.imgix.net/2aaadbb9-5b71-4869-ac7e-29405103a368.png?auto=format",
+    "GSAP": "https://gsap.com/community/uploads/monthly_2020_03/tweenmax.png.cf27916e926fbb328ff214f66b4c8429.png",
     "Three.js": "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/three-js-icon.png",
     
     // Backend
-    "REST API": "https://www.opc-router.de/wp-content/uploads/2020/05/REST_socialmedia.jpg", // Add your URL
+    "PostgreSQL": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/960px-Postgresql_elephant.svg.png",
+    "Blockchain": "https://png.pngtree.com/png-vector/20250324/ourmid/pngtree-blockchain-web3-logo-vector-png-image_15850717.png",
+    "Prisma": "https://www.svgrepo.com/show/354210/prisma.svg",
+    "REST API": "https://www.opc-router.de/wp-content/uploads/2020/05/REST_socialmedia.jpg",
     "WebSocket": "https://www.outsystems.com/Forge_BL/rest/ComponentThumbnail/GetURL_ComponentThumbnail?ProjectImageId=17523", // Add your URL
     "MongoDB": "https://www.svgrepo.com/show/373845/mongo.svg",
     "Supabase": "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/4/supabase-icon-kpjasdqlnu8exakst6f44r.png/supabase-icon-5uqgeeqeknngv9las8zeef.png?_a=DATAg1AAZAA0",
@@ -86,7 +95,9 @@ export const Skills: React.FC = () => {
 
     return (
         <motion.section
-            layout
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
             variants={staggerContainerVariants}
             className="p-6 md:p-8 border-b border-dashed border-gray-200 bg-[#FAFAFA] relative overflow-visible"
             style={antiFlickerStyle}
@@ -97,7 +108,7 @@ export const Skills: React.FC = () => {
                 variants={sectionHeaderVariants}
                 className="text-[10px] md:text-[12px] font-bold text-[rgb(74,108,196)] tracking-wider uppercase mb-8"
             >
-                Portfolio Stack
+                Skills Stack
             </motion.h2>
 
             {/* Premium Wrapped Tray for Folders */}
@@ -129,26 +140,31 @@ interface FolderIconProps {
     setGlobalExpanded: (val: boolean) => void;
 }
 
-const FolderIcon: React.FC<FolderIconProps> = ({ category, index, isOtherExpanded, setGlobalExpanded }) => {
+const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isOtherExpanded, setGlobalExpanded }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
-    // Event-driven scroll lock - no useEffect needed
+    // Optimized event handlers
     const handleOpen = () => {
-        document.body.style.overflow = 'hidden';
-        setIsExpanded(true);
-        setGlobalExpanded(true);
+        if (typeof window !== 'undefined') {
+            document.body.style.overflow = 'hidden';
+            setIsExpanded(true);
+            setGlobalExpanded(true);
+        }
     };
 
     const handleClose = () => {
-        document.body.style.overflow = 'unset';
-        setIsExpanded(false);
-        setGlobalExpanded(false);
+        if (typeof window !== 'undefined') {
+            document.body.style.overflow = 'unset';
+            setIsExpanded(false);
+            setGlobalExpanded(false);
+        }
     };
 
     return (
         <>
             <motion.div 
                 layoutId={`folder-${index}`}
+                variants={staggerItemVariants}
                 onClick={handleOpen}
                 whileHover={{ scale: 1.03, y: -4 }}
                 transition={FOLDER_SPRING}
@@ -158,24 +174,42 @@ const FolderIcon: React.FC<FolderIconProps> = ({ category, index, isOtherExpande
                     scale: isOtherExpanded ? 0.95 : 1
                 }}
                 className="flex flex-col items-center gap-5 cursor-pointer group shrink-0"
+                style={{ willChange: "transform, opacity, filter" }}
             >
                 <div className={`
+                    relative overflow-hidden
                     p-1 md:p-1.5
-                    bg-linear-to-b from-white via-gray-50/50 to-gray-100/80
+                    bg-linear-to-b from-white via-white/40 to-gray-200/50
                     rounded-[18px] md:rounded-[24px]
-                    border border-gray-200/60
-                    shadow-[inset_0_1px_1.5px_rgba(255,255,255,1),0_8px_20px_-10px_rgba(0,0,0,0.05)]
-                    duration-300 ${!isOtherExpanded ? 'group-hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.12)]' : ''}
+                    border border-white/80
+                    shadow-[
+                        0_8px_20px_-10px_rgba(0,0,0,0.1),
+                        inset_0_1px_1px_rgba(255,255,255,1),
+                        inset_0_-1px_1px_rgba(0,0,0,0.05)
+                    ]
+                    ${!isOtherExpanded ? 'group-hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)] transition-all duration-300' : ''}
                 `}>
+                    {/* The 'Shine' Glint */}
+                    <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/60 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
+                    
                     <div className="
+                        relative
                         w-16 h-16 md:w-21 md:h-21
                         rounded-[12px] md:rounded-[18px]
-                        bg-white/70 backdrop-blur-md
-                        border border-white/90
-                        shadow-[0_12px_30px_-5px_rgba(0,0,0,0.08),inset_0_1.5px_1px_rgba(255,255,255,1)]
+                        bg-linear-to-br from-white/95 via-white/80 to-gray-50/50
+                        backdrop-blur-xl
+                        border border-white
+                        shadow-[
+                            0_12px_30px_-5px_rgba(0,0,0,0.08),
+                            inset_0_1.5px_1px_rgba(255,255,255,1),
+                            inset_0_-1px_2px_rgba(0,0,0,0.02)
+                        ]
                         flex items-center justify-center
-                        p-1.5 md:p-2
+                        p-1.5 md:p-1
+                        overflow-hidden
                     ">
+                        {/* Internal Rim Light */}
+                        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white to-transparent opacity-80" />
                     <div className="grid grid-cols-2 gap-1.5 w-full h-full p-0.5">
                         {/* 3 Main Icons (Top-Left, Top-Right, Bottom-Left) */}
                         {[0, 1, 2].map((i) => {
@@ -194,7 +228,11 @@ const FolderIcon: React.FC<FolderIconProps> = ({ category, index, isOtherExpande
                                             layoutId={`${category.title}-${skill}-icon`}
                                             src={iconUrl} 
                                             alt={skill} 
-                                            className="w-[80%] h-[80%] object-contain" 
+                                            className={`object-contain ${
+                                                (skill === "REST API" || skill === "Blockchain") 
+                                                ? "w-full h-full scale-115" 
+                                                : "w-[90%] h-[90%]"
+                                            }`}
                                         />
                                     ) : (
                                         <div className="w-full h-full bg-gray-50/50" />
@@ -220,7 +258,7 @@ const FolderIcon: React.FC<FolderIconProps> = ({ category, index, isOtherExpande
                                                 layoutId={`${category.title}-${skill}-icon`}
                                                 src={iconUrl} 
                                                 alt={skill} 
-                                                className="w-[80%] h-[80%] object-contain" 
+                                                className="w-full h-full p-0.5 object-contain" 
                                             />
                                         ) : (
                                             <div className="w-full h-full bg-gray-50/50" />
@@ -235,7 +273,7 @@ const FolderIcon: React.FC<FolderIconProps> = ({ category, index, isOtherExpande
 
                 <motion.span 
                     layoutId={`title-${index}`}
-                    className="text-[9px] md:text-[11px] font-black text-gray-400 group-hover:text-gray-900 transition-colors uppercase tracking-widest text-center"
+                    className="text-[9px] md:text-[11px] font-black text-gray-400 group-hover:text-gray-900 uppercase tracking-widest text-center"
                     transition={FOLDER_SPRING}
                 >
                     {category.title}
@@ -295,7 +333,6 @@ const FolderIcon: React.FC<FolderIconProps> = ({ category, index, isOtherExpande
                                                             border border-white
                                                 shadow-[0_4px_10px_rgba(0,0,0,0.08),inset_0_2px_1px_rgba(255,255,255,1)]                                            flex items-center justify-center 
                                                             text-gray-600 hover:text-gray-900 
-                                                             duration-300
                                                             active:scale-95 active:shadow-inner
                                                             relative z-50
                                                         "
@@ -348,7 +385,11 @@ const FolderIcon: React.FC<FolderIconProps> = ({ category, index, isOtherExpande
                                                                             layoutId={isTracked ? `${category.title}-${skill}-icon` : undefined}
                                                                             src={iconUrl} 
                                                                             alt={skill} 
-                                                                            className="w-[85%] h-[85%] object-contain scale-110"
+                                                                            className={`object-contain ${
+                                                                                (skill === "REST API" || skill === "Blockchain")
+                                                                                ? "w-full h-full scale-125"
+                                                                                : "w-[85%] h-[85%] scale-110"
+                                                                            }`}
                                                                             animate={isTracked ? {
                                                                                 filter: ["brightness(1)", "brightness(1.5)", "brightness(1)"],
                                                                             } : {}}
@@ -384,7 +425,7 @@ const FolderIcon: React.FC<FolderIconProps> = ({ category, index, isOtherExpande
             </AnimatePresence>
         </>
     );
-};
+});
 
 const PhilosophySection: React.FC = () => {
     return (
@@ -405,8 +446,9 @@ const PhilosophySection: React.FC = () => {
                 w-full
                 rounded-2xl md:rounded-[32px]
                 bg-transparent
-                border border-dashed border-gray-300
+                border border-dashed border-gray-200/60
                 group
+                overflow-visible
             ">
                 <div className="absolute -top-4 -left-4 z-20 p-2.5 bg-[#FAFAFA] rounded-full border border-dashed border-gray-300 shadow-sm">
                     <Quote size={20} className="text-gray-400 fill-gray-100 rotate-180" />
@@ -420,7 +462,8 @@ const PhilosophySection: React.FC = () => {
                         <img
                             src="/philosophy.png"
                             alt="Thinking Philosophy"
-                            className="w-full h-full object-cover select-none grayscale-[0.2] group-hover:grayscale-0 duration-1000 rounded-[inherit]"
+                            className="w-full h-full object-cover select-none rounded-[inherit]"
+                            style={{ transform: 'translateZ(0)', willChange: 'transform' }}
                             draggable={false}
                         />
                         <div className="absolute inset-0 shadow-[inset_0_2px_15px_rgba(0,0,0,0.05)] pointer-events-none rounded-[inherit]" />
@@ -494,7 +537,7 @@ const MacMiniSection: React.FC = () => {
                     relative
                     w-full
                     rounded-[32px] md:rounded-[48px]
-                    bg-gradient-to-b from-white to-[#F5F5F7]
+                    bg-linear-to-b from-white to-[#F5F5F7]
                     border border-gray-200
                     shadow-[inset_0_1.5px_1px_rgba(255,255,255,1),0_4px_12px_rgba(0,0,0,0.03)]
                     overflow-hidden
@@ -510,19 +553,25 @@ const MacMiniSection: React.FC = () => {
                     }}
                 />
 
-                <div className="w-full md:w-5/12 p-8 pb-0 md:pb-8 flex items-center justify-center relative z-10">
+                <motion.div 
+                    variants={popRevealVariants}
+                    className="w-full md:w-5/12 p-8 pb-0 md:pb-8 flex items-center justify-center relative z-10"
+                >
                     <div className="relative w-[280px] md:w-[380px] aspect-square flex items-center justify-center">
-                        <div className="absolute inset-x-4 bottom-8 h-8 bg-black/20 blur-2xl rounded-[100%] transform scale-x-75 group-hover:scale-x-90 group-hover:bg-black/25 transition-transform duration-700" />
+                        <div className="absolute inset-x-4 bottom-8 h-8 bg-black/20 blur-2xl rounded-[100%] transform scale-x-75" />
                         <motion.img
                             src="/mac_mini.png"
                             alt="Mac Mini M4"
                             draggable={false}
-                            className="w-full h-full object-contain relative z-10 drop-shadow-[0_20px_40px_rgba(0,0,0,0.15)] select-none scale-[1.14] md:scale-[1.25] transition-transform duration-700 group-hover:scale-[1.3]"
+                            className="w-full h-full object-contain relative z-10 drop-shadow-[0_20px_40px_rgba(0,0,0,0.15)] select-none scale-[1.14] md:scale-[1.25]"
                         />
                     </div>
-                </div>
+                </motion.div>
 
-                <div className="w-full md:w-7/12 p-8 md:p-12 text-center md:text-left flex flex-col justify-center gap-6 relative z-10">
+                <motion.div 
+                    variants={dailyDriverContentVariants}
+                    className="w-full md:w-7/12 p-8 md:p-12 text-center md:text-left flex flex-col justify-center gap-6 relative z-10"
+                >
                     <div className="flex flex-col gap-2">
                         <div className="flex items-center justify-center md:justify-start gap-4">
                             <h4 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tight">
@@ -541,29 +590,58 @@ const MacMiniSection: React.FC = () => {
                         Compact yet incredibly powerful. This little machine handles my entire development stack from Backend to heavy frontend builds silently and efficiently. I use a multi-screen setup which allows me to do rapid prototyping and testing.
                     </p>
 
-                    <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
+                    <motion.div 
+                        variants={dailyDriverPillsVariants}
+                        className="flex flex-wrap gap-1.5 justify-center md:justify-start"
+                    >
                         <SpecBadge>Apple Silicon</SpecBadge>
                         <SpecBadge>16GB Unified</SpecBadge>
                         <SpecBadge>512GB SSD</SpecBadge>
                         <SpecBadge>Remote Access</SpecBadge>
                         <SpecBadge>macOS Tahoe</SpecBadge>
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
             </motion.div>
         </motion.div>
     );
 };
 
 const SpecBadge: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <span className="
-        px-2.5 py-1
-        rounded-lg
-        bg-linear-to-b from-white via-white to-gray-100/50
-        border border-gray-200/50
-        text-[7px] md:text-[9px] font-bold text-gray-500 uppercase tracking-wider
-        shadow-[0_1px_0_#e5e7eb,0_1px_2px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,1)]
-        whitespace-nowrap
-    ">
-        {children}
-    </span>
+    <motion.span 
+        variants={staggerItemVariants}
+        className="
+            relative
+            px-2.5 py-1
+            rounded-lg
+            bg-gray-100/50
+            border border-gray-200/50
+            text-[7px] md:text-[8px] font-black text-gray-500/90 tracking-[0.12em] uppercase
+            shadow-[
+                0_1px_1px_rgba(255,255,255,1),
+                inset_0_2px_4px_rgba(0,0,0,0.1),
+                inset_0_2px_4px_rgba(0,0,0,0.05)
+            ]
+            inline-flex items-center justify-center
+            overflow-hidden
+            whitespace-nowrap
+            group
+        "
+        style={{ willChange: "transform, opacity, filter" }}
+    >
+        {/* The 'Recessed' Bottom Layer */}
+        <div className="absolute inset-0 bg-linear-to-b from-gray-200 to-gray-50 opacity-40 shadow-[inset_0_1.5px_3px_rgba(0,0,0,0.1)]" />
+
+        {/* The Raised Content Pill - Sitting inside the well */}
+        <div className="
+            absolute inset-[1.5px] 
+            rounded-[7px] 
+            bg-linear-to-b from-white to-[#f8f8f8]
+            shadow-[
+                0_1.5px_3px_rgba(0,0,0,0.05),
+                inset_0_1px_0_rgba(255,255,255,1)
+            ]
+        " />
+
+        <span className="relative z-10">{children}</span>
+    </motion.span>
 );

@@ -251,7 +251,6 @@ Now be entertaining, you beautiful bastard.`
                             onClick={() => setActiveMode(item.id)}
                             className={`
                                 relative p-2 rounded-full overflow-hidden
-                                transition-all duration-150
                                 ${activeMode === item.id
                                     ? 'bg-linear-to-b from-gray-700 to-gray-900 text-white shadow-lg'
                                     : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100/80'
@@ -410,7 +409,7 @@ Now be entertaining, you beautiful bastard.`
                                     >
                                     <div
                                         className={`
-                                            max-w-[85%] px-3 py-2 rounded-2xl text-[10px] leading-relaxed font-mono wrap-break-word transition-all duration-200
+                                            max-w-[85%] px-3 py-2 rounded-2xl text-[10px] leading-relaxed font-mono wrap-break-word
                                             ${msg.role === 'user'
                                                 ? 'bg-blue-600/80 text-white rounded-br-md border border-blue-500/30'
                                                 : 'bg-blue-50/90 text-blue-900 border border-blue-200/50 rounded-bl-md'
@@ -478,7 +477,7 @@ Now be entertaining, you beautiful bastard.`
                 <div
                     className={`
                         flex items-center gap-2 rounded-2xl border px-3 py-1.5 pointer-events-auto
-                        transition-all duration-200 backdrop-blur-2xl backdrop-saturate-150
+                        backdrop-blur-2xl backdrop-saturate-150
                         ${isLoading 
                             ? 'bg-gray-100 border-gray-300' 
                             : 'bg-linear-to-b from-white/10 via-white/20 to-white/80 border-white/40'

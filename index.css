@@ -199,7 +199,6 @@
             0 2px 0 0 rgba(255, 255, 255, 0.15) inset,
             0 -1px 0 0 rgba(0, 0, 0, 0.5) inset,
             0 3px 5px rgba(0, 0, 0, 0.2);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.08);
     }
@@ -304,7 +303,6 @@
             0 1px 0 0 rgb(255, 255, 255) inset,
             0 -1px 0 0 rgba(186, 186, 186, 0.578) inset,
             0 3px 5px rgba(0, 0, 0, 0.1);
-        transition: all 0.2s ease;
         overflow: hidden;
         border: 1px solid rgba(20, 20, 20, 0.06);
     }

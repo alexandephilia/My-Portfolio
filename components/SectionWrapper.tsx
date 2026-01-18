@@ -64,14 +64,20 @@ export const SectionWrapper: React.FC<SectionWrapperProps> = ({ children, classN
                 </div>
             )}
 
-            {/* 3. Grid Lines & Crosshairs (Sibling to Content, Z-0) - Below Content, Above Patterns */ }
+            {/* 3a. Horizontal Line (Sibling to Content, Z-0) - BEHIND Content for clean overlays */}
             <div 
                 className="absolute bottom-0 left-1/2 -translate-x-1/2 w-screen flex items-center justify-center pointer-events-none z-0"
                 aria-hidden="true"
             >
                 {/* Visual Line */}
                 <div className="w-full border-b border-dashed border-gray-300" />
-                
+            </div>
+
+            {/* 3b. Crosshairs (Sibling to Content, Z-50) - ALWAYS ABOVE Content for visibility */}
+            <div 
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-screen flex items-center justify-center pointer-events-none z-50"
+                aria-hidden="true"
+            >
                 {/* Left Intersection Crosshair */}
                 <div 
                     className="absolute flex items-center justify-center text-gray-500"

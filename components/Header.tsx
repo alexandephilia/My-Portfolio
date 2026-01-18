@@ -10,7 +10,7 @@ export const Header: React.FC = () => {
             animate="visible"
             variants={staggerContainerVariants}
             style={antiFlickerStyle}
-            className="flex justify-between items-center p-6 md:p-10 border-b border-dashed border-gray-200 bg-[#FAFAFA]"
+            className="flex justify-between items-center p-6 md:p-10 bg-[#FAFAFA]"
         >
             <motion.div variants={staggerItemVariants} className="flex flex-col gap-1">
                 {/* Branding Logo - Using 14px blur via staggerItemVariants */}

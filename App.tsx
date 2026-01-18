@@ -146,7 +146,7 @@ export default function App() {
                 onContextMenu={(e) => e.preventDefault()}
                 onDragStart={(e) => e.preventDefault()}
             >
-                <div className="relative max-w-[740px] mx-auto border-x border-dashed border-gray-200 bg-[#FAFAFA] min-h-screen flex flex-col">
+                <div className="relative z-10 max-w-[740px] mx-auto border-x border-dashed border-gray-300 bg-[#FAFAFA] min-h-screen flex flex-col">
 
                     <motion.div
                         variants={isFirstLoad ? containerVariants : {}}
@@ -155,7 +155,9 @@ export default function App() {
                         className="flex flex-col"
                     >
                         <motion.div variants={isFirstLoad ? itemVariants : {}}>
-                            <Header />
+                            <SectionWrapper id="header" showPattern={false}>
+                                <Header />
+                            </SectionWrapper>
                         </motion.div>
 
                         <main className="flex flex-col">
@@ -163,12 +165,12 @@ export default function App() {
                                 <Hero />
                             </SectionWrapper>
 
-                            <SectionWrapper id="projects">
+                            <SectionWrapper id="projects" showPattern={false}>
                                 <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
                             </SectionWrapper>
 
                             <SectionWrapper className="relative z-20">
-                                <section className="border-b border-dashed border-gray-200 overflow-visible">
+                                <section className="border-dashed overflow-visible">
                                     <AnimatePresence mode="wait">
                                         <motion.div
                                             key={activeTab}
@@ -244,19 +246,19 @@ export default function App() {
                                 </section>
                             </SectionWrapper>
 
-                            <SectionWrapper id="experience">
+                            <SectionWrapper id="experience" showPattern={false}>
                                 <Experience />
                             </SectionWrapper>
                             <SectionWrapper id="education">
                                 <Education />
                             </SectionWrapper>
-                            <SectionWrapper id="skills">
+                            <SectionWrapper id="skills" showPattern={false}>
                                 <Skills />
                             </SectionWrapper>
                             <SectionWrapper>
                                 <StackInsights />
                             </SectionWrapper>
-                            <SectionWrapper id="contact">
+                            <SectionWrapper id="contact" showPattern={false}>
                                 <Contact />
                             </SectionWrapper>
                             <SectionWrapper>
@@ -264,14 +266,14 @@ export default function App() {
                             </SectionWrapper>
                         </main>
 
-                        <SectionWrapper>
+                        <SectionWrapper showPattern={false}>
                             <Footer />
                         </SectionWrapper>
                     </motion.div>
                     <DraggableSticker
                         id="global-sticker-1"
                         src="/sticker_1.png"
-                        className="bottom-70 -right-[-15rem] md:bottom-35 md:-right-[-32rem]"
+                        className="bottom-70 right-60 md:bottom-35 md:-right-[-32rem]"
                         peelFrom="top"
                     />
                 </div>

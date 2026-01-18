@@ -26,6 +26,22 @@ export const ScrollTimeline = () => {
         restDelta: 0.001
     });
 
+    // --- PHYSICS ENGINE ---
+    // 1. Get velocity of the spring (the "puck") rather than raw scroll for connected feel
+    const velocity = useVelocity(smoothedProgress);
+    
+    // 2. Smooth the velocity for visual transforms (shear/scale) to avoid jitter
+    const physicsVelocity = useSpring(velocity, { 
+        damping: 15, 
+        stiffness: 200, 
+        mass: 0.5 
+    });
+
+    // 3. Wake Factor: Expands the "active zone" based on speed
+    // At rest (0 speed) = 1 (normal size)
+    // At high speed = higher divisor (larger active area)
+    const wakeFactor = useTransform(physicsVelocity, (v) => 1 + Math.abs(v) * 0.5); // Tuned for impact
+
     // Calculate dynamic offsets based on actual element positions
     useEffect(() => {
         const calculateOffsets = () => {
@@ -137,6 +153,9 @@ export const ScrollTimeline = () => {
                             isRevealed={isRevealed}
                             isMobile={isMobile}
                             isTablet={isTablet}
+                            // Physics Props
+                            physicsVelocity={physicsVelocity}
+                            wakeFactor={wakeFactor}
                         />;
                     })}
                 </div>
@@ -227,13 +246,41 @@ const FloatingScrollIndicator = ({ progressValues, sectionOffsets, isMobile }: a
 
 
 // 2. Tick Row
-const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseYProgress, scrollYProgress, isRevealed, isMobile, isTablet }: any) => {
+const TickRow = ({ 
+    i, 
+    tickProgress, 
+    section, 
+    isSection, 
+    smoothedProgress, 
+    mouseYProgress, 
+    scrollYProgress, 
+    isRevealed, 
+    isMobile, 
+    isTablet,
+    physicsVelocity, // Received from parent
+    wakeFactor       // Received from parent (scaling factor > 1)
+}: any) => {
 
-    const distance = useTransform([smoothedProgress, mouseYProgress], ([scroll, mouse]: any) => {
-        const scrollDist = Math.abs(tickProgress - (scroll as number));
-        const mouseDist = mouse === -1 ? 1 : Math.abs(tickProgress - (mouse as number));
-        return Math.min(scrollDist, mouseDist);
-    });
+    // PHYSICS-ENHANCED DISTANCE CALCULATION
+    const distance = useTransform(
+        [smoothedProgress, mouseYProgress, wakeFactor], 
+        ([scroll, mouse, wake]: any) => {
+            const scrollDist = Math.abs(tickProgress - (scroll as number));
+            const mouseDist = mouse === -1 ? 1 : Math.abs(tickProgress - (mouse as number));
+            
+            // "The Wake Effect": Divide actual distance by the wake factor.
+            // If dragging fast, wake > 1, so effective distance becomes smaller, 
+            // causing the transforms (width/opacity) to activate further away.
+            return Math.min(scrollDist, mouseDist) / (wake || 1);
+        }
+    );
+
+    // PHYSICS-ENHANCED SHEAR
+    // When expanding/moving fast, the ticks "shear" or tilt in the wind
+    const skewY = useTransform(physicsVelocity || new MotionValue(0), [-2, 2], [30, -30]); 
+    
+    // Stretch effect to maintain volume
+    const scaleX = useTransform(physicsVelocity || new MotionValue(0), (v: any) => 1 - Math.abs(v || 0) * 0.1);
 
     const width = useTransform(distance, [0, 0.05, 0.15],
         !isRevealed
@@ -281,6 +328,8 @@ const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseY
                     opacity,
                     height: scaleY,
                     x,
+                    skewY,   // Applied Physics
+                    scaleX,  // Applied Physics
                     backgroundColor: useTransform([distance, scrollYProgress], ([d, s]: any) => {
                         const active = Math.abs(tickProgress - (s as number)) < 0.0051;
                         if (active) return '#2563eb';
@@ -292,7 +341,7 @@ const TickRow = ({ i, tickProgress, section, isSection, smoothedProgress, mouseY
                         return '0 0 0px rgba(0,0,0,0)';
                     })
                 }}
-                className="pointer-events-none rounded-full z-0"
+                className="pointer-events-none rounded-full z-0 origin-right transition-colors" // Added origin-right for proper shear anchoring
             />
         </div>
     );

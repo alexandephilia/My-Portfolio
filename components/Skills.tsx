@@ -564,6 +564,7 @@ const MacMiniSection: React.FC = () => {
                     overflow-hidden
                     group
                     flex flex-col md:flex-row items-center
+                    -rotate-2
                 "
             >
                 <div

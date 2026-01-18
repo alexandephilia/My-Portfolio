@@ -1,4 +1,4 @@
-import { GripVertical, BotMessageSquare, Music, X } from 'lucide-react';
+import { BotMessageSquare, GripVertical, Music, X } from 'lucide-react';
 import { AnimatePresence, LayoutGroup, motion, PanInfo, useDragControls } from 'motion/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { SONGS } from '../constants';
@@ -341,9 +341,9 @@ export const TransformDock: React.FC = () => {
                                         animate={{ opacity: 1, scale: 1 }}
                                         transition={{ duration: 0.15, delay: i * 0.03 }}
                                         onClick={() => handleExpand(item.id)}
-                                        whileHover={{ scale: 1.08 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="relative w-9 h-9 rounded-[12px] flex items-center justify-center hover:bg-white/80 hover:shadow-md overflow-hidden"
+                                        whileHover={{ scale: 1.03 }}
+                                        whileTap={{ scale: 0.97 }}
+                                        className="relative w-9 h-9 rounded-[12px] flex items-center justify-center hover:bg-white/60 hover:shadow-sm overflow-hidden"
                                     >
                                         <item.icon
                                             size={18}

@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from 'motion/react';
 import { ArrowUp, Sparkles } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { CONTACT_INFO } from '../constants';
 import { antiFlickerStyle, blurOnlyVariants, viewportSettings } from './animations';
@@ -356,7 +356,7 @@ export const Footer: React.FC = () => {
                 </h1>
             </div>
 
-            
+
         </footer>
     );
 };

@@ -110,7 +110,7 @@ export const CustomCursor = () => {
                         initial={{ opacity: 0, scale: 0 }}
                         animate={{ 
                             opacity: 1, 
-                            scale: isPointer ? 1.5 : 1 
+                            scale: isPointer ? [1.5, 1.6, 1.5] : [1, 1.2, 1] 
                         }}
                         exit={{ opacity: 0, scale: 0 }}
                         style={{
@@ -120,10 +120,17 @@ export const CustomCursor = () => {
                             top: -6,
                         }}
                         transition={{
-                            type: 'spring',
-                            damping: 25,
-                            stiffness: 400,
-                            mass: 0.8
+                            scale: {
+                                duration: 2,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                            },
+                            default: {
+                                type: 'spring',
+                                damping: 25,
+                                stiffness: 400,
+                                mass: 0.8
+                            }
                         }}
                     />
                 )

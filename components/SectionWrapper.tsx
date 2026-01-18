@@ -74,7 +74,7 @@ export const SectionWrapper: React.FC<SectionWrapperProps> = ({ children, classN
                 {/* Left Intersection Crosshair */}
                 <div 
                     className="absolute flex items-center justify-center text-gray-500"
-                    style={{ left: 'calc(50% - 370px)', transform: 'translate(-45%, -1px)' }}
+                    style={{ left: 'calc(50% - 370px)', transform: 'translate(-45%, 0px)' }}
                 >
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10 0V20M0 10H20" stroke="currentColor" strokeWidth="1.5"/>
@@ -84,7 +84,7 @@ export const SectionWrapper: React.FC<SectionWrapperProps> = ({ children, classN
                 {/* Right Intersection Crosshair */}
                 <div 
                     className="absolute flex items-center justify-center text-gray-500"
-                    style={{ left: 'calc(50% + 370px)', transform: 'translate(-50%, -1px)' }}
+                    style={{ left: 'calc(50% + 370px)', transform: 'translate(-50%, 0px)' }}
                 >
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10 0V20M0 10H20" stroke="currentColor" strokeWidth="1.5"/>

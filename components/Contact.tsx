@@ -31,7 +31,7 @@ export const Contact: React.FC = () => {
                         <span className="text-sm md:text-sm font-medium text-gray-900 group-hover:text-blue-900 transition-colors">
                             {item.label}
                         </span>
-                        <span className="text-xs md:text-sm text-gray-400 group-hover:text-blue-600 transition-colors text-right">
+                        <span className="text-xs md:text-sm text-gray-400 group-hover:text-white transition-colors text-right relative z-10">
                             {item.value}
                         </span>
                     </motion.a>

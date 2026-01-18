@@ -231,7 +231,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                             inset_0_-1px_2px_rgba(0,0,0,0.02)
                         ]
                         flex items-center justify-center
-                        p-1.5 md:p-1
+                        p-1.5 md:p1
                         overflow-hidden
                     ">
                         {/* Internal Rim Light */}
@@ -552,33 +552,116 @@ const MacMiniSection: React.FC = () => {
                 </svg>
             </motion.div>
 
-            <motion.div
-                variants={staggerItemVariants}
-                className="
-                    relative
-                    w-full
-                    rounded-[32px] md:rounded-[48px]
-                    bg-linear-to-b from-white to-[#F5F5F7]
-                    border border-gray-200
-                    shadow-[inset_0_1.5px_1px_rgba(255,255,255,1),0_4px_12px_rgba(0,0,0,0.03)]
-                    overflow-hidden
-                    group
-                    flex flex-col md:flex-row items-center
-                    -rotate-2
-                "
+            {/* Outer rings wrapper */}
+            <div
+                className="relative w-full p-1 rounded-[48px] md:rounded-[64px] -rotate-2"
+                style={{
+                    background: 'linear-gradient(180deg, #ffffff 0%, #e5e5e5 100%)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                }}
             >
                 <div
-                    className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                    className="relative w-full p-1 rounded-[44px] md:rounded-[60px]"
                     style={{
-                        backgroundImage: 'radial-gradient(#000 1px, transparent 1px)',
-                        backgroundSize: '16px 16px',
+                        background: 'linear-gradient(180deg, #f8f8f8 0%, #d8d8d8 100%)',
                     }}
-                />
-
-                <motion.div
-                    variants={popRevealVariants}
-                    className="w-full md:w-5/12 p-8 pb-0 md:pb-8 flex items-center justify-center relative z-10"
                 >
+                    <motion.div
+                        variants={staggerItemVariants}
+                        className="
+                            relative
+                            w-full
+                            rounded-[40px] md:rounded-[56px]
+                            overflow-hidden
+                            group
+                            flex flex-col md:flex-row items-center
+                        "
+                        style={{
+                            background: '#ffffff',
+                            border: '4px solid rgba(0, 0, 0, 0.08)',
+                        }}
+                    >
+                        {/* Shine effects in corners */}
+                        <div
+                            className="absolute top-0 left-0 w-48 h-48 pointer-events-none opacity-60"
+                            style={{
+                                background: 'radial-gradient(circle at top left, rgba(255, 255, 255, 0.8) 0%, transparent 70%)',
+                            }}
+                        />
+                        <div
+                            className="absolute top-0 right-0 w-48 h-48 pointer-events-none opacity-40"
+                            style={{
+                                background: 'radial-gradient(circle at top right, rgba(255, 255, 255, 0.6) 0%, transparent 70%)',
+                            }}
+                        />
+                        <div
+                            className="absolute bottom-0 left-0 w-48 h-48 pointer-events-none opacity-30"
+                            style={{
+                                background: 'radial-gradient(circle at bottom left, rgba(200, 200, 200, 0.3) 0%, transparent 70%)',
+                            }}
+                        />
+                        <div
+                            className="absolute bottom-0 right-0 w-48 h-48 pointer-events-none opacity-30"
+                            style={{
+                                background: 'radial-gradient(circle at bottom right, rgba(200, 200, 200, 0.3) 0%, transparent 70%)',
+                            }}
+                        />
+
+                        {/* Corner Bolts */}
+                        {[
+                            { top: '16px', left: '16px' },
+                            { top: '16px', right: '16px' },
+                            { bottom: '16px', left: '16px' },
+                            { bottom: '16px', right: '16px' },
+                        ].map((pos, i) => (
+                            <div
+                                key={i}
+                                className="absolute w-5 h-5 md:w-6 md:h-6 rounded-full z-20"
+                                style={{
+                                    ...pos,
+                                    background: 'radial-gradient(circle at 30% 30%, #9ca3af 0%, #6b7280 50%, #4b5563 100%)',
+                                    boxShadow: `
+                                        inset 0 1px 2px rgba(255, 255, 255, 0.4),
+                                        inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+                                        0 2px 4px rgba(0, 0, 0, 0.3)
+                                    `,
+                                }}
+                            >
+                                <div
+                                    className="absolute inset-[4px] rounded-full"
+                                    style={{
+                                        background: 'radial-gradient(circle at 40% 40%, #374151 0%, #1f2937 100%)',
+                                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.6)',
+                                    }}
+                                >
+                                    <div
+                                        className="absolute top-1/2 left-1/2 w-[60%] h-[1.5px] bg-black/40"
+                                        style={{ transform: 'translate(-50%, -50%)' }}
+                                    />
+                                    <div
+                                        className="absolute top-1/2 left-1/2 w-[1.5px] h-[60%] bg-black/40"
+                                        style={{ transform: 'translate(-50%, -50%)' }}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Clay texture overlay */}
+                        <div
+                            className="absolute inset-0 opacity-[0.08] pointer-events-none mix-blend-overlay"
+                            style={{
+                                backgroundImage: `
+                                    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.3) 0%, transparent 50%),
+                                    radial-gradient(circle at 80% 70%, rgba(0,0,0,0.1) 0%, transparent 50%),
+                                    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E")
+                                `,
+                            }}
+                        />
+
+                        <motion.div
+                            variants={popRevealVariants}
+                            className="w-full md:w-5/12 p-8 pb-0 md:pb-8 flex items-center justify-center relative z-10"
+                        >
                     <div className="relative w-[280px] md:w-[380px] aspect-square flex items-center justify-center">
                         <div className="absolute inset-x-4 bottom-8 h-8 bg-black/20 blur-2xl rounded-[100%] transform scale-x-75" />
                         <motion.img
@@ -599,7 +682,8 @@ const MacMiniSection: React.FC = () => {
                             <h4 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tight">
                                 Mac mini
                             </h4>
-                            <span className="px-3 py-1 bg-linear-to-br from-slate-800 to-slate-900 rounded-lg text-[12px] font-black text-white border border-black shadow-lg uppercase tracking-widest">
+                            <span className="px-3 py-1 bg-linear-to-br from-slate-800 to-slate-900 rounded-lg text-[12px] font-black text-white 
+                             border-black shadow-lg uppercase tracking-widest">
                                 M4
                             </span>
                         </div>
@@ -623,7 +707,9 @@ const MacMiniSection: React.FC = () => {
                         <SpecBadge>macOS Tahoe</SpecBadge>
                     </motion.div>
                 </motion.div>
-            </motion.div>
+                    </motion.div>
+                </div>
+            </div>
         </motion.div>
     );
 };

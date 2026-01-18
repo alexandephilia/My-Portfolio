@@ -47,6 +47,20 @@
         display: none;
     }
 
+    /* Ensure links also have no cursor */
+    a, button, [role="button"] {
+        cursor: none !important;
+    }
+
+    /* Link hover text color */
+    a:hover, button:hover, [role="button"]:hover {
+        color: rgb(74, 108, 196) !important;
+    }
+
+    a:hover span, button:hover span, [role="button"]:hover span {
+        color: inherit !important;
+    }
+
     /* Hide scrollbars on all elements */
     *::-webkit-scrollbar {
         display: none !important;

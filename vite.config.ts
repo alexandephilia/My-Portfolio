@@ -49,7 +49,13 @@ export default defineConfig(async ({ mode }) => {
             port: 3000,
             host: '0.0.0.0',
             watch: {
-                ignored: ['**/.grabbed_element']
+                ignored: [
+                    '**/.grabbed_element',
+                    '**/grabbed_element',
+                    '.grabbed_element',
+                    '**/.workflow_output/**',
+                    '**/.grabby-watcher.pid'
+                ]
             }
         },
         plugins: [

@@ -386,14 +386,14 @@ export const Hero: React.FC = () => {
                         <RevealHighlight
                             text="Full-time & Contract"
                             baseClassName="text-gray-900 font-semibold tracking-tight"
-                            overlayClassName="bg-[rgb(225_226_33_/_85%)] text-black font-semibold tracking-tight rounded"
+                            overlayClassName="bg-linear-to-b from-[#ffffec] to-[#f4f555] border border-[#e8e935]/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] text-[#4c4d0f] font-semibold tracking-tight rounded-[4px]"
                             delay={0.8}
                         />
                         {' '} roles with a specialized focus on {' '}
                         <RevealHighlight
                             text="Async-First"
                             baseClassName="text-gray-800 font-bold"
-                            overlayClassName="bg-[rgb(225_226_33_/_85%)] text-black font-bold rounded"
+                            overlayClassName="bg-linear-to-b from-[#ffffec] to-[#f4f555] border border-[#e8e935]/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] text-[#4c4d0f] font-bold rounded-[4px]"
                             delay={1}
                             duration={1}
                         />.

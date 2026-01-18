@@ -134,7 +134,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
             viewport={{ once: true, amount: 0.1 }}
             style={{
                 willChange: 'opacity, filter, transform',
-                zIndex: isHovered ? 20 : 1 // Dynamic z-index prevents overlap
+                zIndex: isHovered ? 60 : 1 // Dynamic z-index prevents overlap with grid lines (z-50)
             }}
             className="relative group w-full md:w-full cursor-pointer"
             onMouseEnter={() => setIsHovered(true)}

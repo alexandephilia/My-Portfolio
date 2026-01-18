@@ -25,11 +25,14 @@ export const Header: React.FC = () => {
                     <div className="
                         inline-flex items-center gap-1 md:gap-1.5
                         px-1 py-[1px] md:px-2 md:py-0.5
-                        bg-linear-to-b from-emerald-100/80 to-emerald-50
+                        bg-linear-to-b from-white via-emerald-50 to-emerald-100/60
                         rounded-full
-                        border border-emerald-200/50
-                        shadow-[inset_0_2px_4px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(0,0,0,0.08)]
+                        border border-emerald-200/60
+                        shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_2px_rgba(16,185,129,0.1)]
+                        relative overflow-hidden
                     ">
+                        {/* Shine overlay */}
+                        <div className="absolute inset-x-0 top-0 h-[50%] bg-linear-to-b from-white/80 to-transparent pointer-events-none mix-blend-overlay" />
                         <span className="relative flex items-center justify-center h-[6px] w-[6px] md:h-3 md:w-3">
                             <span className="animate-ping absolute inline-flex h-1 w-1 md:h-1.5 md:w-1.5 rounded-full bg-emerald-400/60 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-1 w-1 md:h-1.5 md:w-1.5 bg-emerald-500 shadow-[0_0_3px_rgba(16,185,129,0.5)]"></span>

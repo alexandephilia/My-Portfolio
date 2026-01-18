@@ -21,6 +21,7 @@ export const SectionWrapper: React.FC<SectionWrapperProps> = ({ children, classN
                 whileInView="visible"
                 viewport={viewportSettings}
                 variants={staggerContainerVariants}
+                className="relative z-10"
             >
                 <div className="relative z-10">
                     {children}
@@ -63,9 +64,9 @@ export const SectionWrapper: React.FC<SectionWrapperProps> = ({ children, classN
                 </div>
             )}
 
-            {/* 3. Grid Lines & Crosshairs (Sibling to Content, Z-50) - Escapes Stacking Context */}
+            {/* 3. Grid Lines & Crosshairs (Sibling to Content, Z-0) - Below Content, Above Patterns */ }
             <div 
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-screen flex items-center justify-center pointer-events-none z-50"
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-screen flex items-center justify-center pointer-events-none z-0"
                 aria-hidden="true"
             >
                 {/* Visual Line */}

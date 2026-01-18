@@ -155,21 +155,21 @@ export default function App() {
                         className="flex flex-col"
                     >
                         <motion.div variants={isFirstLoad ? itemVariants : {}}>
-                            <SectionWrapper id="header" showPattern={false}>
+                            <SectionWrapper id="header" className="z-50" showPattern={false}>
                                 <Header />
                             </SectionWrapper>
                         </motion.div>
 
                         <main className="flex flex-col">
-                            <SectionWrapper id="hero">
+                            <SectionWrapper id="hero" className="z-40">
                                 <Hero />
                             </SectionWrapper>
 
-                            <SectionWrapper id="projects" showPattern={false}>
+                            <SectionWrapper id="projects" className="z-30" showPattern={false}>
                                 <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
                             </SectionWrapper>
 
-                            <SectionWrapper className="relative z-20">
+                            <SectionWrapper className="relative z-29">
                                 <section className="border-dashed overflow-visible">
                                     <AnimatePresence mode="wait">
                                         <motion.div
@@ -246,27 +246,27 @@ export default function App() {
                                 </section>
                             </SectionWrapper>
 
-                            <SectionWrapper id="experience" showPattern={false}>
+                            <SectionWrapper id="experience" className="z-25" showPattern={false}>
                                 <Experience />
                             </SectionWrapper>
-                            <SectionWrapper id="education">
+                            <SectionWrapper id="education" className="z-24">
                                 <Education />
                             </SectionWrapper>
-                            <SectionWrapper id="skills" showPattern={false}>
+                            <SectionWrapper id="skills" className="z-23" showPattern={false}>
                                 <Skills />
                             </SectionWrapper>
-                            <SectionWrapper>
+                            <SectionWrapper className="z-22">
                                 <StackInsights />
                             </SectionWrapper>
-                            <SectionWrapper id="contact" showPattern={false}>
+                            <SectionWrapper id="contact" className="z-21" showPattern={false}>
                                 <Contact />
                             </SectionWrapper>
-                            <SectionWrapper>
+                            <SectionWrapper className="z-20">
                                 <BeyondWork />
                             </SectionWrapper>
                         </main>
 
-                        <SectionWrapper showPattern={false}>
+                        <SectionWrapper className="z-10" showPattern={false}>
                             <Footer />
                         </SectionWrapper>
                     </motion.div>

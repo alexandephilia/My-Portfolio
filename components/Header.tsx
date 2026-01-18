@@ -10,9 +10,21 @@ export const Header: React.FC = () => {
             animate="visible"
             variants={staggerContainerVariants}
             style={antiFlickerStyle}
-            className="flex justify-between items-center p-6 md:p-10 bg-[#FAFAFA]"
+            className="relative flex justify-between items-center p-6 md:p-10 overflow-hidden"
         >
-            <motion.div variants={staggerItemVariants} className="flex flex-col gap-1">
+            {/* Sky Background with Fadeout */}
+            <div className="absolute inset-0 z-0 pointer-events-none select-none">
+                <div 
+                    className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-multiply"
+                    style={{ 
+                        backgroundImage: `url('https://img.freepik.com/free-photo/white-stone-textures-background_1203-3096.jpg?semt=ais_hybrid&w=740&q=80')`,
+                        maskImage: 'linear-gradient(to bottom, black 0%, transparent 90%)',
+                        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 90%)'
+                    }} 
+                />
+            </div>
+
+            <motion.div variants={staggerItemVariants} className="relative z-10 flex flex-col gap-1">
                 {/* Branding Logo - Using 14px blur via staggerItemVariants */}
                 <img
                     src="/name.png"
@@ -45,7 +57,7 @@ export const Header: React.FC = () => {
             </motion.div>
             <motion.div
                 variants={staggerContainerVariants}
-                className="flex gap-1.5 md:gap-2"
+                className="relative z-10 flex gap-1.5 md:gap-2"
             >
                 {SOCIAL_LINKS.map((link, i) => (
                     <motion.a

@@ -1,5 +1,5 @@
-import { motion, Variants, useMotionValue, useSpring, useTransform, AnimatePresence } from 'motion/react';
 import { ArrowRight, ChevronDown } from 'lucide-react';
+import { AnimatePresence, motion, useMotionValue, useSpring, useTransform, Variants } from 'motion/react';
 import React, { useState } from 'react';
 import { Project } from '../types';
 import { useCursorStore } from './hooks/useCursorStore';
@@ -327,23 +327,23 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                                                     onMouseLeave={handleButtonMouseLeave}
                                                     style={{ x: buttonX, y: buttonY }}
                                                     className="
-                                                        relative flex items-center gap-1.5 px-3 py-1 rounded-md 
+                                                        relative flex items-center gap-1.5 px-3 py-1 rounded-md
                                                         text-[10px] md:text-[11px] font-bold transition-all
-                                                        bg-linear-to-b from-white to-gray-100 border border-gray-200 
+                                                        bg-linear-to-b from-white to-gray-100 border border-gray-200
                                                         shadow-[0_2px_4px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]
-                                                        text-gray-700 active:shadow-sm active:translate-y-px 
+                                                        text-gray-700 active:shadow-sm active:translate-y-px
                                                         group/btn overflow-visible
                                                     "
                                                 >
                                                     {/* The Morphing Black-Gradient Cursor Overlay */}
                                                     <AnimatePresence mode="popLayout">
                                                         {isButtonHovered && (
-                                                            <motion.span 
+                                                            <motion.span
                                                                 layoutId={`btn-snap-${project.id}`}
                                                                 initial={{ opacity: 0, scale: 0.8, borderRadius: '50%', width: 12, height: 12 }}
-                                                                animate={{ 
-                                                                    opacity: 1, 
-                                                                    scale: 1, 
+                                                                animate={{
+                                                                    opacity: 1,
+                                                                    scale: 1,
                                                                     borderRadius: '6px',
                                                                     width: 'calc(100% + 4px)',
                                                                     height: 'calc(100% + 4px)',
@@ -352,13 +352,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                                                                 }}
                                                                 exit={{ opacity: 0, scale: 0.8, borderRadius: '50%' }}
                                                                 className="absolute z-0 bg-black/95 shadow-[0_8px_20px_rgba(0,0,0,0.3)] pointer-events-none"
-                                                                style={{ 
-                                                                    x: overlayX, 
+                                                                style={{
+                                                                    x: overlayX,
                                                                     y: overlayY,
                                                                 }}
-                                                                transition={{ 
-                                                                    type: 'spring', 
-                                                                    damping: 30, 
+                                                                transition={{
+                                                                    type: 'spring',
+                                                                    damping: 30,
                                                                     stiffness: 400,
                                                                     borderRadius: { duration: 0.2 },
                                                                     width: { duration: 0.2 },
@@ -367,7 +367,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                                                             />
                                                         )}
                                                     </AnimatePresence>
-                                                    
+
                                                     {/* Button Content - Color Inversion */}
                                                     <span className={`relative z-10 flex items-center gap-1.5 transition-colors duration-200 ${isButtonHovered ? 'text-white' : 'text-gray-700'}`}>
                                                         View Case Study
@@ -381,8 +381,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                                                                 ease: "easeInOut"
                                                             }}
                                                         >
-                                                            <ArrowRight 
-                                                                size={12} 
+                                                            <ArrowRight
+                                                                size={12}
                                                                 className={`transition-all duration-300 ${isButtonHovered ? 'translate-x-1 text-white' : 'text-gray-400'}`}
                                                                 strokeWidth={isButtonHovered ? 3 : 2}
                                                             />

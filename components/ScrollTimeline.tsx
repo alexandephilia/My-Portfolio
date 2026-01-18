@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform, useVelocity, MotionValue } from 'motion/react';
+import { AnimatePresence, motion, MotionValue, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform, useVelocity } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { useDevice } from './hooks/useDevice';
 
@@ -29,12 +29,12 @@ export const ScrollTimeline = () => {
     // --- PHYSICS ENGINE ---
     // 1. Get velocity of the spring (the "puck") rather than raw scroll for connected feel
     const velocity = useVelocity(smoothedProgress);
-    
+
     // 2. Smooth the velocity for visual transforms (shear/scale) to avoid jitter
-    const physicsVelocity = useSpring(velocity, { 
-        damping: 15, 
-        stiffness: 200, 
-        mass: 0.5 
+    const physicsVelocity = useSpring(velocity, {
+        damping: 15,
+        stiffness: 200,
+        mass: 0.5
     });
 
     // 3. Wake Factor: Expands the "active zone" based on speed
@@ -99,7 +99,7 @@ export const ScrollTimeline = () => {
                 )}
             </AnimatePresence>
 
-            <div className="fixed right-0 top-0 bottom-0 w-8 sm:w-12 lg:w-32 z-[100] flex flex-col items-end pointer-events-none group px-1 sm:px-2 lg:px-8">
+            <div className="fixed right-0 top-0 bottom-0 w-8 sm:w-12 lg:w-32 z-[100] flex flex-col items-end pointer-events-none group">
                 {/* The Rail Container */}
                 <div
                     className="relative h-[calc(100%-14rem)] sm:h-[calc(100%-10rem)] flex flex-col items-end justify-between mt-16 mb-32 sm:mb-24 mr-0 sm:mr-1 lg:mr-2 pointer-events-auto w-full group/rail"
@@ -172,29 +172,29 @@ const FloatingScrollIndicator = ({ progressValues, sectionOffsets, isMobile }: a
     if (isMobile) return null;
 
     const yPercent = useTransform(progressValues, [0, 1], ["0%", "100%"]);
-    
+
     // 1. Calculate Velocity
     const velocity = useVelocity(progressValues);
-    
+
     // 2. High-Oscillation Spring for "Wobble" Effect
     // OVERDRIVE: Lower damping (7) + High stiffness (220) = High energy "ringing" oscillation
-    const smoothVelocity = useSpring(velocity, { 
-        damping: 7, 
+    const smoothVelocity = useSpring(velocity, {
+        damping: 7,
         stiffness: 220,
         mass: 0.5
     });
 
     // 3. Deformations (High G-Force Simulation)
     // Tamed Skew: Keeping text characters appearing "normal" (very subtle tilt)
-    const skewY = useTransform(smoothVelocity, [-3, 3], [-6, 6]); 
-    
+    const skewY = useTransform(smoothVelocity, [-3, 3], [-6, 6]);
+
     // Extreme Stretch (ScaleY) and Squash (ScaleX)
     const scaleY = useTransform(smoothVelocity, (v) => 1 + Math.abs(v as number) * 1);
     const scaleX = useTransform(smoothVelocity, (v) => 1 / (1 + Math.abs(v as number) * 1.6));
-    
+
     // Rotation: The primary source of the "Wavy" pull
-    const rotate = useTransform(smoothVelocity, [-3, 3], [-32, 32]); 
-    
+    const rotate = useTransform(smoothVelocity, [-3, 3], [-32, 32]);
+
     // High-Intensity Lag
     const yLag = useTransform(smoothVelocity, [-3, 3], [22, -22]);
     const yCombined = useTransform(yLag, (lag) => `calc(-50% + ${lag}px)`);
@@ -221,18 +221,18 @@ const FloatingScrollIndicator = ({ progressValues, sectionOffsets, isMobile }: a
 
     return (
         <motion.div
-            style={{ 
-                top: yPercent, 
+            style={{
+                top: yPercent,
                 // Removed marginTop: '-50%' (CSS margin-top percent is relative to width, which was WRONG)
                 // Use y transform instead for proper centering
                 y: yCombined,
                 opacity,
-                skewY, 
-                scaleY, 
+                skewY,
+                scaleY,
                 scaleX,
                 rotate,
             }}
-            className="absolute right-8 lg:right-12 pointer-events-none z-20 flex items-center justify-end pr-3 origin-right"
+            className="absolute left-0 lg:left-0 pointer-events-none z-20 flex items-center justify-start pl-10 origin-left"
         >
             <span
                 ref={numberRef}
@@ -246,16 +246,16 @@ const FloatingScrollIndicator = ({ progressValues, sectionOffsets, isMobile }: a
 
 
 // 2. Tick Row
-const TickRow = ({ 
-    i, 
-    tickProgress, 
-    section, 
-    isSection, 
-    smoothedProgress, 
-    mouseYProgress, 
-    scrollYProgress, 
-    isRevealed, 
-    isMobile, 
+const TickRow = ({
+    i,
+    tickProgress,
+    section,
+    isSection,
+    smoothedProgress,
+    mouseYProgress,
+    scrollYProgress,
+    isRevealed,
+    isMobile,
     isTablet,
     physicsVelocity, // Received from parent
     wakeFactor       // Received from parent (scaling factor > 1)
@@ -263,13 +263,13 @@ const TickRow = ({
 
     // PHYSICS-ENHANCED DISTANCE CALCULATION
     const distance = useTransform(
-        [smoothedProgress, mouseYProgress, wakeFactor], 
+        [smoothedProgress, mouseYProgress, wakeFactor],
         ([scroll, mouse, wake]: any) => {
             const scrollDist = Math.abs(tickProgress - (scroll as number));
             const mouseDist = mouse === -1 ? 1 : Math.abs(tickProgress - (mouse as number));
-            
+
             // "The Wake Effect": Divide actual distance by the wake factor.
-            // If dragging fast, wake > 1, so effective distance becomes smaller, 
+            // If dragging fast, wake > 1, so effective distance becomes smaller,
             // causing the transforms (width/opacity) to activate further away.
             return Math.min(scrollDist, mouseDist) / (wake || 1);
         }
@@ -277,8 +277,8 @@ const TickRow = ({
 
     // PHYSICS-ENHANCED SHEAR
     // When expanding/moving fast, the ticks "shear" or tilt in the wind
-    const skewY = useTransform(physicsVelocity || new MotionValue(0), [-2, 2], [30, -30]); 
-    
+    const skewY = useTransform(physicsVelocity || new MotionValue(0), [-2, 2], [30, -30]);
+
     // Stretch effect to maintain volume
     const scaleX = useTransform(physicsVelocity || new MotionValue(0), (v: any) => 1 - Math.abs(v || 0) * 0.1);
 
@@ -372,7 +372,7 @@ const SectionLabel = ({ section, distance, isRevealed }: { section: any, distanc
                 e.stopPropagation();
                 document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="absolute right-14 lg:right-20 flex items-center justify-end transform cursor-pointer pointer-events-auto outline-none z-10 origin-right transition-colors"
+            className="absolute right-0 lg:right-20 flex items-center justify-end transform cursor-pointer pointer-events-auto outline-none z-10 origin-right transition-colors"
         >
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] whitespace-nowrap">
                 {section.label}

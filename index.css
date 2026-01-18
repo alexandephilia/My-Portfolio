@@ -24,6 +24,13 @@
     html {
         font-family: "Nunito", sans-serif;
         cursor: none;
+        /* Hide scrollbar for all elements */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    html::-webkit-scrollbar {
+        display: none;
     }
 
     body {
@@ -38,6 +45,16 @@
 
     body::-webkit-scrollbar {
         display: none;
+    }
+
+    /* Hide scrollbars on all elements */
+    *::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    * {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
     }
 
     /* Scrollbar styling for specific scrollable elements if needed */

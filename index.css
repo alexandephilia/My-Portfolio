@@ -2,501 +2,521 @@
 
 /* Custom theme tokens for Tailwind v4 */
 @theme {
-    --font-sans: "Nunito", sans-serif;
-    --font-serif: "Instrument Serif", serif;
-    --font-mono: "TX-02 Berkeley Mono", "JetBrains Mono", monospace;
+  --font-sans: "Nunito", sans-serif;
+  --font-serif: "Instrument Serif", serif;
+  --font-mono: "TX-02 Berkeley Mono", "JetBrains Mono", monospace;
 }
 
 /* Berkeley Mono font-face - must be outside @layer */
 @font-face {
-    font-family: 'TX-02 Berkeley Mono';
-    src: local('TX-02 Berkeley Mono'), local('BerkeleyMono'), local('Berkeley Mono');
-    font-weight: 400 700;
-    font-display: swap;
+  font-family: "TX-02 Berkeley Mono";
+  src:
+    local("TX-02 Berkeley Mono"), local("BerkeleyMono"), local("Berkeley Mono");
+  font-weight: 400 700;
+  font-display: swap;
 }
 
 /* Base styles */
 @layer base {
-    * {
-        cursor: none !important;
-    }
+  * {
+    cursor: none !important;
+  }
 
-    html {
-        font-family: "Nunito", sans-serif;
-        cursor: none;
-        /* Hide scrollbar for all elements */
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
+  html {
+    font-family: "Nunito", sans-serif;
+    cursor: none;
+    /* Hide scrollbar for all elements */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
 
-    html::-webkit-scrollbar {
-        display: none;
-    }
+  html::-webkit-scrollbar {
+    display: none;
+  }
 
-    body {
-        font-family: "Nunito", sans-serif;
-        background-color: #fafafa;
-        color: #1e1b4b;
-        cursor: none;
-        /* Hide scrollbar but keep functionality */
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
+  body {
+    font-family: "Nunito", sans-serif;
+    background-color: #fafafa;
+    color: #1e1b4b;
+    cursor: none;
+    /* Hide scrollbar but keep functionality */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
 
-    body::-webkit-scrollbar {
-        display: none;
-    }
+  body::-webkit-scrollbar {
+    display: none;
+  }
 
-    /* Ensure links also have no cursor */
-    a, button, [role="button"] {
-        cursor: none !important;
-    }
+  /* Ensure links also have no cursor */
+  a,
+  button,
+  [role="button"] {
+    cursor: none !important;
+  }
 
-    /* Link hover text color */
-    a:hover, button:hover, [role="button"]:hover {
-        color: rgb(74, 108, 196) !important;
-    }
+  /* Link hover text color */
+  a:hover,
+  button:hover,
+  [role="button"]:hover {
+    color: rgb(74, 108, 196);
+  }
 
-    a:hover span, button:hover span, [role="button"]:hover span {
-        color: inherit !important;
-    }
+  a:hover span,
+  button:hover span,
+  [role="button"]:hover span {
+    color: inherit;
+  }
 
-    /* Hide scrollbars on all elements */
-    *::-webkit-scrollbar {
-        display: none !important;
-    }
+  /* Hide scrollbars on all elements */
+  *::-webkit-scrollbar {
+    display: none !important;
+  }
 
-    * {
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-    }
+  * {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
 
-    /* Scrollbar styling for specific scrollable elements if needed */
-    .custom-scrollbar::-webkit-scrollbar {
-        width: 8px;
-    }
+  /* Scrollbar styling for specific scrollable elements if needed */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
 
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
 
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #d1d5db;
-        border-radius: 4px;
-    }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+  }
 
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #9ca3af;
-    }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+  }
 }
 
 /* Utilities */
 @layer utilities {
-    .no-scrollbar::-webkit-scrollbar {
-        display: none;
-    }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 
-    .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 
-    .stamp-texture {
-        mask-image: radial-gradient(#000 60%, transparent 100%),
-            url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
-        mask-mode: alpha;
-        mask-composite: source-in;
-    }
+  .stamp-texture {
+    mask-image:
+      radial-gradient(#000 60%, transparent 100%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
+    mask-mode: alpha;
+    mask-composite: source-in;
+  }
 
-    .stamp-border {
-        border: 4px solid currentColor;
-        mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    }
+  .stamp-border {
+    border: 4px solid currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
 }
 
 /* iOS Safari fixed positioning fix */
 @supports (-webkit-touch-callout: none) {
-    .fixed {
-        /* Force GPU layer for smoother fixed positioning on iOS */
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-    }
+  .fixed {
+    /* Force GPU layer for smoother fixed positioning on iOS */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
 }
-
 
 /* Budget Card Showcase Styles */
 @layer components {
-
-    /* Award-winning glow animation keyframes */
-    @keyframes glowPulse {
-
-        0%,
-        100% {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        50% {
-            opacity: 0.85;
-            transform: translate(-50%, -50%) scale(1.08);
-        }
+  /* Award-winning glow animation keyframes */
+  @keyframes glowPulse {
+    0%,
+    100% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
     }
 
-    @keyframes glowBreath {
+    50% {
+      opacity: 0.85;
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+  }
 
-        0%,
-        100% {
-            opacity: 0.7;
-        }
-
-        50% {
-            opacity: 1;
-        }
+  @keyframes glowBreath {
+    0%,
+    100% {
+      opacity: 0.7;
     }
 
-    .glow-pulse {
-        animation: glowPulse 3s ease-in-out infinite;
+    50% {
+      opacity: 1;
     }
+  }
 
-    .glow-breath {
-        animation: glowBreath 2.5s ease-in-out infinite;
-    }
+  .glow-pulse {
+    animation: glowPulse 3s ease-in-out infinite;
+  }
 
-    /* Premium raised text effect - High Contrast Chrome */
-    .raised-text {
-        background: linear-gradient(180deg,
-                #FFFFFF 0%,
-                #E8E8E8 45%,
-                #707070 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
-    }
+  .glow-breath {
+    animation: glowBreath 2.5s ease-in-out infinite;
+  }
 
-    /* Lighter raised text effect for smaller values */
-    .raised-text-light {
-        background: linear-gradient(180deg,
-                #FFFFFF 0%,
-                #DCDCDC 50%,
-                #666666 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
-    }
+  /* Premium raised text effect - High Contrast Chrome */
+  .raised-text {
+    background: linear-gradient(180deg, #ffffff 0%, #e8e8e8 45%, #707070 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+  }
 
-    /* Extra small raised text for badges */
-    .raised-text-xs {
-        background: linear-gradient(180deg,
-                #FFFFFF 0%,
-                #E0E0E0 50%,
-                #999999 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
-    }
+  /* Lighter raised text effect for smaller values */
+  .raised-text-light {
+    background: linear-gradient(180deg, #ffffff 0%, #dcdcdc 50%, #666666 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+  }
 
-    /* Light theme raised text - for light backgrounds */
-    .raised-text-light-theme {
-        background: linear-gradient(180deg,
-                #1a1a1a 0%,
-                #404040 45%,
-                #808080 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.8));
-    }
+  /* Extra small raised text for badges */
+  .raised-text-xs {
+    background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 50%, #999999 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
+  }
 
-    .raised-text-light-theme-sm {
-        background: linear-gradient(180deg,
-                #2a2a2a 0%,
-                #505050 50%,
-                #888888 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.6));
-    }
+  /* Light theme raised text - for light backgrounds */
+  .raised-text-light-theme {
+    background: linear-gradient(180deg, #1a1a1a 0%, #404040 45%, #808080 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.8));
+  }
 
-    .raised-text-light-theme-xs {
-        background: linear-gradient(180deg,
-                #3a3a3a 0%,
-                #606060 50%,
-                #909090 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        filter: drop-shadow(0 0.5px 1px rgba(255, 255, 255, 0.5));
-    }
+  .raised-text-light-theme-sm {
+    background: linear-gradient(180deg, #2a2a2a 0%, #505050 50%, #888888 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.6));
+  }
 
-    /* Premium gradient black button styling */
-    .premium-button {
-        position: relative;
-        background: linear-gradient(180deg,
-                rgba(38, 38, 38, 1) 0%,
-                rgba(23, 23, 23, 1) 50%,
-                rgba(10, 10, 10, 1) 100%);
-        box-shadow:
-            0 2px 0 0 rgba(255, 255, 255, 0.15) inset,
-            0 -1px 0 0 rgba(0, 0, 0, 0.5) inset,
-            0 3px 5px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-    }
+  .raised-text-light-theme-xs {
+    background: linear-gradient(180deg, #3a3a3a 0%, #606060 50%, #909090 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0.5px 1px rgba(255, 255, 255, 0.5));
+  }
 
+  /* Premium gradient black button styling */
+  .premium-button {
+    position: relative;
+    background: linear-gradient(
+      180deg,
+      rgba(38, 38, 38, 1) 0%,
+      rgba(23, 23, 23, 1) 50%,
+      rgba(10, 10, 10, 1) 100%
+    );
+    box-shadow:
+      0 2px 0 0 rgba(255, 255, 255, 0.15) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.5) inset,
+      0 3px 5px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
 
-    .premium-button::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 50%;
-        background: linear-gradient(180deg,
-                rgba(255, 255, 255, 0.12) 0%,
-                rgba(255, 255, 255, 0.04) 40%,
-                transparent 100%);
-        pointer-events: none;
-        border-radius: inherit;
-    }
+  .premium-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.12) 0%,
+      rgba(255, 255, 255, 0.04) 40%,
+      transparent 100%
+    );
+    pointer-events: none;
+    border-radius: inherit;
+  }
 
-    .premium-button::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.08) 50%,
-                transparent 100%);
-        transition: left 0.6s ease;
-        pointer-events: none;
-    }
+  .premium-button::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 50%,
+      transparent 100%
+    );
+    transition: left 0.6s ease;
+    pointer-events: none;
+  }
 
-    .premium-button:hover {
-        background: linear-gradient(180deg,
-                rgba(50, 50, 50, 1) 0%,
-                rgba(30, 30, 30, 1) 50%,
-                rgba(15, 15, 15, 1) 100%);
-        border-color: rgba(255, 255, 255, 0.12);
-        box-shadow:
-            0 1px 0 0 rgba(255, 255, 255, 0.18) inset,
-            0 -1px 0 0 rgba(0, 0, 0, 0.5) inset,
-            0 3px 5px rgba(0, 0, 0, 0.2);
-    }
+  .premium-button:hover {
+    background: linear-gradient(
+      180deg,
+      rgba(50, 50, 50, 1) 0%,
+      rgba(30, 30, 30, 1) 50%,
+      rgba(15, 15, 15, 1) 100%
+    );
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.18) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.5) inset,
+      0 3px 5px rgba(0, 0, 0, 0.2);
+  }
 
-    .premium-button:hover::after {
-        left: 100%;
-    }
+  .premium-button:hover::after {
+    left: 100%;
+  }
 
-    .premium-button:active {
-        transform: translateY(0px);
-        box-shadow:
-            0 1px 0 0 rgba(255, 255, 255, 0.12) inset,
-            0 -1px 0 0 rgba(0, 0, 0, 0.5) inset,
-            0 2px 3px rgba(0, 0, 0, 0.15);
-    }
+  .premium-button:active {
+    transform: translateY(0px);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.12) inset,
+      0 -1px 0 0 rgba(0, 0, 0, 0.5) inset,
+      0 2px 3px rgba(0, 0, 0, 0.15);
+  }
 
-    .button-text {
-        position: relative;
-        z-index: 10;
-        background: linear-gradient(180deg,
-                rgba(255, 255, 255, 1) 0%,
-                rgba(200, 200, 200, 1) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
+  .button-text {
+    position: relative;
+    z-index: 10;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(200, 200, 200, 1) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-    .button-shine {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.4) 30%,
-                rgba(255, 255, 255, 0.6) 50%,
-                rgba(255, 255, 255, 0.4) 70%,
-                transparent 100%);
-    }
+  .button-shine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.4) 30%,
+      rgba(255, 255, 255, 0.6) 50%,
+      rgba(255, 255, 255, 0.4) 70%,
+      transparent 100%
+    );
+  }
 
-    .button-inner-shadow {
-        position: absolute;
-        inset: 1px;
-        border-radius: inherit;
-        background: linear-gradient(180deg,
-                transparent 0%,
-                rgba(0, 0, 0, 0.3) 100%);
-        pointer-events: none;
-    }
+  .button-inner-shadow {
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+    pointer-events: none;
+  }
 
-    /* Premium gradient white/light button styling */
-    .premium-button-light {
-        position: relative;
-        background: linear-gradient(180deg,
-                rgba(255, 255, 255, 1) 0%,
-                rgba(240, 240, 240, 1) 100%);
-        box-shadow:
-            0 1px 0 0 rgb(255, 255, 255) inset,
-            0 -1px 0 0 rgba(186, 186, 186, 0.578) inset,
-            0 3px 5px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        border: 1px solid rgba(20, 20, 20, 0.06);
-    }
+  /* Premium gradient white/light button styling */
+  .premium-button-light {
+    position: relative;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(240, 240, 240, 1) 100%
+    );
+    box-shadow:
+      0 1px 0 0 rgb(255, 255, 255) inset,
+      0 -1px 0 0 rgba(186, 186, 186, 0.578) inset,
+      0 3px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid rgba(20, 20, 20, 0.06);
+  }
 
-    .premium-button-light::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.6) 50%,
-                transparent 100%);
-        transition: left 0.5s ease;
-    }
+  .premium-button-light::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.6) 50%,
+      transparent 100%
+    );
+    transition: left 0.5s ease;
+  }
 
-    .premium-button-light:hover {
-        background: linear-gradient(180deg,
-                rgba(255, 255, 255, 1) 0%,
-                rgba(245, 245, 245, 1) 100%);
-        box-shadow:
-            0 1px 0 0 rgba(255, 255, 255, 1) inset,
-            0 -1px 0 0 rgba(200, 200, 200, 0.5) inset,
-            0 3px 5px rgba(0, 0, 0, 0.1);
-    }
+  .premium-button-light:hover {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(245, 245, 245, 1) 100%
+    );
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 1) inset,
+      0 -1px 0 0 rgba(200, 200, 200, 0.5) inset,
+      0 3px 5px rgba(0, 0, 0, 0.1);
+  }
 
-    .premium-button-light:hover::before {
-        left: 100%;
-    }
+  .premium-button-light:hover::before {
+    left: 100%;
+  }
 
-    .premium-button-light:active {
-        transform: translateY(0px);
-        box-shadow:
-            0 1px 0 0 rgba(255, 255, 255, 0.8) inset,
-            0 -1px 0 0 rgba(200, 200, 200, 0.6) inset,
-            0 2px 3px rgba(0, 0, 0, 0.08);
-    }
+  .premium-button-light:active {
+    transform: translateY(0px);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.8) inset,
+      0 -1px 0 0 rgba(200, 200, 200, 0.6) inset,
+      0 2px 3px rgba(0, 0, 0, 0.08);
+  }
 
-    .button-text-light {
-        position: relative;
-        z-index: 10;
-        background: linear-gradient(180deg,
-                rgba(80, 80, 80, 1) 0%,
-                rgba(50, 50, 50, 1) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
+  .button-text-light {
+    position: relative;
+    z-index: 10;
+    background: linear-gradient(
+      180deg,
+      rgba(80, 80, 80, 1) 0%,
+      rgba(50, 50, 50, 1) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-    .button-shine-light {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.8) 30%,
-                rgba(255, 255, 255, 1) 50%,
-                rgba(255, 255, 255, 0.8) 70%,
-                transparent 100%);
-    }
+  .button-shine-light {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.8) 30%,
+      rgba(255, 255, 255, 1) 50%,
+      rgba(255, 255, 255, 0.8) 70%,
+      transparent 100%
+    );
+  }
 
-    .button-inner-shadow-light {
-        position: absolute;
-        inset: 1px;
-        border-radius: inherit;
-        background: linear-gradient(180deg,
-                transparent 0%,
-                rgba(200, 200, 200, 0.15) 100%);
-        pointer-events: none;
-    }
+  .button-inner-shadow-light {
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(200, 200, 200, 0.15) 100%
+    );
+    pointer-events: none;
+  }
 
-    /* Dashboard dot pattern background */
-    .bg-dot-pattern {
-        background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
-        background-size: 20px 20px;
-    }
+  /* Dashboard dot pattern background */
+  .bg-dot-pattern {
+    background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
 }
-
 
 /* Remove focus ring from showcase components */
 .showcase-no-ring button:focus,
 .showcase-no-ring button:focus-visible,
 .showcase-no-ring [role="button"]:focus,
 .showcase-no-ring [role="button"]:focus-visible {
-    outline: none !important;
-    box-shadow: none !important;
-    ring: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
-
 
 /* Webcore Builder button styles */
 .webcore-btn-dark {
-    background: linear-gradient(180deg,
-            rgba(38, 38, 38, 1) 0%,
-            rgba(23, 23, 23, 1) 50%,
-            rgba(10, 10, 10, 1) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(
+    180deg,
+    rgba(38, 38, 38, 1) 0%,
+    rgba(23, 23, 23, 1) 50%,
+    rgba(10, 10, 10, 1) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
 }
 
 .webcore-btn-dark:hover {
-    background: linear-gradient(180deg,
-            rgba(50, 50, 50, 1) 0%,
-            rgba(30, 30, 30, 1) 50%,
-            rgba(15, 15, 15, 1) 100%);
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(
+    180deg,
+    rgba(50, 50, 50, 1) 0%,
+    rgba(30, 30, 30, 1) 50%,
+    rgba(15, 15, 15, 1) 100%
+  );
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
 }
 
 .webcore-btn-shine {
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.1) 50%,
-            transparent 100%);
-    transition: left 0.5s ease;
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  transition: left 0.5s ease;
 }
 
 .webcore-btn-dark:hover .webcore-btn-shine {
-    left: 100%;
+  left: 100%;
 }
 
 .webcore-btn-dark:active {
-    transform: scale(0.95);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transform: scale(0.95);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .webcore-btn-text {
-    position: relative;
-    z-index: 10;
-    background: linear-gradient(180deg,
-            rgba(255, 255, 255, 1) 0%,
-            rgba(200, 200, 200, 1) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(200, 200, 200, 1) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 @keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .animate-shimmer {
-    animation: shimmer 1.5s infinite linear;
+  animation: shimmer 1.5s infinite linear;
 }

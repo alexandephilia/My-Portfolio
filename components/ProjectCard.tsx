@@ -283,7 +283,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                                                 e.stopPropagation();
                                                 setIsExpanded(!isExpanded);
                                             }}
-                                            className="flex items-center gap-0.5 text-[10px] text-[rgb(74,108,196)] font-medium mt-0.5 md:hidden"
+                                            className="flex items-center gap-0.5 text-[10px] text-[rgba(255, 255, 255, 1)] font-medium mt-0.5 md:hidden"
                                         >
                                             {isExpanded ? 'Show less' : 'Read more'}
                                             <ChevronDown
@@ -331,7 +331,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                                                         text-[10px] md:text-[11px] font-bold transition-all
                                                         bg-linear-to-b from-white to-gray-100 border border-gray-200
                                                         shadow-[0_2px_4px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]
-                                                        text-gray-700 active:shadow-sm active:translate-y-px
+                                                        active:shadow-sm active:translate-y-px
+                                                        ${isButtonHovered ? 'text-white' : 'text-gray-700'}
                                                         group/btn overflow-visible
                                                     "
                                                 >

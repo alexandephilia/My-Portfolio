@@ -85,6 +85,18 @@ export const PROJECTS: Project[] = [
         stack: ["Vite", "Framer Motion", "Exa Search", "Eleven Labs"]
     },
     {
+        id: "6",
+        category: "Personal",
+        title: "Grabby",
+        description: "A telepathic AI development inspector that bridges the gap between browser and terminal. Eliminates manual DevTools usage by hold-checking UI elements with ⌘ (Cmd) to instantly feed context into the AI engine. Built for high-velocity Atom of Thought (AoT) reasoning.",
+        icon: Terminal,
+        iconColor: "bg-orange-600",
+        imageUrl: "/Work_6.jpg",
+        status: "Live",
+        linkUrl: "https://github.com/alexandephilia/Grabby_Tool",
+        stack: ["Bash", "Node.js", "Vite", "Next.js", "Semantic Search"]
+    },
+    {
         id: "4",
         category: "Personal",
         title: "Electron-based LLMs Suite",

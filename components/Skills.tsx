@@ -59,7 +59,7 @@ const TECH_ICON_URLS: Record<string, string> = {
     // Backend
     "PostgreSQL": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/960px-Postgresql_elephant.svg.png",
     "Blockchain": "https://png.pngtree.com/png-vector/20250324/ourmid/pngtree-blockchain-web3-logo-vector-png-image_15850717.png",
-    "Prisma": "https://www.svgrepo.com/show/354210/prisma.svg",
+    "Prisma": "https://iconape.com/wp-content/files/xs/85603/svg/prisma-3.svg",
     "REST API": "https://www.opc-router.de/wp-content/uploads/2020/05/REST_socialmedia.jpg",
     "WebSocket": "https://www.outsystems.com/Forge_BL/rest/ComponentThumbnail/GetURL_ComponentThumbnail?ProjectImageId=17523", // Add your URL
     "MongoDB": "https://www.svgrepo.com/show/373845/mongo.svg",

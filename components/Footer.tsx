@@ -63,9 +63,7 @@ export const Footer: React.FC = () => {
                     className="text-center mb-4 md:mb-8 relative mt-10 md:mt-10"
                 >
                     <div className="relative inline-block px-4">
-                        <span className="font-serif italic text-4xl md:text-6xl lg:text-7xl text-[rgb(74,108,196)] leading-none">
-                            You've made it so far...
-                        </span>
+                        <span className="font-serif italic text-4xl md:text-6xl lg:text-7xl text-[rgb(74,108,196)] leading-none">You have made it so far..</span>
 
                         {/* Attribution Pill - Left Aligned */}
                         <div className="flex justify-start mt-0 mb-1 ml-1 opacity-70">

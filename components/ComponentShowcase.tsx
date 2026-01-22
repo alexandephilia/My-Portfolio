@@ -143,8 +143,10 @@ export const ComponentShowcase: React.FC = () => {
                         </motion.div>
 
                         {/* Outer Rim Container */}
-                        <div
-                            className="w-full rounded-[24px] p-[4px] backdrop-blur-md md:backdrop-blur-xl transition-transform duration-300 group-hover:-translate-y-1 relative z-10"
+                        <motion.div
+                            whileHover={{ y: -4 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                            className="w-full rounded-[24px] p-[4px] backdrop-blur-md md:backdrop-blur-xl relative z-10"
                             style={{
                                 background: `linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 50%, #E5E7EB 100%)`,
                                 boxShadow: 'rgba(0, 0, 0, 0.13) 0px 8px 10px, rgba(0, 0, 0, 0.05) 0px 4px 4px'
@@ -173,7 +175,7 @@ export const ComponentShowcase: React.FC = () => {
                                                 {item.hasThemeToggle && (
                                                     <button
                                                         onClick={() => setBudgetTheme(budgetTheme === 'dark' ? 'light' : 'dark')}
-                                                        className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium transition-all duration-300 border"
+                                                        className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium transition-colors duration-300 border"
                                                         style={{
                                                             background: budgetTheme === 'dark'
                                                                 ? 'linear-gradient(180deg, rgba(38, 38, 38, 1) 0%, rgba(23, 23, 23, 1) 100%)'
@@ -212,7 +214,7 @@ export const ComponentShowcase: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     </motion.div>
                 );
             })}

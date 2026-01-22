@@ -225,8 +225,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
             )}
 
             {/* Outer Rim Container */}
-            <div
-                className="w-full rounded-[24px] p-[4px] backdrop-blur-md md:backdrop-blur-[25px] transition-transform duration-300 group-hover:-translate-y-1 relative z-10 overflow-hidden"
+            <motion.div
+                whileHover={{ y: -4 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                className="w-full rounded-[24px] p-[4px] backdrop-blur-md md:backdrop-blur-[25px] relative z-10 overflow-hidden"
                 style={{
                     background: `linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 50%, #E5E7EB 100%)`,
                     boxShadow: 'rgba(0, 0, 0, 0.13) 0px 8px 10px, rgba(0, 0, 0, 0.05) 0px 4px 4px'
@@ -328,7 +330,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                                                     style={{ x: buttonX, y: buttonY }}
                                                     className="
                                                         relative flex items-center gap-1.5 px-3 py-1 rounded-md
-                                                        text-[10px] md:text-[11px] font-bold transition-all
+                                                        text-[10px] md:text-[11px] font-bold transition-colors
                                                         bg-linear-to-b from-white to-gray-100 border border-gray-200
                                                         shadow-[0_2px_4px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]
                                                         active:shadow-sm active:translate-y-px
@@ -384,7 +386,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                                                         >
                                                             <ArrowRight
                                                                 size={12}
-                                                                className={`transition-all duration-300 ${isButtonHovered ? 'translate-x-1 text-white' : 'text-gray-400'}`}
+                                                                className={`transition-[color,transform] duration-300 ${isButtonHovered ? 'translate-x-1 text-white' : 'text-gray-400'}`}
                                                                 strokeWidth={isButtonHovered ? 3 : 2}
                                                             />
                                                         </motion.div>
@@ -447,7 +449,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                         </>
                     )}
                 </div>
-            </div>
+            </motion.div>
         </motion.div>
     );
 };

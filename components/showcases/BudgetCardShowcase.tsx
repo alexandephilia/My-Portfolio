@@ -130,7 +130,7 @@ const BudgetCard: React.FC<BudgetCardProps> = memo(({ theme = 'dark' }) => {
             <div className={`absolute inset-[-30px] ${styles.outerGlow} blur-[30px] md:blur-[60px] rounded-[80px] opacity-30`}></div>
 
             {/* Card Container - Reduced backdrop-blur on mobile */}
-            <div className={`relative p-[10px] rounded-[36px] ${styles.cardContainer} shadow-[0_32px_64px_-16px_rgba(0,0,0,0.9)] backdrop-blur-xs md:backdrop-blur-[10px] transition-all duration-500 overflow-hidden border`}>
+            <div className={`relative p-[10px] rounded-[36px] ${styles.cardContainer} shadow-[0_32px_64px_-16px_rgba(0,0,0,0.9)] backdrop-blur-xs md:backdrop-blur-[10px] transition-[background-color,border-color] duration-500 overflow-hidden border`}>
 
                 {/* Inner highlight */}
                 <div className={`absolute top-[-20%] left-[-20%] w-[60%] h-[60%] ${styles.innerHighlight} blur-[30px] md:blur-[60px] pointer-events-none`}></div>
@@ -149,7 +149,7 @@ const BudgetCard: React.FC<BudgetCardProps> = memo(({ theme = 'dark' }) => {
                             <div className="relative" ref={dropdownRef}>
                                 <button
                                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                    className={`flex items-center gap-1.5 ${styles.monthButtonText} transition-all duration-200 py-0.5 px-2 border-r border-l border-b ${isDark ? 'border-white/5' : 'border-gray-200/50'} rounded-[6px] focus:outline-none relative overflow-hidden group`}
+                                    className={`flex items-center gap-1.5 ${styles.monthButtonText} transition-colors duration-200 py-0.5 px-2 border-r border-l border-b ${isDark ? 'border-white/5' : 'border-gray-200/50'} rounded-[6px] focus:outline-none relative overflow-hidden group`}
                                     style={styles.monthButton}
                                 >
                                     {/* Inset Top Gradient (Replacing Border) - Theme Aware */}
@@ -178,7 +178,7 @@ const BudgetCard: React.FC<BudgetCardProps> = memo(({ theme = 'dark' }) => {
 
                                 {/* Dropdown Menu */}
                                 <div
-                                    className={`absolute right-0 top-full mt-3 w-32 ${styles.dropdown} border rounded-2xl shadow-2xl overflow-hidden z-50 transition-all duration-300 origin-top-right ${isDropdownOpen
+                                    className={`absolute right-0 top-full mt-3 w-32 ${styles.dropdown} border rounded-2xl shadow-2xl overflow-hidden z-50 transition-[opacity,transform] duration-300 origin-top-right ${isDropdownOpen
                                         ? 'opacity-100 scale-100 translate-y-0'
                                         : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
                                         }`}

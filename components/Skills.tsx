@@ -213,7 +213,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                         /* Tip Shine (Smooth Gradient Fade Out) */
                         inset_0_1px_40px_-5px_rgba(255,255,255,0.8)
                     ]
-                    ${!isOtherExpanded ? 'group-hover:shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25),0_15px_30px_-8px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,1),inset_0_1px_40px_-5px_rgba(255,255,255,0.9)] group-hover:-translate-y-1 transition-all duration-300' : ''}
+                    ${!isOtherExpanded ? 'group-hover:shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25),0_15px_30px_-8px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,1),inset_0_1px_40px_-5px_rgba(255,255,255,0.9)] transition-shadow duration-300' : ''}
                 `}>
                     {/* The 'Shine' Glint Animation - Smoother & Wider */}
                     <div className="absolute inset-0 bg-[linear-gradient(110deg,transparent_30%,rgba(255,255,255,0.7)_45%,transparent_60%)] -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-[1.2s] ease-[cubic-bezier(0.4,0,0.2,1)] pointer-events-none" />

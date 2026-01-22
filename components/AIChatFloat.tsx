@@ -523,7 +523,7 @@ Now be entertaining, you beautiful bastard.`
                         disabled={!input.trim() || isLoading}
                         className={`
                             w-7 h-7 rounded-full flex items-center justify-center
-                            transition-all duration-200
+                            transition-colors duration-200
                             ${input.trim() && !isLoading
                                 ? 'bg-linear-to-b from-blue-500/60 to-blue-600/90 text-white border border-blue-400/50'
                                 : 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed'

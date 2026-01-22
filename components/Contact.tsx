@@ -112,7 +112,7 @@ const ContactLink: React.FC<{ item: any; index: number }> = ({ item, index }) =>
                 onMouseEnter={handleMouseEnter}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
-                className="group relative px-5 py-2 -mr-5 rounded-xl transition-all duration-300 overflow-hidden text-right min-w-[160px] flex justify-end items-center"
+                className="group relative px-5 py-2 -mr-5 rounded-xl transition-colors duration-300 overflow-hidden text-right min-w-[160px] flex justify-end items-center"
             >
                 {/* Fluid Directional Snap Overlay - Tab Style Aesthetic */}
                 <AnimatePresence>
@@ -125,10 +125,12 @@ const ContactLink: React.FC<{ item: any; index: number }> = ({ item, index }) =>
                                 scale: 0.95
                             }}
                             animate={{
-                                x: overlayX.get(),
-                                y: overlayY.get(),
                                 opacity: 1,
                                 scale: 1
+                            }}
+                            style={{
+                                x: overlayX,
+                                y: overlayY,
                             }}
                             exit={{ 
                                 x: direction.x, 

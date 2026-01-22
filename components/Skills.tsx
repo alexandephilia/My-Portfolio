@@ -220,7 +220,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
 
                     <div className="
                         relative
-                        w-16 h-16 md:w-21 md:h-21
+                        w-20 h-20 md:w-21 md:h-21
                         rounded-[12px] md:rounded-[18px]
                         bg-linear-to-br from-white/95 via-white/80 to-gray-50/50
                         backdrop-blur-xl
@@ -231,7 +231,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                             inset_0_-1px_2px_rgba(0,0,0,0.02)
                         ]
                         flex items-center justify-center
-                        p-1.5 md:p1
+                        p-1.5 md:p-1
                         overflow-hidden
                     ">
                         {/* Internal Rim Light */}
@@ -267,7 +267,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                             })}
 
                             {/* Mini Grid for Remaining Icons (Bottom-Right) - Individual Icons */}
-                            <div className="aspect-square w-full grid grid-cols-2 gap-1">
+                            <div className="aspect-square w-full grid grid-cols-2 gap-0.5 md:gap-1">
                                 {[3, 4, 5, 6].map((i) => {
                                     const skill = category.skills[i];
                                     const iconUrl = skill ? TECH_ICON_URLS[skill] : null;
@@ -283,7 +283,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                                                     layoutId={`${category.title}-${skill}-icon`}
                                                     src={iconUrl}
                                                     alt={skill}
-                                                    className="w-full h-full p-0.5 object-contain"
+                                                    className="w-full h-full p-0 md:p-0.5 object-contain"
                                                 />
                                             ) : (
                                                 <div className="w-full h-full bg-gray-50/50" />

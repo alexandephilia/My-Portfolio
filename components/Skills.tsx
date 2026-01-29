@@ -554,14 +554,14 @@ const MacMiniSection: React.FC = () => {
 
             {/* Outer rings wrapper */}
             <div
-                className="relative w-full p-1 rounded-[48px] md:rounded-[64px] -rotate-2"
+                className="relative w-full aspect-square md:aspect-auto p-1 rounded-[48px] md:rounded-[64px] -rotate-2"
                 style={{
                     background: 'linear-gradient(180deg, #ffffff 0%, #e5e5e5 100%)',
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
                 }}
             >
                 <div
-                    className="relative w-full p-1 rounded-[44px] md:rounded-[60px]"
+                    className="relative w-full h-full p-1 rounded-[44px] md:rounded-[60px]"
                     style={{
                         background: 'linear-gradient(180deg, #f8f8f8 0%, #d8d8d8 100%)',
                     }}
@@ -570,11 +570,11 @@ const MacMiniSection: React.FC = () => {
                         variants={staggerItemVariants}
                         className="
                             relative
-                            w-full
+                            w-full h-full
                             rounded-[40px] md:rounded-[56px]
                             overflow-hidden
                             group
-                            flex flex-col md:flex-row items-center
+                            flex flex-col md:flex-row items-center justify-center md:justify-start
                         "
                         style={{
                             background: '#ffffff',
@@ -660,9 +660,9 @@ const MacMiniSection: React.FC = () => {
 
                         <motion.div
                             variants={popRevealVariants}
-                            className="w-full md:w-5/12 p-8 pb-0 md:pb-8 flex items-center justify-center relative z-10"
+                            className="w-full md:w-5/12 p-6 pb-0 md:p-8 md:pb-8 flex items-center justify-center relative z-10"
                         >
-                    <div className="relative w-[280px] md:w-[380px] aspect-square flex items-center justify-center">
+                    <div className="relative w-[160px] md:w-[380px] aspect-square flex items-center justify-center">
                         <div className="absolute inset-x-4 bottom-8 h-8 bg-black/20 blur-2xl rounded-[100%] transform scale-x-75" />
                         <motion.img
                             src="/mac_mini.png"
@@ -675,7 +675,7 @@ const MacMiniSection: React.FC = () => {
 
                 <motion.div
                     variants={dailyDriverContentVariants}
-                    className="w-full md:w-7/12 p-8 md:p-12 text-center md:text-left flex flex-col justify-center gap-6 relative z-10"
+                    className="w-full md:w-7/12 p-6 pt-2 md:p-12 text-center md:text-left flex flex-col justify-center gap-4 md:gap-6 relative z-10"
                 >
                     <div className="flex flex-col gap-2">
                         <div className="flex items-center justify-center md:justify-start gap-4">

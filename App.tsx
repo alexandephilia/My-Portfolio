@@ -170,7 +170,7 @@ export default function App() {
                             </SectionWrapper>
 
                             <SectionWrapper className="relative z-29">
-                                <section className="border-dashed overflow-visible">
+                                <section className="overflow-visible">
                                     <AnimatePresence mode="wait">
                                         <motion.div
                                             key={activeTab}
@@ -211,19 +211,19 @@ export default function App() {
                                             style={{ willChange: 'opacity, filter, transform' }}
                                         >
                                             {activeTab === 'Writings' ? (
-                                                <div className="bg-[#FAFAFA]">
+                                                <div>
                                                     <Writings />
                                                 </div>
                                             ) : activeTab === 'Components' ? (
-                                                <div className="bg-[#FAFAFA]">
+                                                <div>
                                                     <ComponentShowcase />
                                                 </div>
                                             ) : activeTab === 'Experiment' ? (
-                                                <div className="bg-[#FAFAFA]">
+                                                <div>
                                                     <ExperimentShowcase />
                                                 </div>
                                             ) : (
-                                                <div className="flex flex-col gap-6 p-6 md:p-8 overflow-visible">
+                                                <div className="flex flex-col gap-6 p-6 md:p-8 pb-24 md:pb-28 overflow-visible">
                                                     {displayProjects.length > 0 ? (
                                                         displayProjects.map((project) => (
                                                             <ProjectCard key={project.id} project={project} />

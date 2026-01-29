@@ -27,14 +27,6 @@ export const SectionWrapper: React.FC<SectionWrapperProps> = ({ children, classN
                     {children}
                 </div>
 
-                {/* 3a. Horizontal Line (Inside Context, Z-10) - Above BG, Below Active Cards */}
-                <div
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-screen flex items-center justify-center pointer-events-none z-1"
-                    aria-hidden="true"
-                >
-                    {/* Visual Line */}
-                    <div className="w-full border-b border-dashed border-gray-300" />
-                </div>
 
                 {/* 3b. Crosshairs (Inside Context, Z-50) - Always visible markers */}
                 <div
@@ -98,6 +90,13 @@ export const SectionWrapper: React.FC<SectionWrapperProps> = ({ children, classN
                     />
                 </div>
             )}
+            {/* 3a. Global Section Divider Line (Absolute Bottom, Z-0) */}
+            <div
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-screen flex items-center justify-center pointer-events-none z-0"
+                aria-hidden="true"
+            >
+                <div className="w-full border-b border-dashed border-gray-300" />
+            </div>
         </div>
     );
 };

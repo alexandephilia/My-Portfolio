@@ -61,7 +61,7 @@ export const ComponentShowcase: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col gap-6 p-6 md:p-8">
+        <div className="flex flex-col gap-6 p-6 md:p-8 pb-24 md:pb-28">
             {SHOWCASE_ITEMS.map((item) => {
                 const isHovered = hoveredId === item.id;
 
@@ -75,7 +75,7 @@ export const ComponentShowcase: React.FC = () => {
                         className="relative group w-full"
                         onMouseEnter={() => setHoveredId(item.id)}
                         onMouseLeave={() => setHoveredId(null)}
-                        style={{ zIndex: isHovered ? 20 : 1 }}
+                        style={{ zIndex: isHovered ? 60 : 1 }}
                     >
                         {/* Ghost Card - Stack Insight (Desktop) */}
                         <motion.div
@@ -93,24 +93,30 @@ export const ComponentShowcase: React.FC = () => {
                                 mass: 0.8
                             }}
                         >
-                            <div className="w-full h-14 rounded-b-[20px] bg-[#FAFAFA] border-x border-b border-gray-200 shadow-[0_12px_32px_rgba(0,0,0,0.06)] px-6 flex items-center justify-between relative">
-                                <div className="text-[9px] font-mono font-bold text-[rgb(74,108,196)] uppercase tracking-[0.2em] opacity-60 border-r border-gray-200 pr-6 h-4 flex items-center shrink-0">
-                                    Stack Insight
-                                </div>
+                        <div className="w-full h-14 rounded-b-[20px] bg-[#FAFAFA] border-x border-b border-gray-200 shadow-[0_12px_32px_rgba(0,0,0,0.06)] px-6 flex items-center justify-between relative overflow-hidden">
+                            {/* Stripped Lines Corners */}
+                            <div className="absolute top-0 left-0 w-4 h-4 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(45deg, #000, #000 1px, transparent 1px, transparent 5px)' }} />
+                            <div className="absolute top-0 right-0 w-4 h-4 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(-45deg, #000, #000 1px, transparent 1px, transparent 5px)' }} />
+                            <div className="absolute bottom-0 left-0 w-4 h-4 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(-45deg, #000, #000 1px, transparent 1px, transparent 5px)' }} />
+                            <div className="absolute bottom-0 right-0 w-4 h-4 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(45deg, #000, #000 1px, transparent 1px, transparent 5px)' }} />
 
-                                <div className="flex-1 min-w-0 flex flex-row items-center justify-center gap-4 px-4 overflow-x-auto no-scrollbar">
-                                    {item.stack.map((tech, i) => (
-                                        <span key={i} className="text-[10px] font-mono font-medium text-gray-500 whitespace-nowrap flex items-center gap-1.5">
-                                            <span className="w-1 h-1 rounded-full bg-[rgb(74,108,196)]/30" />
-                                            {tech}
-                                        </span>
-                                    ))}
-                                </div>
-
-                                <div className="flex items-center gap-1.5 text-[8px] font-mono text-[rgb(126,150,210)] font-bold uppercase border-l border-gray-200 pl-6 h-4 shrink-0">
-                                    UI Component
-                                </div>
+                            <div className="text-[9px] font-mono font-bold text-[rgb(74,108,196)] uppercase tracking-[0.2em] opacity-60 border-r border-gray-200 pr-6 h-4 flex items-center shrink-0 relative z-10">
+                                Stack Insight
                             </div>
+
+                            <div className="flex-1 min-w-0 flex flex-row items-center justify-start md:justify-center gap-4 px-4 overflow-x-auto no-scrollbar relative z-10">
+                                {item.stack.map((tech, i) => (
+                                    <span key={i} className="text-[10px] font-mono font-medium text-gray-500 whitespace-nowrap flex items-center gap-1.5 transition-colors duration-300 hover:text-gray-900">
+                                        <span className="w-1 h-1 rounded-full bg-[rgb(74,108,196)]/30" />
+                                        {tech}
+                                    </span>
+                                ))}
+                            </div>
+
+                            <div className="flex items-center gap-1.5 text-[8px] font-mono text-[rgb(126,150,210)] font-bold uppercase border-l border-gray-200 pl-6 h-4 shrink-0 relative z-10">
+                                UI Component
+                            </div>
+                        </div>
                         </motion.div>
 
                         {/* Ghost Card - Stack Insight (Mobile) */}
@@ -125,9 +131,9 @@ export const ComponentShowcase: React.FC = () => {
                             transition={{
                                 type: "spring", stiffness: 450, damping: 18, mass: 0.8
                             }}
-                            style={{ bottom: '0' }}
+                            style={{ bottom: '0px' }}
                         >
-                            <div className="w-full py-2 px-3 rounded-b-[16px] bg-[#FAFAFA] border-x border-b border-gray-200 shadow-[0_12px_32px_rgba(0,0,0,0.06)]">
+                            <div className="w-full py-2 px-3 rounded-b-[16px] bg-[#FAFAFA] border-x border-b border-gray-200 shadow-[0_12px_32px_rgba(0,0,0,0.06)] overflow-hidden">
                                 <div className="text-[8px] font-mono font-bold text-[rgb(74,108,196)] uppercase tracking-[0.15em] opacity-60 mb-1.5 text-center">
                                     Stack Insight
                                 </div>

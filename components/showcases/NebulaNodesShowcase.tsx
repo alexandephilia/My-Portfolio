@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useRef, useState } from 'react';
+import { useInView } from '../hooks/useInView';
 
 // --- TYPES ---
 interface Vector3 {
@@ -385,9 +386,13 @@ const SpaceIndicatorHUD: React.FC = () => {
 // --- MAIN VISUALIZATION (matches LLMVisualizationShowcase pattern exactly) ---
 const NebulaVisualization: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
+    const { ref: containerRef, inView } = useInView<HTMLDivElement>('200px 0px', 0.01);
     const stateRef = useRef<(SimulationState & { _driftAmp?: number }) | null>(null);
     const startTimeRef = useRef<number>(Date.now());
+    const rafRef = useRef<number | null>(null);
+    const isActiveRef = useRef(false);
+    const startRef = useRef<() => void>(() => {});
+    const stopRef = useRef<() => void>(() => {});
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -416,9 +421,8 @@ const NebulaVisualization: React.FC = () => {
             stateRef.current = initSimulation(width, height);
         }
 
-        let animationFrameId: number;
-
         const render = () => {
+            if (!isActiveRef.current) return;
             const time = Date.now() - startTimeRef.current;
             if (!stateRef.current) return;
             updateSimulation(stateRef.current, time);
@@ -523,10 +527,26 @@ const NebulaVisualization: React.FC = () => {
                 ctx.shadowBlur = 0;
             });
 
-            animationFrameId = requestAnimationFrame(render);
+            if (!isActiveRef.current) return;
+            rafRef.current = requestAnimationFrame(render);
         };
 
-        animationFrameId = requestAnimationFrame(render);
+        const start = () => {
+            if (isActiveRef.current) return;
+            isActiveRef.current = true;
+            rafRef.current = requestAnimationFrame(render);
+        };
+
+        const stop = () => {
+            isActiveRef.current = false;
+            if (rafRef.current !== null) {
+                cancelAnimationFrame(rafRef.current);
+                rafRef.current = null;
+            }
+        };
+
+        startRef.current = start;
+        stopRef.current = stop;
 
         const handleResize = () => {
             if (containerRef.current && canvasRef.current) {
@@ -539,9 +559,32 @@ const NebulaVisualization: React.FC = () => {
 
         return () => {
             window.removeEventListener('resize', handleResize);
-            cancelAnimationFrame(animationFrameId);
+            stop();
         };
     }, []);
+
+    useEffect(() => {
+        const shouldRun = inView && !document.hidden;
+        if (shouldRun) {
+            startRef.current();
+        } else {
+            stopRef.current();
+        }
+    }, [inView]);
+
+    useEffect(() => {
+        const onVisibilityChange = () => {
+            if (document.hidden) {
+                stopRef.current();
+                return;
+            }
+            if (inView) {
+                startRef.current();
+            }
+        };
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+    }, [inView]);
 
     return (
         <div ref={containerRef} className="w-full h-full relative group font-sans">

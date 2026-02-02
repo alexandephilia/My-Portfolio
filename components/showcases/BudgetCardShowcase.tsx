@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo, memo } from 'react';
+import ProgressiveText from '../ProgressiveText';
 
 type MonthKey = 'may' | 'jun' | 'jul' | 'aug';
 
@@ -141,9 +142,9 @@ const BudgetCard: React.FC<BudgetCardProps> = memo(({ theme = 'dark' }) => {
                     {/* Header */}
                     <header className="flex flex-col gap-0.5">
                         <div className="flex justify-between items-center w-full">
-                            <h2 className={`${styles.headerText} font-medium text-[11px] tracking-wider uppercase`}>
+                            <ProgressiveText as="h2" className={`${styles.headerText} font-medium text-[11px] tracking-wider uppercase`}>
                                 Monthly Budget
-                            </h2>
+                            </ProgressiveText>
 
                             {/* Month Selector */}
                             <div className="relative" ref={dropdownRef}>
@@ -207,9 +208,9 @@ const BudgetCard: React.FC<BudgetCardProps> = memo(({ theme = 'dark' }) => {
 
                         {/* Total Budget */}
                         <section>
-                            <h1 className={`${styles.totalText} text-[56px] font-normal tracking-tighter leading-[1] tabular-nums mt-2`}>
+                            <ProgressiveText as="h1" className={`${styles.totalText} text-[56px] font-normal tracking-tighter leading-[1] tabular-nums mt-2`}>
                                 {formatCurrency(currentData.totalBudget)}
-                            </h1>
+                            </ProgressiveText>
                         </section>
                     </header>
 
@@ -415,4 +416,3 @@ export const BudgetCardShowcase: React.FC<BudgetCardShowcaseProps> = memo(({ the
         </div>
     );
 });
-

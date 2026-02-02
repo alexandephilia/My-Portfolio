@@ -38,30 +38,25 @@ export const DraggableSticker: React.FC<DraggableStickerProps> = ({
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
     
-    useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            if (!stickerRef.current || !pointLightRef.current || !pointLightFlippedRef.current) return;
-            
-            const rect = stickerRef.current.getBoundingClientRect();
-            const relativeX = e.clientX - rect.left;
-            const relativeY = e.clientY - rect.top;
-            
-            pointLightRef.current.setAttribute("x", relativeX.toString());
-            pointLightRef.current.setAttribute("y", relativeY.toString());
-            
-            // Flipped light depends on peel direction
-            if (peelFrom === 'top' || peelFrom === 'bottom') {
-                pointLightFlippedRef.current.setAttribute("x", relativeX.toString());
-                pointLightFlippedRef.current.setAttribute("y", (rect.height - relativeY).toString());
-            } else {
-                pointLightFlippedRef.current.setAttribute("x", (rect.width - relativeX).toString());
-                pointLightFlippedRef.current.setAttribute("y", relativeY.toString());
-            }
-        };
+    const handlePointerMove = (e: React.PointerEvent) => {
+        if (!stickerRef.current || !pointLightRef.current || !pointLightFlippedRef.current) return;
 
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, [peelFrom]);
+        const rect = stickerRef.current.getBoundingClientRect();
+        const relativeX = e.clientX - rect.left;
+        const relativeY = e.clientY - rect.top;
+
+        pointLightRef.current.setAttribute("x", relativeX.toString());
+        pointLightRef.current.setAttribute("y", relativeY.toString());
+
+        // Flipped light depends on peel direction
+        if (peelFrom === 'top' || peelFrom === 'bottom') {
+            pointLightFlippedRef.current.setAttribute("x", relativeX.toString());
+            pointLightFlippedRef.current.setAttribute("y", (rect.height - relativeY).toString());
+        } else {
+            pointLightFlippedRef.current.setAttribute("x", (rect.width - relativeX).toString());
+            pointLightFlippedRef.current.setAttribute("y", relativeY.toString());
+        }
+    };
 
     // Directional logic helpers
     const p = 'var(--sticker-p)';
@@ -189,6 +184,7 @@ export const DraggableSticker: React.FC<DraggableStickerProps> = ({
                 drag
                 dragMomentum={false}
                 ref={stickerRef}
+                onPointerMove={handlePointerMove}
                 onHoverStart={() => setIsHovered(true)}
                 onHoverEnd={() => setIsHovered(false)}
                 onMouseDown={() => setIsActive(true)}

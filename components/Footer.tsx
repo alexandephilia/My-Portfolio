@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { CONTACT_INFO } from '../constants';
 import { antiFlickerStyle, blurOnlyVariants, viewportSettings } from './animations';
 import { useDevice } from './hooks/useDevice';
+import { useInView } from './hooks/useInView';
+import ProgressiveText from './ProgressiveText';
 
 export const Footer: React.FC = () => {
     // Fallback email if constant isn't found
@@ -13,26 +15,42 @@ export const Footer: React.FC = () => {
     const [showAlternate, setShowAlternate] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const { isMobile } = useDevice();
+    const { ref: footerRef, inView } = useInView<HTMLElement>('200px 0px', 0.01);
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
     // Responsive widths - idle needs to fit "LET'S BUILD AND SHIP TOGETHER" + icon
     const idleWidth = isMobile ? 200 : 295;
     const hoverWidth = isMobile ? 100 : 145;
 
-    // Auto-repeating animation loop
     useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const update = () => setPrefersReducedMotion(media.matches);
+        update();
+        if (media.addEventListener) {
+            media.addEventListener('change', update);
+            return () => media.removeEventListener('change', update);
+        }
+        media.addListener(update);
+        return () => media.removeListener(update);
+    }, []);
+
+    // Auto-repeating animation loop (paused when offscreen or reduced motion)
+    useEffect(() => {
+        if (!inView || prefersReducedMotion) return;
         const interval = setInterval(() => {
             setShowAlternate(prev => !prev);
         }, 2500); // Toggle every 2.5 seconds
 
         return () => clearInterval(interval);
-    }, []);
+    }, [inView, prefersReducedMotion]);
 
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     return (
-        <footer className="relative pt-8 md:pt-16 pb-0 bg-[#FAFAFA] border-t border-dashed border-gray-200 overflow-hidden flex flex-col items-center justify-between min-h-[350px] md:min-h-[500px]" style={antiFlickerStyle}>
+        <footer ref={footerRef} className="relative pt-8 md:pt-16 pb-0 bg-[#FAFAFA] border-t border-dashed border-gray-200 overflow-hidden flex flex-col items-center justify-between min-h-[350px] md:min-h-[500px]" style={antiFlickerStyle}>
 
             {/* Scroll Top Button (Visible on Mobile now) */}
             <motion.button
@@ -63,7 +81,7 @@ export const Footer: React.FC = () => {
                     className="text-center mb-4 md:mb-8 relative mt-10 md:mt-10"
                 >
                     <div className="relative inline-block px-4">
-                        <span className="font-serif italic text-4xl md:text-6xl lg:text-7xl text-[rgb(74,108,196)] leading-none">You have made it so far..</span>
+                        <ProgressiveText as="span" className="font-serif italic text-4xl md:text-6xl lg:text-7xl text-[rgb(74,108,196)] leading-none">You have made it so far..</ProgressiveText>
 
                         {/* Attribution Pill - Left Aligned */}
                         <div className="flex justify-start mt-0 mb-1 ml-1 opacity-70">
@@ -349,9 +367,9 @@ export const Footer: React.FC = () => {
 
             {/* THE END - Half Visible Footer Element */}
             <div className="w-full overflow-hidden flex justify-center pointer-events-none select-none relative h-[60px] md:h-[100px]">
-                <h1 className="text-[120px] md:text-[200px] font-black text-gray-200/50 leading-[0.75] tracking-tighter absolute top-0 whitespace-nowrap">
+                <ProgressiveText as="h1" className="text-[120px] md:text-[200px] font-black text-gray-200/50 leading-[0.75] tracking-tighter absolute top-0 whitespace-nowrap">
                     THE END
-                </h1>
+                </ProgressiveText>
             </div>
 
 

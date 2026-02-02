@@ -2,6 +2,7 @@ import { LucideIcon, BotMessageSquare, Music, Send, ChevronsRight } from 'lucide
 import { motion, AnimatePresence } from 'motion/react';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { DotMatrixVisualizer } from './MusicPlayer';
+import ProgressiveText from './ProgressiveText';
 
 interface Message {
     id: string;
@@ -71,6 +72,9 @@ export const AIChatFloat: React.FC<AIChatFloatProps> = React.memo(({ activeMode,
     const [isLoading, setIsLoading] = useState(false);
     const [batchIndex, setBatchIndex] = useState(0);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
+    const [streamingText, setStreamingText] = useState('');
+    const streamingRafRef = useRef<number | null>(null);
 
     const dockItems = [
         { id: 'music' as const, icon: Music, label: 'Music' },
@@ -92,31 +96,62 @@ export const AIChatFloat: React.FC<AIChatFloatProps> = React.memo(({ activeMode,
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    // Typewriter effect - streams text character by character
+    // Typewriter effect - streams text with rAF to reduce per-character re-renders
     const typewriterEffect = useCallback((fullText: string, messageId: string) => {
-        let index = 0;
-        const speed = 18; // ms per character
+        if (streamingRafRef.current !== null) {
+            cancelAnimationFrame(streamingRafRef.current);
+            streamingRafRef.current = null;
+        }
 
-        const type = () => {
-            if (index < fullText.length) {
-                setMessages(prev => prev.map(msg =>
-                    msg.id === messageId
-                        ? { ...msg, content: fullText.slice(0, index + 1), isStreaming: true }
-                        : msg
-                ));
-                index++;
-                setTimeout(type, speed);
-            } else {
-                // Done streaming
-                setMessages(prev => prev.map(msg =>
-                    msg.id === messageId
-                        ? { ...msg, isStreaming: false }
-                        : msg
-                ));
+        const speed = 18; // ms per character
+        const startTime = performance.now();
+        let lastIndex = 0;
+
+        setStreamingMessageId(messageId);
+        setStreamingText('');
+
+        const step = (time: number) => {
+            const elapsed = time - startTime;
+            const nextIndex = Math.min(fullText.length, Math.floor(elapsed / speed));
+
+            if (nextIndex !== lastIndex) {
+                lastIndex = nextIndex;
+                setStreamingText(fullText.slice(0, nextIndex));
+            }
+
+            if (nextIndex < fullText.length) {
+                streamingRafRef.current = requestAnimationFrame(step);
+                return;
+            }
+
+            streamingRafRef.current = null;
+            setMessages(prev => prev.map(msg =>
+                msg.id === messageId
+                    ? { ...msg, content: fullText, isStreaming: false }
+                    : msg
+            ));
+            setStreamingMessageId(null);
+            setStreamingText('');
+        };
+
+        streamingRafRef.current = requestAnimationFrame(step);
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (streamingRafRef.current !== null) {
+                cancelAnimationFrame(streamingRafRef.current);
+                streamingRafRef.current = null;
             }
         };
-        type();
     }, []);
+
+    const getMessageContent = useCallback((msg: Message) => {
+        if (msg.id === streamingMessageId && msg.isStreaming) {
+            return streamingText;
+        }
+        return msg.content;
+    }, [streamingMessageId, streamingText]);
 
     const sendMessage = async (overrideInput?: string) => {
         const messageText = overrideInput || input.trim();
@@ -183,7 +218,7 @@ ${pageContent}
 
 Now be entertaining, you beautiful bastard.`
                         },
-                        ...messages.map(m => ({ role: m.role, content: m.content })),
+                        ...messages.map(m => ({ role: m.role, content: getMessageContent(m) })),
                         { role: 'user', content: userMessage.content }
                     ],
                     max_tokens: 250,
@@ -216,7 +251,8 @@ Now be entertaining, you beautiful bastard.`
             setMessages(prev => [...prev, {
                 id: errorId,
                 role: 'assistant',
-                content: ''
+                content: '',
+                isStreaming: true
             }]);
             typewriterEffect('Damn, something fucked up. Try again.', errorId);
         } finally {
@@ -355,8 +391,8 @@ Now be entertaining, you beautiful bastard.`
                             animate={{ opacity: 1 }}
                             className="h-[200px] flex flex-col items-center justify-start pt-8 text-center px-4"
                         >
-                            <p className="text-5xl md:text-5xl lg:text-5xl text-blue-900 mb-4" style={{ fontFamily: 'Instrument Serif, serif' }}>What's up?</p>
-                            <p className="text-[10px] text-blue-500/60 mb-3 font-mono">Ask me anything about Alex's work.</p>
+                            <ProgressiveText as="p" className="text-5xl md:text-5xl lg:text-5xl text-blue-900 mb-4" style={{ fontFamily: 'Instrument Serif, serif' }}>What's up?</ProgressiveText>
+                            <ProgressiveText as="p" className="text-[10px] text-blue-500/60 mb-3 font-mono">Ask me anything about Alex's work.</ProgressiveText>
                             
                             <div className="flex flex-col items-center justify-start h-14 -mt-0.5 relative">
                                 <AnimatePresence mode="popLayout" initial={false}>
@@ -422,7 +458,7 @@ Now be entertaining, you beautiful bastard.`
                                                 : 'inset 0 1px 2px rgba(255,255,255,0.6), 0 1px 3px rgba(30,58,138,0.08)'
                                         }}
                                     >
-                                        {msg.content}
+                                        {getMessageContent(msg)}
                                         {msg.role === 'assistant' && msg.isStreaming && (
                                             <span className="inline-block w-1.5 h-3 bg-blue-600 ml-0.5 animate-pulse" />
                                         )}

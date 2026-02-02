@@ -119,15 +119,47 @@ export default function App() {
             smoothWheel: true,
             touchMultiplier: 2,
         });
+        const lenisAny = lenis as unknown as { start?: () => void; stop?: () => void };
 
-        function raf(time: number) {
+        let rafId: number | null = null;
+        let isActive = true;
+
+        const raf = (time: number) => {
+            if (!isActive) return;
             lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
+            rafId = requestAnimationFrame(raf);
+        };
 
-        requestAnimationFrame(raf);
+        const start = () => {
+            if (isActive) return;
+            isActive = true;
+            lenisAny.start?.();
+            rafId = requestAnimationFrame(raf);
+        };
+
+        const stop = () => {
+            isActive = false;
+            lenisAny.stop?.();
+            if (rafId !== null) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            }
+        };
+
+        const onVisibilityChange = () => {
+            if (document.hidden) {
+                stop();
+            } else {
+                start();
+            }
+        };
+
+        rafId = requestAnimationFrame(raf);
+        document.addEventListener('visibilitychange', onVisibilityChange);
 
         return () => {
+            document.removeEventListener('visibilitychange', onVisibilityChange);
+            stop();
             lenis.destroy();
         };
     }, []);

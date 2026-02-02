@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useSpring, useMotionValue, AnimatePresence } from 'motion/react';
 import { useCursorStore } from './hooks/useCursorStore';
 
@@ -41,6 +41,8 @@ export const CustomCursor = () => {
     const [isPointer, setIsPointer] = useState(false);
     const cursorX = useMotionValue(-100);
     const cursorY = useMotionValue(-100);
+    const lastTargetRef = useRef<HTMLElement | null>(null);
+    const lastIsPointerRef = useRef(false);
 
     const springConfig = { damping: 25, stiffness: 450 };
     const cursorXSpring = useSpring(cursorX, springConfig);
@@ -53,15 +55,22 @@ export const CustomCursor = () => {
             cursorX.set(e.clientX);
             cursorY.set(e.clientY);
 
-            // Check if the current element or its parent is a link or button
-            const target = e.target as HTMLElement;
-            const isClickable = 
-                target.closest('button') || 
-                target.closest('a') || 
-                target.closest('[role="button"]') ||
-                window.getComputedStyle(target).cursor === 'pointer';
-            
-            setIsPointer(!!isClickable);
+            const target = e.target as HTMLElement | null;
+            if (!target) return;
+
+            if (target !== lastTargetRef.current) {
+                const isClickable =
+                    target.closest('button') ||
+                    target.closest('a') ||
+                    target.closest('[role="button"]') ||
+                    window.getComputedStyle(target).cursor === 'pointer';
+
+                lastTargetRef.current = target;
+                if (lastIsPointerRef.current !== !!isClickable) {
+                    lastIsPointerRef.current = !!isClickable;
+                    setIsPointer(!!isClickable);
+                }
+            }
         };
 
         window.addEventListener('mousemove', moveCursor);

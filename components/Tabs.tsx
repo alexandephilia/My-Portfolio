@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { antiFlickerStyle, staggerContainerVariants, staggerItemVariants, viewportSettings } from './animations';
 
 interface TabsProps {
@@ -13,29 +13,44 @@ export const Tabs: React.FC<TabsProps> = ({ activeTab, setActiveTab }) => {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [showLeftFade, setShowLeftFade] = useState(false);
     const [showRightFade, setShowRightFade] = useState(false);
+    const rafIdRef = useRef<number | null>(null);
 
-    const checkScroll = () => {
+    const checkScroll = useCallback(() => {
         if (scrollRef.current) {
             const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-            setShowLeftFade(scrollLeft > 10);
-            setShowRightFade(scrollLeft < scrollWidth - clientWidth - 10);
+            const nextLeft = scrollLeft > 10;
+            const nextRight = scrollLeft < scrollWidth - clientWidth - 10;
+            setShowLeftFade(prev => (prev === nextLeft ? prev : nextLeft));
+            setShowRightFade(prev => (prev === nextRight ? prev : nextRight));
         }
-    };
+    }, []);
+
+    const scheduleCheck = useCallback(() => {
+        if (rafIdRef.current !== null) return;
+        rafIdRef.current = requestAnimationFrame(() => {
+            rafIdRef.current = null;
+            checkScroll();
+        });
+    }, [checkScroll]);
 
     useEffect(() => {
         const scrollElement = scrollRef.current;
         if (scrollElement) {
             checkScroll();
-            scrollElement.addEventListener('scroll', checkScroll);
-            window.addEventListener('resize', checkScroll);
+            scrollElement.addEventListener('scroll', scheduleCheck, { passive: true });
+            window.addEventListener('resize', scheduleCheck);
         }
         return () => {
             if (scrollElement) {
-                scrollElement.removeEventListener('scroll', checkScroll);
+                scrollElement.removeEventListener('scroll', scheduleCheck as EventListener);
             }
-            window.removeEventListener('resize', checkScroll);
+            window.removeEventListener('resize', scheduleCheck as EventListener);
+            if (rafIdRef.current !== null) {
+                cancelAnimationFrame(rafIdRef.current);
+                rafIdRef.current = null;
+            }
         };
-    }, []);
+    }, [checkScroll, scheduleCheck]);
 
     return (
         <div className="relative p-6 md:py-6 md:px-8 border-b border-dashed border-gray-200 bg-[#FAFAFA]">
@@ -92,4 +107,3 @@ export const Tabs: React.FC<TabsProps> = ({ activeTab, setActiveTab }) => {
         </div>
     );
 };
-

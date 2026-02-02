@@ -7,6 +7,7 @@ import {
 } from 'react-icons/si';
 import { antiFlickerStyle } from './animations';
 import { useDevice } from './hooks/useDevice';
+import ProgressiveText from './ProgressiveText';
 
 // Custom Vite icon with gradient
 const ViteIcon: React.FC<{ size?: number }> = ({ size = 24 }) => (
@@ -351,23 +352,28 @@ export const Hero: React.FC = () => {
                 ))}
             </motion.div>
 
-            <motion.h1
+            <motion.div
                 initial={{ opacity: 0, filter: 'blur(14px)', y: 20 }}
                 animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
                 transition={{ duration: 1.0, delay: 0.1, ease: "easeOut" }}
-                className="text-[1.1rem] md:text-[1.875rem] lg:text-[2.25rem] font-bold text-gray-900 leading-none"
+                className="blur-bleed"
                 style={{ maxWidth: isDesktop ? '35rem' : '277px' }}
             >
-                I keep iterate and build across <span className="text-[rgb(74,108,196)]">Frontend</span> & <span className="text-[rgb(74,108,196)]">Backend Engineering</span>, embracing{' '}
-                <IconScatter icons={agnosticIcons} externalOpen={revealSequence.agnostic}>
-                    agnostic framework
-                </IconScatter>
-                {' '}principles and{' '}
-                <IconScatter icons={adaptiveIcons} externalOpen={revealSequence.adaptive}>
-                    adaptive approach
-                </IconScatter>
-                {' '} for any challenge!
-            </motion.h1>
+                <ProgressiveText
+                    as="h1"
+                    className="text-[1.1rem] md:text-[1.875rem] lg:text-[2.25rem] font-bold text-gray-900 leading-none"
+                >
+                    I keep iterate and build across <span className="text-[rgb(74,108,196)]">Frontend</span> & <span className="text-[rgb(74,108,196)]">Backend Engineering</span>, embracing{' '}
+                    <IconScatter icons={agnosticIcons} externalOpen={revealSequence.agnostic}>
+                        agnostic framework
+                    </IconScatter>
+                    {' '}principles and{' '}
+                    <IconScatter icons={adaptiveIcons} externalOpen={revealSequence.adaptive}>
+                        adaptive approach
+                    </IconScatter>
+                    {' '} for any challenge!
+                </ProgressiveText>
+            </motion.div>
 
             <motion.div
                 initial={{ opacity: 0, filter: 'blur(14px)', y: 10 }}
@@ -381,7 +387,7 @@ export const Hero: React.FC = () => {
                         Remote Integration Focus
                     </span>
 
-                    <p className="text-gray-500 text-[10px] md:text-[14px] leading-[1.6]">
+                    <ProgressiveText as="p" className="text-gray-500 text-[10px] md:text-[14px] leading-[1.6]">
                         Garry Alexander here. I am currently prioritizing {' '}
                         <RevealHighlight
                             text="Full-time & Contract"
@@ -398,7 +404,7 @@ export const Hero: React.FC = () => {
                             duration={1}
                         />.
                         My process is built for <span className="text-gray-800 font-medium italic">distributed team</span> velocity, leveraging years of agile huddle leadership for engineering excellence.
-                    </p>
+                    </ProgressiveText>
                 </div>
             </motion.div>
             </div>

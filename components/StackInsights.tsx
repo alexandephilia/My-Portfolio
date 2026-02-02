@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import React, { useState } from 'react';
 import { STACK_INSIGHTS } from '../constants';
 import { antiFlickerStyle, floatingStaggerItemVariants, sectionHeaderVariants, staggerContainerVariants } from './animations';
+import ProgressiveText from './ProgressiveText';
 
 export const StackInsights: React.FC = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -14,12 +15,13 @@ export const StackInsights: React.FC = () => {
 
     return (
         <section className="p-6 md:p-10 bg-[#FAFAFA] border-b border-dashed border-gray-200 overflow-hidden relative" style={antiFlickerStyle}>
-            <motion.h2
+            <ProgressiveText
+                as="h2"
                 variants={sectionHeaderVariants}
                 className="text-[10px] md:text-sm font-bold text-[rgb(74,108,196)] tracking-wider uppercase mb-4"
             >
                 The 3 AM Stack
-            </motion.h2>
+            </ProgressiveText>
 
             <motion.div
                 variants={staggerContainerVariants}
@@ -153,15 +155,15 @@ export const StackInsights: React.FC = () => {
                                                 )}
 
                                                 <div className="flex flex-col gap-1 relative z-10">
-                                                    <h3 className="text-xl md:text-xl font-bold text-gray-900 tracking-tight">
+                                                    <ProgressiveText as="h3" className="text-xl md:text-xl font-bold text-gray-900 tracking-tight">
                                                         {insight.title}
-                                                    </h3>
+                                                    </ProgressiveText>
                                                 </div>
 
                                                 <div className="flex-1 relative z-10">
-                                                    <p className="font-mono text-[11px] md:text-[12px] text-gray-700 leading-snug tracking-tighter font-medium">
+                                                    <ProgressiveText as="p" className="font-mono text-[11px] md:text-[12px] text-gray-700 leading-snug tracking-tighter font-medium">
                                                         {insight.text}
-                                                    </p>
+                                                    </ProgressiveText>
                                                 </div>
 
                                                 <div className="flex items-center gap-2 mt-4 opacity-50 group-hover:opacity-100 transition-opacity relative z-10">

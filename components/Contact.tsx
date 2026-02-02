@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { CONTACT_INFO } from '../constants';
 import { antiFlickerStyle, blurOnlyVariants, staggerContainerVariants, staggerItemVariants } from './animations';
 import { useCursorStore } from './hooks/useCursorStore';
+import ProgressiveText from './ProgressiveText';
 
 const ContactLink: React.FC<{ item: any; index: number }> = ({ item, index }) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -163,12 +164,13 @@ const ContactLink: React.FC<{ item: any; index: number }> = ({ item, index }) =>
 export const Contact: React.FC = () => {
     return (
         <section className="p-6 md:p-8 bg-[#FAFAFA]" style={antiFlickerStyle}>
-            <motion.h2
+            <ProgressiveText
+                as="h2"
                 variants={blurOnlyVariants}
                 className="text-sm md:text-[12px] font-bold text-[rgb(74,108,196)] tracking-wider uppercase mb-6"
             >
                 Contact
-            </motion.h2>
+            </ProgressiveText>
 
             <motion.div
                 variants={staggerContainerVariants}

@@ -4,6 +4,7 @@ import { BEYOND_WORK_IMAGES } from '../constants';
 import { antiFlickerStyle, sectionHeaderVariants, staggerContainerVariants, staggerItemVariants } from './animations';
 import { Bookshelf } from './Bookshelf';
 import { useCursorStore } from './hooks/useCursorStore';
+import ProgressiveText from './ProgressiveText';
 
 // Local CrosshairCorner for the image frame effect
 const CrosshairCorner = ({ position }: { position: 'tl' | 'tr' | 'bl' | 'br' }) => {
@@ -84,12 +85,13 @@ export const BeyondWork: React.FC = () => {
     return (
         <section className="py-10 border-t border-dashed border-gray-200 bg-[#FAFAFA] overflow-hidden" style={antiFlickerStyle}>
             <div className="px-6 md:px-10 mb-8">
-                <motion.h2
+                <ProgressiveText
+                    as="h2"
                     variants={sectionHeaderVariants}
                     className="text-sm font-bold text-[rgb(74,108,196)] tracking-wider uppercase"
                 >
                     Beyond Work
-                </motion.h2>
+                </ProgressiveText>
             </div>
 
             <motion.div
@@ -138,8 +140,8 @@ export const BeyondWork: React.FC = () => {
                     variants={sectionHeaderVariants}
                     className="mb-8"
                 >
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Reading List</h3>
-                    <p className="text-gray-500 text-sm">Curated collection of thoughts and inspirations.</p>
+                    <ProgressiveText as="h3" className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Reading List</ProgressiveText>
+                    <ProgressiveText as="p" className="text-gray-500 text-sm">Curated collection of thoughts and inspirations.</ProgressiveText>
                 </motion.div>
                 <Bookshelf />
             </div>

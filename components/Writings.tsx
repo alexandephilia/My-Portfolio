@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Writing } from '../types';
 import { antiFlickerStyle, staggerContainerVariants, staggerItemVariants } from './animations';
+import ProgressiveText from './ProgressiveText';
 
 const API_URL = '/api/writings';
 
@@ -277,16 +278,16 @@ const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
         <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
-                h1: ({ children }) => <h1 className="text-2xl font-bold text-gray-900 mt-6 mb-3 first:mt-0">{children}</h1>,
-                h2: ({ children }) => <h2 className="text-xl font-bold text-gray-900 mt-5 mb-2">{children}</h2>,
-                h3: ({ children }) => <h3 className="text-lg font-semibold text-gray-900 mt-4 mb-2">{children}</h3>,
+                h1: ({ children }) => <ProgressiveText as="h1" className="text-2xl font-bold text-gray-900 mt-6 mb-3 first:mt-0">{children}</ProgressiveText>,
+                h2: ({ children }) => <ProgressiveText as="h2" className="text-xl font-bold text-gray-900 mt-5 mb-2">{children}</ProgressiveText>,
+                h3: ({ children }) => <ProgressiveText as="h3" className="text-lg font-semibold text-gray-900 mt-4 mb-2">{children}</ProgressiveText>,
 
-                p: ({ children }) => <p className="text-gray-700 leading-[1.8] mb-4 last:mb-0">{children}</p>,
-                ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-1 text-gray-700">{children}</ul>,
-                ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-1 text-gray-700">{children}</ol>,
+                p: ({ children }) => <ProgressiveText as="p" className="text-gray-700 leading-[1.8] mb-4 last:mb-0">{children}</ProgressiveText>,
+                ul: ({ children }) => <ProgressiveText as="ul" className="list-disc list-inside mb-4 space-y-1 text-gray-700">{children}</ProgressiveText>,
+                ol: ({ children }) => <ProgressiveText as="ol" className="list-decimal list-inside mb-4 space-y-1 text-gray-700">{children}</ProgressiveText>,
                 li: ({ children }) => <li className="leading-relaxed">{children}</li>,
                 blockquote: ({ children }) => (
-                    <blockquote className="border-l-4 border-gray-200 pl-4 my-4 italic text-gray-600">{children}</blockquote>
+                    <ProgressiveText as="blockquote" className="border-l-4 border-gray-200 pl-4 my-4 italic text-gray-600">{children}</ProgressiveText>
                 ),
                 code: ({ className, children }) => {
                     const isInline = !className;
@@ -526,8 +527,8 @@ export const Writings: React.FC = () => {
                 className="flex items-center justify-between mb-8"
             >
                 <div className="flex flex-col">
-                    <motion.h2 variants={staggerItemVariants} className="text-2xl font-serif text-gray-900 italic">Writings</motion.h2>
-                    <motion.p variants={staggerItemVariants} className="text-xs text-gray-400 mt-1">Thoughts, ideas, and reflections</motion.p>
+                    <ProgressiveText as="h2" variants={staggerItemVariants} className="text-2xl font-serif text-gray-900 italic">Writings</ProgressiveText>
+                    <ProgressiveText as="p" variants={staggerItemVariants} className="text-xs text-gray-400 mt-1">Thoughts, ideas, and reflections</ProgressiveText>
                 </div>
                 {isAdmin && (
                     <motion.button
@@ -672,9 +673,9 @@ export const Writings: React.FC = () => {
                                     <div className="px-8 pt-8 pb-4 border-b border-gray-100">
                                         <div className="flex items-start justify-between gap-4">
                                             <div className="flex-1">
-                                                <h1 className="text-4xl md:text-5xl font-serif italic text-gray-900 leading-tight">
+                                                <ProgressiveText as="h1" className="text-4xl md:text-5xl font-serif italic text-gray-900 leading-tight">
                                                     {selectedWriting.title}
-                                                </h1>
+                                                </ProgressiveText>
                                                 <div className="flex items-center gap-3 mt-4 text-sm text-gray-400">
                                                     <span>{formatDate(selectedWriting.createdAt)}</span>
                                                     <span>·</span>
@@ -703,7 +704,7 @@ export const Writings: React.FC = () => {
             {writings.length === 0 ? (
                 <div className="text-center py-20">
                     <PenLine className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-                    <p className="text-gray-400 text-sm">No writings yet</p>
+                    <ProgressiveText as="p" className="text-gray-400 text-sm">No writings yet</ProgressiveText>
                 </div>
             ) : (
                 <motion.div
@@ -719,9 +720,9 @@ export const Writings: React.FC = () => {
                         >
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="text-3xl md:text-4xl font-serif italic text-gray-900 group-hover:text-gray-600 transition-colors leading-snug">
+                                    <ProgressiveText as="h3" className="text-3xl md:text-4xl font-serif italic text-gray-900 group-hover:text-gray-600 transition-colors leading-snug">
                                         {writing.title}
-                                    </h3>
+                                    </ProgressiveText>
                                     <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
                                         <span>{formatDate(writing.createdAt)}</span>
                                         <span>·</span>

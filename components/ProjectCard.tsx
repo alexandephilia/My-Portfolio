@@ -244,6 +244,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                                 className="w-full h-full border-none pointer-events-auto"
                                 title={project.title}
                                 scrolling="no"
+                                loading="lazy"
                             />
                             {/* Protection overlay for scroll/interaction hijacking if needed, but keeping it interactive for now */}
                             <div className="absolute inset-0 pointer-events-none shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)]" />
@@ -256,9 +257,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                                 {project.category !== 'Components' && (
                                     <div className="flex flex-col gap-1 md:gap-2 relative z-10">
                                         <div className="flex items-start justify-between gap-4 w-full relative z-10">
-                                            <h3 className="text-base md:text-lg font-bold text-gray-900 leading-tight flex-1">
+                                            <ProgressiveText as="h3" className="text-base md:text-lg font-bold text-gray-900 leading-tight flex-1">
                                                 {project.title}
-                                            </h3>
+                                            </ProgressiveText>
                                             <div className="hidden md:flex shrink-0 items-center gap-1.5 p-px rounded-full relative group-hover:opacity-0 translate-x-0 group-hover:translate-x-2 mt-1 overflow-hidden"
                                                 style={{ backgroundImage: 'repeating-linear-gradient(45deg, #E5E7EB, #E5E7EB 1px, transparent 1px, transparent 3px)' }}>
                                                 <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-linear-to-b from-white to-gray-50/50 shadow-[inset_0_1px_2px_rgba(0,0,0,0.08),inset_0_-1px_1px_rgba(255,255,255,0.8)] border border-transparent">
@@ -300,14 +301,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                                     {project.category === 'Works' ? (
                                         <div className="flex flex-col gap-0.5">
                                             {project.company && (
-                                                <div className="text-[10px] md:text-[11px] font-bold text-[rgb(74,108,196)] uppercase tracking-tight">
+                                                <ProgressiveText as="div" className="text-[10px] md:text-[11px] font-bold text-[rgb(74,108,196)] uppercase tracking-tight">
                                                     {project.company}
-                                                </div>
+                                                </ProgressiveText>
                                             )}
                                             {project.date && (
-                                                <div className="text-[8px] md:text-[9px] font-semibold text-gray-400 font-mono uppercase">
+                                                <ProgressiveText as="div" className="text-[8px] md:text-[9px] font-semibold text-gray-400 font-mono uppercase">
                                                     {project.date}
-                                                </div>
+                                                </ProgressiveText>
                                             )}
                                         </div>
                                     ) : (

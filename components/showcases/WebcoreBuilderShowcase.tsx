@@ -13,6 +13,7 @@ import {
     Zap
 } from 'lucide-react';
 import React, { useState, memo } from 'react';
+import ProgressiveText from '../ProgressiveText';
 
 enum TabType {
     ELEMENTS = 'Elements',
@@ -78,9 +79,9 @@ const BuilderCard: React.FC = memo(() => {
 
             {/* Bottom content */}
             <div className="absolute bottom-0 left-0 right-0 px-4 pb-5 flex flex-col justify-end z-10">
-                <p className="text-gray-700 text-[12px] leading-relaxed mb-4 font-medium text-center">
+                <ProgressiveText as="p" className="text-gray-700 text-[12px] leading-relaxed mb-4 font-medium text-center">
                     To design a layout with AI, add a new section and interact.
-                </p>
+                </ProgressiveText>
                 <div className="flex gap-3">
                     <button className="premium-button flex-1 py-2 rounded-full text-xs font-medium">
                         <div className="button-shine"></div>
@@ -111,7 +112,7 @@ const Dashboard: React.FC = memo(() => {
                             <path d="M12 2v20M2 12h20M4.929 4.929l14.142 14.142M4.929 19.071L19.071 4.929" />
                         </svg>
                     </div>
-                    <h1 className="text-base font-semibold text-gray-900 tracking-tight">Zeta Inc</h1>
+                    <ProgressiveText as="h1" className="text-base font-semibold text-gray-900 tracking-tight">Zeta Inc</ProgressiveText>
                     <div className="h-4 w-[1px] bg-gray-300 mx-1"></div>
                     <div className="flex items-center gap-1.5 text-xs text-gray-600 font-medium">
                         <span>Webcore App</span>
@@ -235,4 +236,3 @@ export const WebcoreBuilderShowcase: React.FC = memo(() => {
         </div>
     );
 });
-

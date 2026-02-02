@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { TESTIMONIALS } from '../constants';
 import { Quote } from 'lucide-react';
 import { antiFlickerStyle, sectionHeaderVariants, staggerContainerVariants, staggerItemVariants, viewportSettings } from './animations';
+import ProgressiveText from './ProgressiveText';
 
 export const Testimonials: React.FC = () => {
     const [expandedId, setExpandedId] = useState<string>(TESTIMONIALS[0].id);
@@ -10,7 +11,8 @@ export const Testimonials: React.FC = () => {
 
     return (
         <section className="p-6 md:p-10 bg-[#FAFAFA]" style={antiFlickerStyle}>
-            <motion.h2
+            <ProgressiveText
+                as="h2"
                 initial="hidden"
                 whileInView="visible"
                 viewport={viewportSettings}
@@ -18,7 +20,7 @@ export const Testimonials: React.FC = () => {
                 className="text-[10px] md:text-sm font-bold text-[rgb(74,108,196)] tracking-wider uppercase mb-8"
             >
                 Testimonials
-            </motion.h2>
+            </ProgressiveText>
 
             <motion.div
                 layout
@@ -68,13 +70,13 @@ export const Testimonials: React.FC = () => {
                                             className={`absolute -bottom-2 -right-2 md:right-8 text-[rgb(74,108,196)]/10 rotate-180 transition-opacity duration-500 ${isExpanded ? 'opacity-100' : 'opacity-0'}`} 
                                         />
                                         
-                                        <p className={`
+                                        <ProgressiveText as="p" className={`
                         text-[11px] md:text-lg font-medium leading-relaxed text-gray-700 transition-opacity duration-500
                         max-w-[240px] md:max-w-[280px] text-left
                         ${isExpanded ? 'opacity-100' : 'opacity-70 blur-[0.5px] group-hover:opacity-90 group-hover:blur-0'}
                       `}>
                                             {testimonial.text}
-                                        </p>
+                                        </ProgressiveText>
                                     </div>
 
                                     <div className="relative z-20 flex flex-col gap-1 pt-4 md:pt-6 mt-1 md:mt-2 border-t border-gray-50 bg-white">

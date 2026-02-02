@@ -105,12 +105,13 @@ export const Skills: React.FC = () => {
         >
             <PhilosophySection />
 
-            <motion.h2
+            <ProgressiveText
+                as="h2"
                 variants={sectionHeaderVariants}
                 className="text-[10px] md:text-[12px] font-bold text-[rgb(74,108,196)] tracking-wider uppercase mb-8"
             >
                 Skills Stack
-            </motion.h2>
+            </ProgressiveText>
 
             {/* Premium Wrapped Tray for Folders */}
             <motion.div
@@ -346,7 +347,8 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                             ">
                                 <div className="px-10 py-8 md:px-14 md:py-14 flex flex-col gap-6">
                                     <div className="flex items-center justify-center">
-                                        <motion.h3
+                                        <ProgressiveText
+                                            as="h3"
                                             layoutId={`title-${index}`}
                                             animate={{ scale: 1, opacity: 1 }}
                                             className="text-xl md:text-2xl font-black text-gray-900 tracking-tight"
@@ -358,7 +360,7 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
                                             }}
                                         >
                                             {category.title}
-                                        </motion.h3>
+                                        </ProgressiveText>
                                     </div>
 
                                     {/* iOS Grid Layout - Compact Icons */}
@@ -452,12 +454,13 @@ const PhilosophySection: React.FC = () => {
             variants={staggerItemVariants}
             className="mb-14 flex flex-col gap-8 w-full"
         >
-            <motion.h2
+            <ProgressiveText
+                as="h2"
                 variants={sectionHeaderVariants}
                 className="text-[10px] md:text-[12px] font-bold text-[rgb(74,108,196)] tracking-wider uppercase"
             >
                 Philosophy
-            </motion.h2>
+            </ProgressiveText>
 
             <motion.div
                 variants={staggerItemVariants}
@@ -505,7 +508,8 @@ const MacMiniSection: React.FC = () => {
             className="mt-20 md:mt-24 flex flex-col gap-10 items-center w-full"
         >
             <motion.div variants={staggerItemVariants} className="relative pb-6">
-                <motion.h3
+                <ProgressiveText
+                    as="h3"
                     variants={{
                         hidden: { opacity: 0, y: 10 },
                         visible: {
@@ -525,7 +529,7 @@ const MacMiniSection: React.FC = () => {
                     "
                 >
                     My Daily Driver
-                </motion.h3>
+                </ProgressiveText>
 
                 <svg
                     className="absolute w-full h-8 md:h-10 -bottom-2 md:-bottom-4 left-0 text-[rgb(74,108,196)] z-0 pointer-events-none transform -rotate-3"
@@ -679,17 +683,17 @@ const MacMiniSection: React.FC = () => {
                 >
                     <div className="flex flex-col gap-2">
                         <div className="flex items-center justify-center md:justify-start gap-4">
-                            <h4 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tight">
+                            <ProgressiveText as="h4" className="text-2xl md:text-4xl font-black text-gray-900 tracking-tight">
                                 Mac mini
-                            </h4>
+                            </ProgressiveText>
                             <span className="px-3 py-1 bg-linear-to-br from-slate-800 to-slate-900 rounded-lg text-[12px] font-black text-white 
                              border-black shadow-lg uppercase tracking-widest">
                                 M4
                             </span>
                         </div>
-                        <p className="text-[10px] md:text-[12px] font-black text-gray-400 uppercase tracking-[0.3em]">
+                        <ProgressiveText as="p" className="text-[10px] md:text-[12px] font-black text-gray-400 uppercase tracking-[0.3em]">
                             It's my personal station!
-                        </p>
+                        </ProgressiveText>
                     </div>
 
                     <ProgressiveText className="text-[12px] md:text-[14px] text-gray-600 font-medium leading-relaxed max-w-md mx-auto md:mx-0">

@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import React from 'react';
 import { SOCIAL_LINKS } from '../constants';
 import { antiFlickerStyle, staggerContainerVariants, staggerItemVariants } from './animations';
+import ProgressiveText from './ProgressiveText';
 
 export const Header: React.FC = () => {
     return (
@@ -10,7 +11,7 @@ export const Header: React.FC = () => {
             animate="visible"
             variants={staggerContainerVariants}
             style={antiFlickerStyle}
-            className="relative flex justify-between items-center p-6 md:p-10 overflow-hidden"
+            className="relative flex justify-between items-center p-6 md:p-10"
         >
             {/* Sky Background with Fadeout */}
             <div className="absolute inset-0 z-0 pointer-events-none select-none">
@@ -24,7 +25,7 @@ export const Header: React.FC = () => {
                 />
             </div>
 
-            <motion.div variants={staggerItemVariants} className="relative z-10 flex flex-col gap-1">
+            <motion.div variants={staggerItemVariants} className="relative z-10 flex flex-col gap-1 blur-bleed">
                 {/* Branding Logo - Using 14px blur via staggerItemVariants */}
                 <img
                     src="/name.png"
@@ -49,9 +50,9 @@ export const Header: React.FC = () => {
                             <span className="animate-ping absolute inline-flex h-1 w-1 md:h-1.5 md:w-1.5 rounded-full bg-emerald-400/60 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-1 w-1 md:h-1.5 md:w-1.5 bg-emerald-500 shadow-[0_0_3px_rgba(16,185,129,0.5)]"></span>
                         </span>
-                        <span className="font-mono text-[6px] md:text-[8px] font-semibold text-emerald-700 uppercase tracking-[0.06em] whitespace-nowrap leading-none">
+                        <ProgressiveText as="span" className="font-mono text-[6px] md:text-[8px] font-semibold text-emerald-700 uppercase tracking-[0.06em] whitespace-nowrap leading-none">
                             Available to Work
-                        </span>
+                        </ProgressiveText>
                     </div>
                 </motion.div>
             </motion.div>
@@ -60,23 +61,23 @@ export const Header: React.FC = () => {
                 className="relative z-10 flex gap-1.5 md:gap-2"
             >
                 {SOCIAL_LINKS.map((link, i) => (
-                    <motion.a
-                        key={i}
-                        variants={staggerItemVariants}
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={link.label}
-                        className={`
-                            flex items-center justify-center
-                            w-7 h-7 md:w-8 md:h-8
-                            rounded-md md:rounded-lg
-                            transition-transform duration-150
-                            ${link.buttonStyle}
-                        `}
-                    >
-                        <link.icon className="w-3 h-3 md:w-4 md:h-4" />
-                    </motion.a>
+                    <motion.span key={i} variants={staggerItemVariants} className="inline-flex blur-bleed">
+                        <a
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={link.label}
+                            className={`
+                                flex items-center justify-center
+                                w-7 h-7 md:w-8 md:h-8
+                                rounded-md md:rounded-lg
+                                transition-transform duration-150
+                                ${link.buttonStyle}
+                            `}
+                        >
+                            <link.icon className="w-3 h-3 md:w-4 md:h-4" />
+                        </a>
+                    </motion.span>
                 ))}
             </motion.div>
         </motion.header>

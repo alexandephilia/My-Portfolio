@@ -108,6 +108,13 @@
     scrollbar-width: none;
   }
 
+  .blur-bleed {
+    --blur-bleed: 14px;
+    padding: var(--blur-bleed);
+    margin: calc(var(--blur-bleed) * -1);
+    overflow: visible;
+  }
+
   .stamp-texture {
     mask-image:
       radial-gradient(#000 60%, transparent 100%),

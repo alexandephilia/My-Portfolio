@@ -3,6 +3,7 @@ import { Moon, Sun } from 'lucide-react';
 import React, { useState } from 'react';
 import { BudgetCardShowcase } from './showcases/BudgetCardShowcase';
 import { WebcoreBuilderShowcase } from './showcases/WebcoreBuilderShowcase';
+import ProgressiveText from './ProgressiveText';
 
 interface ShowcaseItem {
     id: string;
@@ -177,7 +178,7 @@ export const ComponentShowcase: React.FC = () => {
                                     <div className="flex items-start justify-between gap-4">
                                         <div className="flex-1">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <h3 className="text-sm md:text-base font-bold text-gray-900">{item.name}</h3>
+                                                <ProgressiveText as="h3" className="text-sm md:text-base font-bold text-gray-900">{item.name}</ProgressiveText>
                                                 {item.hasThemeToggle && (
                                                     <button
                                                         onClick={() => setBudgetTheme(budgetTheme === 'dark' ? 'light' : 'dark')}
@@ -206,7 +207,7 @@ export const ComponentShowcase: React.FC = () => {
                                                     </button>
                                                 )}
                                             </div>
-                                            <p className="text-[11px] md:text-xs text-gray-500 leading-relaxed">{item.description}</p>
+                                            <ProgressiveText as="p" className="text-[11px] md:text-xs text-gray-500 leading-relaxed">{item.description}</ProgressiveText>
                                         </div>
                                         <div className="shrink-0 flex items-center gap-1.5 p-px rounded-full overflow-hidden"
                                             style={{ backgroundImage: 'repeating-linear-gradient(45deg, #E5E7EB, #E5E7EB 1px, transparent 1px, transparent 3px)' }}>

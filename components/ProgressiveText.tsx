@@ -12,7 +12,7 @@ interface ProgressiveTextProps<T extends ElementType = "div"> extends HTMLMotion
   endPoint?: string;     // e.g., "0.5" (center of screen)
 }
 
-export default function ProgressiveText({ 
+export default function ProgressiveText<T extends ElementType = "div">({ 
   as,
   mode,
   diagonalStrength = 0.75,
@@ -22,7 +22,7 @@ export default function ProgressiveText({
   endPoint = "0.6",
   style,
   ...props
-}: ProgressiveTextProps) {
+}: ProgressiveTextProps<T>) {
   const containerRef = useRef<HTMLElement | null>(null);
   const [lineMetrics, setLineMetrics] = useState<{ css: string; px: number } | null>(null);
   const MotionTag = (motion as any)[as || "div"] || motion.div;

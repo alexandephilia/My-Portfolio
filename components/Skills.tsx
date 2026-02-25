@@ -105,7 +105,7 @@ export const Skills: React.FC = () => {
             className="p-6 md:p-8 border-b border-dashed border-gray-200 bg-[#FAFAFA] relative overflow-visible"
             style={antiFlickerStyle}
         >
-            <PhilosophySection />
+            <InspirationSection />
 
             <ProgressiveText
                 as="h2"
@@ -449,19 +449,19 @@ const FolderIcon: React.FC<FolderIconProps> = React.memo(({ category, index, isE
     );
 });
 
-const PhilosophySection: React.FC = () => {
+const InspirationSection: React.FC = () => {
     return (
         <motion.div
-            id="philosophy"
+            id="inspiration"
             variants={staggerItemVariants}
-            className="mb-14 flex flex-col gap-8 w-full"
+            className="mb-20 flex flex-col gap-8 w-full"
         >
             <ProgressiveText
                 as="h2"
                 variants={sectionHeaderVariants}
                 className="text-[10px] md:text-[12px] font-bold text-[rgb(74,108,196)] tracking-wider uppercase"
             >
-                Philosophy
+                Inspiration
             </ProgressiveText>
 
             <motion.div
@@ -469,32 +469,113 @@ const PhilosophySection: React.FC = () => {
                 className="
                     relative
                     w-full
-                    rounded-2xl md:rounded-[32px]
-                    bg-transparent
-                    border border-dashed border-gray-200/60
-                    group
+                    max-w-4xl
+                    mx-auto
+                    min-h-[480px]
+                    bg-[#F2EFE9] 
+                    rounded-sm
+                    shadow-[
+                        0_25px_50px_-12px_rgba(0,0,0,0.15),
+                        inset_0_0_80px_rgba(255,255,255,0.4)
+                    ]
+                    border border-gray-400/30
+                    p-8 md:p-14
+                    flex flex-col md:flex-row
+                    gap-8 md:gap-16
                     overflow-visible
+                    sm:rotate-1
+                    hover:rotate-0 transition-transform duration-700
                 "
             >
-                <div className="absolute -top-4 -left-4 z-20 p-2.5 bg-[#FAFAFA] rounded-full border border-dashed border-gray-300 shadow-sm">
-                    <Quote size={20} className="text-gray-400 fill-gray-100 rotate-180" />
-                </div>
-                <div className="absolute -bottom-4 -right-4 z-20 p-2.5 bg-[#FAFAFA] rounded-full border border-dashed border-gray-300 shadow-sm">
-                    <Quote size={20} className="text-gray-400 fill-gray-100" />
-                </div>
+                {/* Heavy Paper Texture Overlay */}
+                <div className="absolute inset-0 opacity-[0.25] pointer-events-none mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/felt.png')]" />
+                
+                {/* Postcard Center Line */}
+                <div className="absolute left-1/2 top-10 bottom-10 w-[2px] bg-gray-400/20 hidden md:block" />
 
-                <div className="relative z-10 w-full overflow-hidden rounded-[inherit]">
-                    <div className="relative w-full aspect-3/2 bg-white">
-                        <img
-                            src="/philosophy.png"
-                            alt="Thinking Philosophy"
-                            className="w-full h-full object-cover select-none rounded-[inherit]"
-                            style={{ transform: 'translateZ(0)', willChange: 'transform' }}
-                            draggable={false}
-                        />
-                        <div className="absolute inset-0 shadow-[inset_0_2px_15px_rgba(0,0,0,0.05)] pointer-events-none rounded-[inherit]" />
+                {/* Left Section: Message Side */}
+                <div className="flex-[1.2] flex flex-col justify-center relative z-10">
+                    <div className="mb-6 opacity-30">
+                        <Quote size={40} className="text-gray-900" />
+                    </div>
+                    
+                    <div className="space-y-6">
+                        <p className="font-serif text-xl md:text-2xl lg:text-3xl text-gray-900 leading-tight tracking-tight antialiased">
+                            “The people who are crazy enough to think they can change the world, are the ones who do.”
+                        </p>
+                        <p className="font-serif italic text-base md:text-lg text-gray-700 leading-relaxed opacity-80 decoration-gray-400">
+                            Here's to the crazy ones. The misfits. The rebels. The troublemakers. The round pegs in the square holes. The ones who see things differently.
+                        </p>
                     </div>
                 </div>
+
+                {/* Right Section: Address & Stamp Side */}
+                <div className="flex-1 flex flex-col justify-between relative z-10 pt-4 md:pt-0">
+                    {/* Stamp Area - Realized as a physical object */}
+                    <div className="absolute -top-6 -right-6 w-24 h-28 bg-[#F9F7F2] border border-gray-300 shadow-md p-1.5 transform rotate-6 hover:rotate-2 transition-transform duration-500">
+                        <div className="w-full h-full border border-dashed border-gray-400 flex flex-col items-center justify-center text-center p-1 bg-white">
+                            <svg viewBox="0 0 24 24" className="w-8 h-8 text-[#2B6CB0] opacity-80 mb-1">
+                                <path fill="currentColor" d="M17.057 12.783c.032 2.592 2.23 3.447 2.257 3.459-.017.065-.35 1.198-1.155 2.373-.695 1.016-1.417 2.029-2.541 2.05-1.103.018-1.458-.65-2.72-.65-1.261 0-1.652.631-2.701.67-1.088.04-1.921-1.087-2.619-2.096-1.428-2.063-2.52-5.83-1.05-8.375.727-1.263 2.029-2.064 3.445-2.083 1.074-.015 2.083.722 2.741.722.657 0 1.889-.9 3.149-.773.53.023 2.016.213 2.973 1.611-.077.047-1.776 1.033-1.758 3.092zM15.428 5.765c.571-.692.955-1.654.85-2.615-.826.033-1.826.549-2.418 1.24-.531.61-.995 1.59-.87 2.531.92.071 1.867-.464 2.438-1.156z" />
+                             </svg>
+                            <span className="text-[7px] font-mono font-bold text-gray-400 uppercase leading-none">CUPERTINO<br/>CALIFORNIA</span>
+                        </div>
+                        {/* Overlapping Stamp - High Fidelity Distressed Rubber Mark */}
+                        <div className="absolute -bottom-16 -left-16 w-48 h-48 opacity-[0.18] pointer-events-none select-none">
+                            <svg viewBox="0 0 160 160" className="w-full h-full text-[#1A365D] fill-current" style={{ filter: 'url(#distress-filter)' }}>
+                                <defs>
+                                    <filter id="distress-filter">
+                                        <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" result="noise" />
+                                        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
+                                    </filter>
+                                </defs>
+                                <g transform="rotate(-15 80 80)">
+                                    {/* Double Outer Rings */}
+                                    <circle cx="80" cy="80" r="42" fill="none" stroke="currentColor" strokeWidth="1.2" />
+                                    <circle cx="80" cy="80" r="38" fill="none" stroke="currentColor" strokeWidth="0.5" />
+                                    
+                                    {/* Classic Wavy Cancellation Lines */}
+                                    <path d="M 125,60 Q 140,55 155,60 M 125,70 Q 140,65 155,70 M 125,80 Q 140,75 155,80 M 125,90 Q 140,85 155,90 M 125,100 Q 140,95 155,100" 
+                                          fill="none" stroke="currentColor" strokeWidth="0.8" />
+                                    
+                                    {/* Stamp Text */}
+                                    <text x="80" y="75" textAnchor="middle" className="text-[7px] font-black tracking-widest uppercase">CUPERTINO</text>
+                                    <line x1="55" y1="80" x2="105" y2="80" stroke="currentColor" strokeWidth="0.5" />
+                                    <text x="80" y="92" textAnchor="middle" className="text-[9px] font-black uppercase">JAN 24 1984</text>
+                                    
+                                    {/* Arched Text */}
+                                    <path id="stamp-arch" d="M 45,80 A 35,35 0 0,1 115,80" fill="none" />
+                                    <text className="text-[5px] font-bold">
+                                        <textPath href="#stamp-arch" startOffset="50%" textAnchor="middle">• FIRST EDITION • APPLE COMPUTER •</textPath>
+                                    </text>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    {/* Address Lines (For Signature) */}
+                    <div className="mt-32 space-y-8">
+                        {[1, 2, 3].map((i) => (
+                            <div key={i} className="h-px bg-gray-400/30 w-full relative">
+                                {i === 2 && (
+                                    <div className="absolute -top-12 left-0 w-full text-right pr-4">
+                                        <span className="font-serif italic text-3xl md:text-5xl text-gray-900 opacity-90 tracking-tighter block transform -rotate-2">
+                                            ― Steve Jobs
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Footer Info */}
+                    <div className="text-[8px] font-mono text-gray-400 opacity-60 tracking-widest mt-8">
+                        NO. 001 // MACINTOSH INSPIRATION // SYSTEM SEVEN
+                    </div>
+                </div>
+
+                {/* Subtle Aging Elements */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-bl from-white/10 to-transparent pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-linear-to-tr from-black/5 to-transparent pointer-events-none" />
             </motion.div>
         </motion.div>
     );

@@ -13,7 +13,7 @@ const customStyles: Record<string, React.CSSProperties> = {
   },
   computerUnit: {
     position: 'relative',
-    width: '360px',
+    width: '300px',
     height: '440px',
     transformStyle: 'preserve-3d',
   },
@@ -42,7 +42,7 @@ const customStyles: Record<string, React.CSSProperties> = {
     position: 'absolute',
   },
   left: {
-    width: '200px',
+    width: '00px',
     height: '440px',
     transform: 'rotateY(-90deg) translateZ(100px)',
     background: '#E0DCCF',
@@ -87,26 +87,25 @@ const customStyles: Record<string, React.CSSProperties> = {
   crt: {
     width: '260px',
     height: '200px',
-    background: '#222529',
-    borderRadius: '40% 40% 40% 40% / 10% 10% 10% 10%',
+    background: '#888', // Classic grey desktop
+    borderRadius: '1px 2px 20px 20px / 2px 2px 10px 10px', // Flattened top edge
     position: 'relative',
     overflow: 'hidden',
-    boxShadow: 'inset 0 0 20px rgba(0,0,0,1)',
+    boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)',
   },
   crtGlow: {
     position: 'absolute',
-    top: '10px',
-    left: '10px',
-    right: '10px',
-    bottom: '10px',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     background: 'transparent',
-    borderRadius: '12px',
     zIndex: 2,
     color: '#fff',
     fontFamily: "'VT323', monospace",
-    padding: '15px',
     fontSize: '14px',
     textShadow: '0 0 2px rgba(255,255,255,0.5)',
+    borderRadius: '1px 2px 20px 20px / 2px 2px 10px 10px',
   },
   floppySlot: {
     width: '140px',
@@ -127,36 +126,29 @@ const customStyles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  stickerBall: {
+  stickerClaude: {
     position: 'absolute',
     zIndex: 5,
-    boxShadow: '1px 1px 2px rgba(0,0,0,0.2)',
-    width: '40px',
-    height: '40px',
-    background: '#C05621',
-    borderRadius: '50%',
-    bottom: '88px',
-    left: '20px',
-    backgroundImage: 'radial-gradient(circle at 10px 10px, rgba(255,255,255,0.2) 2px, transparent 3px), linear-gradient(45deg, transparent 40%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.2) 45%, transparent 45%)',
+    width: '50px',
+    height: '50px',
+    bottom: '82px',
+    left: '15px',
     transform: 'translateZ(101px) rotate(-10deg)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   stickerStar: {
     position: 'absolute',
     zIndex: 5,
-    boxShadow: '1px 1px 2px rgba(0,0,0,0.2)',
-    width: '35px',
-    height: '35px',
-    background: '#fff',
-    borderRadius: '8px',
-    bottom: '98px',
-    left: '65px',
+    width: '40px',
+    height: '40px',
+    bottom: '82px',
+    left: '62px',
     transform: 'translateZ(102px) rotate(15deg)',
-    border: '2px solid #fff',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '24px',
-    color: '#2B6CB0',
   },
   stickerText: {
     position: 'absolute',
@@ -164,10 +156,10 @@ const customStyles: Record<string, React.CSSProperties> = {
     boxShadow: '1px 1px 1px rgba(0,0,0,0.3)',
     width: '60px',
     height: '30px',
-    background: '#8B0000',
-    color: '#F0E68C',
+    background: '#F5F5DC',
+    color: '#000000',
     fontFamily: "'Courier New', Courier, monospace",
-    fontSize: '10px',
+    fontSize: '11px',
     lineHeight: 1.3,
     display: 'flex',
     alignItems: 'center',
@@ -175,8 +167,8 @@ const customStyles: Record<string, React.CSSProperties> = {
     textAlign: 'center',
     fontWeight: 'bold',
     letterSpacing: '0.5px',
-    bottom: '54px',
-    left: '80px',
+    bottom: '100px',
+    right: '100px',
     transform: 'translateZ(101px) rotate(-2deg)',
     border: '1px solid rgba(255,255,255,0.2)',
   },
@@ -285,22 +277,88 @@ const customStyles: Record<string, React.CSSProperties> = {
     display: 'flex',
     flexDirection: 'column',
   },
+  menuBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '18px', // Proportional height
+    background: '#fff',
+    borderBottom: '1px solid #000',
+    display: 'flex',
+    alignItems: 'center',
+    padding: '0 10px',
+    fontSize: '9px', // Chicago-like size
+    fontWeight: 'bold',
+    color: '#000',
+    gap: '12px',
+    zIndex: 10,
+  },
   window: {
     background: '#fff',
     color: '#000',
-    borderRadius: '2px',
-    padding: '5px',
-    marginTop: '10px',
-    boxShadow: '2px 2px 0 rgba(0,0,0,0.5)',
+    border: '1px solid #000',
+    marginTop: '40px', // More space below the taller menu bar
+    width: '130px', // Consistent stable width
+    marginRight: 'auto',
+    marginLeft: 'auto',
+    boxShadow: '1px 1px 0 rgba(0,0,0,1)',
     fontFamily: "'VT323', monospace",
-    fontSize: '10px',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
   },
   windowHeader: {
-    borderBottom: '1px dotted #000',
-    marginBottom: '5px',
-    fontWeight: 'bold',
+    height: '12px',
+    borderBottom: '1px solid #000',
     display: 'flex',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    background: 'repeating-linear-gradient(0deg, #fff, #fff 1px, transparent 1px, transparent 2px)',
+    padding: '0 4px',
+  },
+  closeBox: {
+    position: 'absolute',
+    left: '4px',
+    width: '7px',
+    height: '7px',
+    border: '1px solid #000',
+    background: '#fff',
+  },
+  windowTitle: {
+    fontSize: '8px',
+    fontWeight: 'bold',
+    background: '#fff',
+    padding: '0 4px',
+    lineHeight: '10px',
+  },
+  desktopIcon: {
+    position: 'absolute',
+    right: '8px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '2px',
+    width: '32px',
+  },
+  iconGraphic: {
+    width: '18px',
+    height: '18px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '2px',
+  },
+  iconLabel: {
+    fontSize: '8px',
+    fontWeight: 'bold',
+    padding: '0 2px',
+    textAlign: 'center',
+    whiteSpace: 'nowrap',
+    color: '#000',
+    background: 'rgba(255,255,255,0.8)', // Slight background for readability
+    marginTop: '2px',
   },
   iconList: {
     display: 'flex',
@@ -356,7 +414,7 @@ export const RetroComputer: React.FC = () => {
   const typeIndexRef = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const fullText = "Mac Mini M4: Small size. Massive power. System optimized.";
+  const fullText = "Here's to the crazy ones. The misfits. The rebels. The troublemakers. The round pegs in the square holes. The ones who see things different..";
 
   useEffect(() => {
     const cursorInterval = setInterval(() => {
@@ -402,43 +460,62 @@ export const RetroComputer: React.FC = () => {
                     <div style={{
                       position: 'absolute',
                       top: 0, left: 0, right: 0, bottom: 0,
-                      background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
+                      background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
                       backgroundSize: '100% 2px, 3px 100%',
                       zIndex: 5,
                       pointerEvents: 'none',
-                      borderRadius: '12px',
+                      borderRadius: '1px 2px 20px 20px / 2px 2px 10px 10px',
                     }} />
                     <div style={customStyles.crtGlow}>
+                      {/* Menu Bar */}
+                      <div style={customStyles.menuBar}>
+                        <svg viewBox="0 0 24 24" width="10" height="10" fill="#000" style={{ marginRight: '-2px' }}>
+                          <path d="M17.057 12.783c.032 2.592 2.23 3.447 2.257 3.459-.017.065-.35 1.198-1.155 2.373-.695 1.016-1.417 2.029-2.541 2.05-1.103.018-1.458-.65-2.72-.65-1.261 0-1.652.631-2.701.67-1.088.04-1.921-1.087-2.619-2.096-1.428-2.063-2.52-5.83-1.05-8.375.727-1.263 2.029-2.064 3.445-2.083 1.074-.015 2.083.722 2.741.722.657 0 1.889-.9 3.149-.773.53.023 2.016.213 2.973 1.611-.077.047-1.776 1.033-1.758 3.092zM15.428 5.765c.571-.692.955-1.654.85-2.615-.826.033-1.826.549-2.418 1.24-.531.61-.995 1.59-.87 2.531.92.071 1.867-.464 2.438-1.156z" />
+                        </svg>
+                        <span>File</span>
+                        <span>Edit</span>
+                        <span>View</span>
+                        <span>Special</span>
+                      </div>
+
                       <div style={customStyles.crtUi}>
-                        <div style={customStyles.sidebar}>
-                          <div style={customStyles.iconList}>
-                            <div style={customStyles.iconItem}>
-                              <span style={customStyles.iconCircleBlue}></span> System
-                            </div>
-                            <div style={customStyles.iconItem}>
-                              <span style={customStyles.iconCircleOrange}></span> Disk A
-                            </div>
-                            <div style={customStyles.iconItem}>
-                              <span style={customStyles.iconCircle}></span> Trash
-                            </div>
-                            <div style={customStyles.iconItem}>
-                              <span style={customStyles.iconCircle}></span> Write
-                            </div>
-                            <div style={customStyles.iconItem}>
-                              <span style={customStyles.iconCircle}></span> Think
-                            </div>
+                        {/* Desktop Icons */}
+                        <div style={{ ...customStyles.desktopIcon, top: '26px' }}>
+                          <div style={customStyles.iconGraphic}>
+                            <svg viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="#000" strokeWidth="2">
+                              {/* Classic HD icon */}
+                              <rect x="4" y="6" width="24" height="20" rx="1" />
+                              <circle cx="24" cy="12" r="1.5" fill="#000" />
+                              <line x1="8" y1="20" x2="24" y2="20" />
+                            </svg>
                           </div>
+                          <div style={customStyles.iconLabel}>MacIntosh</div>
                         </div>
+
+                        <div style={{ ...customStyles.desktopIcon, bottom: '20px' }}>
+                          <div style={customStyles.iconGraphic}>
+                            <svg viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="#000" strokeWidth="2">
+                              {/* Classic Trash icon */}
+                              <path d="M6 8h20M9 8v16a2 2 0 002 2h10a2 2 0 002-2V8M12 8V5a2 2 0 012-2h4a2 2 0 012 2v3" />
+                              <line x1="12" y1="14" x2="12" y2="20" />
+                              <line x1="16" y1="14" x2="16" y2="20" />
+                              <line x1="20" y1="14" x2="20" y2="20" />
+                            </svg>
+                          </div>
+                          <div style={customStyles.iconLabel}>Trash</div>
+                        </div>
+
                         <div style={customStyles.mainArea}>
-                          <div style={{ fontSize: '10px', marginBottom: '4px', opacity: 0.7 }}>RetroOS 1.0</div>
                           <div style={customStyles.window}>
                             <div style={customStyles.windowHeader}>
-                              <span>Daily.txt</span>
-                              <span>[x]</span>
+                              <div style={customStyles.closeBox} />
+                              <div style={customStyles.windowTitle}>Terminal</div>
                             </div>
-                            <div style={customStyles.typingContainer}>
-                              <span>{typeText}</span>
-                              <span style={{ ...customStyles.cursor, opacity: cursorVisible ? 1 : 0 }}></span>
+                            <div style={{ padding: '4px' }}>
+                              <div style={customStyles.typingContainer}>
+                                <span>{typeText}</span>
+                                <span style={{ ...customStyles.cursor, opacity: cursorVisible ? 1 : 0, background: '#000', height: '10px', width: '6px' }}></span>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -474,8 +551,50 @@ export const RetroComputer: React.FC = () => {
                 <div style={customStyles.floppySlot}></div>
 
                 {/* Stickers */}
-                <div style={customStyles.stickerBall}></div>
-                <div style={customStyles.stickerStar}>★</div>
+                <div style={customStyles.stickerClaude}>
+                  <svg 
+                    viewBox="0 0 100 100" 
+                    width="52" 
+                    height="52"
+                    style={{ filter: 'drop-shadow(1px 0px 0px rgba(0,0,0,0.2))' }}
+                  >
+                    <g transform="translate(50, 50)">
+                      {/* White die-cut backing (the sticker paper) */}
+                      <g fill="none" stroke="white" strokeWidth="10" strokeLinecap="round">
+                        <line x1="0" y1="-40" x2="0" y2="40" transform="rotate(0)" />
+                        <line x1="0" y1="-34" x2="0" y2="34" transform="rotate(36)" />
+                        <line x1="0" y1="-38" x2="0" y2="38" transform="rotate(72)" />
+                        <line x1="0" y1="-32" x2="0" y2="32" transform="rotate(108)" />
+                        <line x1="0" y1="-36" x2="0" y2="36" transform="rotate(144)" />
+                      </g>
+                      {/* Claude logo foreground (the print) */}
+                      <g fill="none" stroke="#D97757" strokeWidth="5" strokeLinecap="round">
+                        <line x1="0" y1="-40" x2="0" y2="40" transform="rotate(0)" />
+                        <line x1="0" y1="-34" x2="0" y2="34" transform="rotate(36)" />
+                        <line x1="0" y1="-38" x2="0" y2="38" transform="rotate(72)" />
+                        <line x1="0" y1="-32" x2="0" y2="32" transform="rotate(108)" />
+                        <line x1="0" y1="-36" x2="0" y2="36" transform="rotate(144)" />
+                      </g>
+                    </g>
+                  </svg>
+                </div>
+                <div style={customStyles.stickerStar}>
+                  <svg viewBox="0 0 100 100" width="35" height="35" style={{ filter: 'drop-shadow(1px 0.5px 0px rgba(0,0,0,0.15))' }}>
+                    {/* White die-cut backing */}
+                    <path 
+                      d="M50 5L62 38H95L68 56L79 88L50 68L21 88L32 56L5 38H38L50 5Z" 
+                      fill="white" 
+                      stroke="white" 
+                      strokeWidth="10" 
+                      strokeLinejoin="round" 
+                    />
+                    {/* Star Surface */}
+                    <path 
+                      d="M50 5L62 38H95L68 56L79 88L50 68L21 88L32 56L5 38H38L50 5Z" 
+                      fill="#F6C829" 
+                    />
+                  </svg>
+                </div>
                 <div style={customStyles.stickerText}>DAILY<br />DRIVER</div>
 
                 {/* Grill */}

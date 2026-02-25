@@ -568,7 +568,7 @@ const MacMiniSection: React.FC = () => {
             >
                 <motion.div
                     variants={popRevealVariants}
-                    className="w-full md:w-1/2 flex items-center justify-center relative z-10 h-[220px] md:h-[400px] md:translate-x-20"
+                    className="w-full md:w-1/2 flex items-center justify-center relative z-10 h-[220px] md:h-[400px] md:translate-x-10"
                 >
                     <RetroComputer />
                 </motion.div>

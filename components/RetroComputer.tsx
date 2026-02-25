@@ -13,7 +13,7 @@ const customStyles: Record<string, React.CSSProperties> = {
   },
   computerUnit: {
     position: 'relative',
-    width: '300px',
+    width: '360px', // Matches the face widths for perfect alignment
     height: '440px',
     transformStyle: 'preserve-3d',
   },
@@ -21,6 +21,8 @@ const customStyles: Record<string, React.CSSProperties> = {
     position: 'absolute',
     background: '#E0DCCF',
     border: '1px solid rgba(0,0,0,0.05)',
+    WebkitBackfaceVisibility: 'hidden',
+    backfaceVisibility: 'hidden',
   },
   front: {
     width: '360px',
@@ -53,7 +55,7 @@ const customStyles: Record<string, React.CSSProperties> = {
   right: {
     width: '200px',
     height: '440px',
-    transform: 'rotateY(90deg) translateZ(260px)',
+    transform: 'rotateY(90deg) translateZ(260px)', // Fixed: 360 - 100 = 260 translation to reach the other side
     background: '#C4C0B3',
     boxShadow: 'inset 10px 0 20px rgba(0,0,0,0.1)',
     position: 'absolute',
@@ -193,7 +195,7 @@ const customStyles: Record<string, React.CSSProperties> = {
     width: '360px',
     height: '140px',
     bottom: '-118px',
-    left: '-30px',
+    left: '0px', 
     transformStyle: 'preserve-3d',
     transformOrigin: 'top center',
     transform: 'translateZ(164px) rotateX(66deg)',
@@ -692,7 +694,9 @@ export const RetroComputer: React.FC = () => {
             
             @media (max-width: 768px) {
               .kb-assembly {
-                transform: translateZ(125px) rotateX(55deg) translateX(-30px) !important;
+                transform: translateZ(140px) rotateX(58deg) !important;
+                backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
               }
             }
           ` }} />

@@ -6,7 +6,7 @@ import { Variants } from 'motion/react';
 export const sectionHeaderVariants: Variants = {
     hidden: {
         opacity: 0,
-        filter: 'blur(14px)',
+        filter: 'blur(8px)',
         y: 8,
         z: 0, // Force GPU layer
     },
@@ -42,7 +42,7 @@ export const staggerContainerVariants: Variants = {
 export const staggerItemVariants: Variants = {
     hidden: {
         opacity: 0,
-        filter: 'blur(14px)',
+        filter: 'blur(8px)',
         y: 6,
         z: 0,
     },
@@ -63,7 +63,7 @@ export const staggerItemVariants: Variants = {
 export const floatingStaggerItemVariants: Variants = {
     hidden: {
         opacity: 0,
-        filter: 'blur(14px)',
+        filter: 'blur(8px)',
         y: 60,
         z: 0,
     },
@@ -84,7 +84,7 @@ export const floatingStaggerItemVariants: Variants = {
 export const floatingTopStaggerItemVariants: Variants = {
     hidden: {
         opacity: 0,
-        filter: 'blur(14px)',
+        filter: 'blur(8px)',
         y: -60,
         z: 0,
     },
@@ -218,7 +218,7 @@ export const dailyDriverPillsVariants: Variants = {
 export const blurOnlyVariants: Variants = {
     hidden: {
         opacity: 0,
-        filter: 'blur(14px)',
+        filter: 'blur(8px)',
         z: 0,
     },
     visible: {

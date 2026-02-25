@@ -471,7 +471,7 @@ const InspirationSection: React.FC = () => {
                     w-full
                     max-w-4xl
                     mx-auto
-                    min-h-[480px]
+                    min-h-0 md:min-h-[480px]
                     bg-[#F2EFE9] 
                     rounded-sm
                     shadow-[
@@ -479,9 +479,9 @@ const InspirationSection: React.FC = () => {
                         inset_0_0_80px_rgba(255,255,255,0.4)
                     ]
                     border border-gray-400/30
-                    p-8 md:p-14
+                    p-6 md:p-14
                     flex flex-col md:flex-row
-                    gap-8 md:gap-16
+                    gap-2 md:gap-16
                     overflow-visible
                     sm:rotate-1
                     hover:rotate-0 transition-transform duration-700
@@ -495,12 +495,12 @@ const InspirationSection: React.FC = () => {
 
                 {/* Left Section: Message Side */}
                 <div className="flex-[1.2] flex flex-col justify-center relative z-10">
-                    <div className="mb-6 opacity-30">
-                        <Quote size={40} className="text-gray-900" />
+                    <div className="mb-2 md:mb-6 opacity-30">
+                        <Quote className="text-gray-900 w-8 h-8 md:w-10 md:h-10" />
                     </div>
                     
-                    <div className="space-y-6">
-                        <p className="font-serif text-xl md:text-2xl lg:text-3xl text-gray-900 leading-tight tracking-tight antialiased">
+                    <div className="space-y-4 md:space-y-6">
+                        <p className="font-serif text-2xl md:text-2xl lg:text-3xl text-gray-900 leading-tight tracking-tight antialiased">
                             “The people who are crazy enough to think they can change the world, are the ones who do.”
                         </p>
                         <p className="font-serif italic text-base md:text-lg text-gray-700 leading-relaxed opacity-80 decoration-gray-400">
@@ -510,61 +510,56 @@ const InspirationSection: React.FC = () => {
                 </div>
 
                 {/* Right Section: Address & Stamp Side */}
-                <div className="flex-1 flex flex-col justify-between relative z-10 pt-4 md:pt-0">
-                    {/* Stamp Area - Realized as a physical object */}
-                    <div className="absolute -top-6 -right-6 w-24 h-28 bg-[#F9F7F2] border border-gray-300 shadow-md p-1.5 transform rotate-6 hover:rotate-2 transition-transform duration-500">
-                        <div className="w-full h-full border border-dashed border-gray-400 flex flex-col items-center justify-center text-center p-1 bg-white">
-                            <svg viewBox="0 0 24 24" className="w-8 h-8 text-[#2B6CB0] opacity-80 mb-1">
-                                <path fill="currentColor" d="M17.057 12.783c.032 2.592 2.23 3.447 2.257 3.459-.017.065-.35 1.198-1.155 2.373-.695 1.016-1.417 2.029-2.541 2.05-1.103.018-1.458-.65-2.72-.65-1.261 0-1.652.631-2.701.67-1.088.04-1.921-1.087-2.619-2.096-1.428-2.063-2.52-5.83-1.05-8.375.727-1.263 2.029-2.064 3.445-2.083 1.074-.015 2.083.722 2.741.722.657 0 1.889-.9 3.149-.773.53.023 2.016.213 2.973 1.611-.077.047-1.776 1.033-1.758 3.092zM15.428 5.765c.571-.692.955-1.654.85-2.615-.826.033-1.826.549-2.418 1.24-.531.61-.995 1.59-.87 2.531.92.071 1.867-.464 2.438-1.156z" />
-                             </svg>
-                            <span className="text-[7px] font-mono font-bold text-gray-400 uppercase leading-none">CUPERTINO<br/>CALIFORNIA</span>
-                        </div>
-                        {/* Overlapping Stamp - High Fidelity Distressed Rubber Mark */}
-                        <div className="absolute -bottom-16 -left-16 w-48 h-48 opacity-[0.18] pointer-events-none select-none">
-                            <svg viewBox="0 0 160 160" className="w-full h-full text-[#1A365D] fill-current" style={{ filter: 'url(#distress-filter)' }}>
-                                <defs>
-                                    <filter id="distress-filter">
-                                        <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" result="noise" />
-                                        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
-                                    </filter>
-                                </defs>
-                                <g transform="rotate(-15 80 80)">
-                                    {/* Double Outer Rings */}
-                                    <circle cx="80" cy="80" r="42" fill="none" stroke="currentColor" strokeWidth="1.2" />
-                                    <circle cx="80" cy="80" r="38" fill="none" stroke="currentColor" strokeWidth="0.5" />
-                                    
-                                    {/* Classic Wavy Cancellation Lines */}
-                                    <path d="M 125,60 Q 140,55 155,60 M 125,70 Q 140,65 155,70 M 125,80 Q 140,75 155,80 M 125,90 Q 140,85 155,90 M 125,100 Q 140,95 155,100" 
-                                          fill="none" stroke="currentColor" strokeWidth="0.8" />
-                                    
-                                    {/* Stamp Text */}
-                                    <text x="80" y="75" textAnchor="middle" className="text-[7px] font-black tracking-widest uppercase">CUPERTINO</text>
-                                    <line x1="55" y1="80" x2="105" y2="80" stroke="currentColor" strokeWidth="0.5" />
-                                    <text x="80" y="92" textAnchor="middle" className="text-[9px] font-black uppercase">JAN 24 1984</text>
-                                    
-                                    {/* Arched Text */}
-                                    <path id="stamp-arch" d="M 45,80 A 35,35 0 0,1 115,80" fill="none" />
-                                    <text className="text-[5px] font-bold">
-                                        <textPath href="#stamp-arch" startOffset="50%" textAnchor="middle">• FIRST EDITION • APPLE COMPUTER •</textPath>
-                                    </text>
-                                </g>
-                            </svg>
-                        </div>
-                    </div>
-
-                    {/* Address Lines (For Signature) */}
-                    <div className="mt-32 space-y-8">
-                        {[1, 2, 3].map((i) => (
-                            <div key={i} className="h-px bg-gray-400/30 w-full relative">
-                                {i === 2 && (
-                                    <div className="absolute -top-12 left-0 w-full text-right pr-4">
-                                        <span className="font-serif italic text-3xl md:text-5xl text-gray-900 opacity-90 tracking-tighter block transform -rotate-2">
-                                            ― Steve Jobs
-                                        </span>
-                                    </div>
-                                )}
+                <div className="flex-1 flex flex-col justify-end md:justify-between relative z-10 pt-2 md:pt-0">
+                    <div className="flex flex-row md:flex-col items-end md:items-stretch gap-6 md:gap-0">
+                        {/* Stamp Area - Realized as a physical object */}
+                        <div className="relative md:absolute md:-top-6 md:-right-6 w-24 h-28 md:w-24 md:h-28 bg-[#F9F7F2] border border-gray-300 shadow-md p-1 transform rotate-6 hover:rotate-2 transition-transform duration-500 order-1 md:order-none shrink-0 mb-4 md:mb-0">
+                            <div className="w-full h-full border border-dashed border-gray-400 flex flex-col items-center justify-center text-center p-1 bg-white">
+                                <svg viewBox="0 0 24 24" className="w-6 h-6 md:w-8 md:h-8 text-[#2B6CB0] opacity-80 mb-1">
+                                    <path fill="currentColor" d="M17.057 12.783c.032 2.592 2.23 3.447 2.257 3.459-.017.065-.35 1.198-1.155 2.373-.695 1.016-1.417 2.029-2.541 2.05-1.103.018-1.458-.65-2.72-.65-1.261 0-1.652.631-2.701.67-1.088.04-1.921-1.087-2.619-2.096-1.428-2.063-2.52-5.83-1.05-8.375.727-1.263 2.029-2.064 3.445-2.083 1.074-.015 2.083.722 2.741.722.657 0 1.889-.9 3.149-.773.53.023 2.016.213 2.973 1.611-.077.047-1.776 1.033-1.758 3.092zM15.428 5.765c.571-.692.955-1.654.85-2.615-.826.033-1.826.549-2.418 1.24-.531.61-.995 1.59-.87 2.531.92.071 1.867-.464 2.438-1.156z" />
+                                </svg>
+                                <span className="text-[6px] md:text-[7px] font-mono font-bold text-gray-400 uppercase leading-none">CUPERTINO<br/>CALIFORNIA</span>
                             </div>
-                        ))}
+                            {/* Overlapping Stamp - High Fidelity Distressed Rubber Mark */}
+                            <div className="absolute -bottom-16 -left-16 md:-bottom-16 md:-left-16 w-44 h-44 md:w-48 md:h-48 opacity-[0.18] pointer-events-none select-none">
+                                <svg viewBox="0 0 160 160" className="w-full h-full text-[#1A365D] fill-current" style={{ filter: 'url(#distress-filter)' }}>
+                                    <defs>
+                                        <filter id="distress-filter">
+                                            <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" result="noise" />
+                                            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
+                                        </filter>
+                                    </defs>
+                                    <g transform="rotate(-15 80 80)">
+                                        <circle cx="80" cy="80" r="42" fill="none" stroke="currentColor" strokeWidth="1.2" />
+                                        <circle cx="80" cy="80" r="38" fill="none" stroke="currentColor" strokeWidth="0.5" />
+                                        <path d="M 125,60 Q 140,55 155,60 M 125,70 Q 140,65 155,70 M 125,80 Q 140,75 155,80 M 125,90 Q 140,85 155,90 M 125,100 Q 140,95 155,100" 
+                                              fill="none" stroke="currentColor" strokeWidth="0.8" />
+                                        <text x="80" y="75" textAnchor="middle" className="text-[7px] font-black tracking-widest uppercase">CUPERTINO</text>
+                                        <line x1="55" y1="80" x2="105" y2="80" stroke="currentColor" strokeWidth="0.5" />
+                                        <text x="80" y="92" textAnchor="middle" className="text-[9px] font-black uppercase">JAN 24 1984</text>
+                                        <path id="stamp-arch" d="M 45,80 A 35,35 0 0,1 115,80" fill="none" />
+                                        <text className="text-[5px] font-bold">
+                                            <textPath href="#stamp-arch" startOffset="50%" textAnchor="middle">• FIRST EDITION •</textPath>
+                                        </text>
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+
+                        {/* Address Lines (For Signature) */}
+                        <div className="flex-1 md:mt-32 space-y-6 md:space-y-8 order-2 md:order-none">
+                            {[1, 2, 3].map((i) => (
+                                <div key={i} className="h-px bg-gray-400/30 w-full relative">
+                                    {i === 2 && (
+                                        <div className="absolute -top-12 md:-top-14 left-0 w-full text-right pr-10 md:pr-4">
+                                            <span className="font-serif italic text-5xl md:text-6xl text-gray-900 opacity-90 tracking-tighter block transform -rotate-2 whitespace-nowrap">
+                                                ― Steve Jobs
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     {/* Footer Info */}
@@ -590,7 +585,7 @@ const MacMiniSection: React.FC = () => {
             variants={staggerContainerVariants}
             className="mt-20 md:mt-24 flex flex-col gap-10 items-center w-full"
         >
-            <motion.div variants={staggerItemVariants} className="relative pb-6">
+            <motion.div variants={staggerItemVariants} className="relative pb-2 overflow-visible">
                 <ProgressiveText
                     as="h3"
                     variants={{
@@ -609,13 +604,14 @@ const MacMiniSection: React.FC = () => {
                         transform -rotate-3
                         select-none
                         relative z-10
+                        pt-6 pb-6
                     "
                 >
                     My Daily Driver
                 </ProgressiveText>
 
                 <svg
-                    className="absolute w-full h-8 md:h-10 -bottom-2 md:-bottom-4 left-0 text-[rgb(74,108,196)] z-0 pointer-events-none transform -rotate-3"
+                    className="absolute w-full h-8 md:h-10 bottom-0 left-0 text-[rgb(160,168,187)] z-0 pointer-events-none transform -rotate-3"
                     viewBox="0 0 182 15"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -644,7 +640,7 @@ const MacMiniSection: React.FC = () => {
                 className="
                     relative
                     w-full
-                    flex flex-col md:flex-row items-center justify-center gap-0 md:gap-16
+                    flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16
                 "
             >
                 <motion.div

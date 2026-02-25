@@ -25,6 +25,7 @@ const customStyles: Record<string, React.CSSProperties> = {
   front: {
     width: '360px',
     height: '440px',
+    left: '0px', // Center relative to 300px container
     transform: 'translateZ(100px)',
     background: 'linear-gradient(135deg, #F0EDE0 0%, #E0DCCF 100%)',
     boxShadow: 'inset 2px 2px 5px rgba(255,255,255,0.8), inset -5px -5px 15px rgba(0,0,0,0.1)',
@@ -42,7 +43,7 @@ const customStyles: Record<string, React.CSSProperties> = {
     position: 'absolute',
   },
   left: {
-    width: '00px',
+    width: '200px',
     height: '440px',
     transform: 'rotateY(-90deg) translateZ(100px)',
     background: '#E0DCCF',
@@ -60,8 +61,8 @@ const customStyles: Record<string, React.CSSProperties> = {
   top: {
     width: '360px',
     height: '200px',
-    transform: 'rotateX(90deg) translateZ(100px)',
-    background: '#F0EDE0',
+    transform: 'rotateX(90deg) translateZ(0)',
+    background: '#eeeae1',
     position: 'absolute',
   },
   bottom: {
@@ -192,6 +193,7 @@ const customStyles: Record<string, React.CSSProperties> = {
     width: '360px',
     height: '140px',
     bottom: '-118px',
+    left: '-30px',
     transformStyle: 'preserve-3d',
     transformOrigin: 'top center',
     transform: 'translateZ(164px) rotateX(66deg)',
@@ -413,18 +415,48 @@ export const RetroComputer: React.FC = () => {
   const [cursorVisible, setCursorVisible] = useState(true);
   const typeIndexRef = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const cursorIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const isVisibleRef = useRef(false);
 
   const fullText = "Here's to the crazy ones. The misfits. The rebels. The troublemakers. The round pegs in the square holes. The ones who see things different..";
 
+  // Pause all timers when off-screen
   useEffect(() => {
-    const cursorInterval = setInterval(() => {
-      setCursorVisible(v => !v);
-    }, 500);
-    return () => clearInterval(cursorInterval);
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+        if (entry.isIntersecting) {
+          // Resume cursor blink
+          if (!cursorIntervalRef.current) {
+            cursorIntervalRef.current = setInterval(() => setCursorVisible(v => !v), 500);
+          }
+        } else {
+          // Pause cursor blink
+          if (cursorIntervalRef.current) {
+            clearInterval(cursorIntervalRef.current);
+            cursorIntervalRef.current = null;
+          }
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      if (cursorIntervalRef.current) clearInterval(cursorIntervalRef.current);
+    };
   }, []);
 
   useEffect(() => {
     const typeWriter = () => {
+      if (!isVisibleRef.current) {
+        // Retry after a short delay when not visible
+        timeoutRef.current = setTimeout(typeWriter, 500);
+        return;
+      }
       if (typeIndexRef.current < fullText.length) {
         const idx = typeIndexRef.current;
         setTypeText(fullText.substring(0, idx + 1));
@@ -446,12 +478,13 @@ export const RetroComputer: React.FC = () => {
 
   return (
     <div
-      className="perspective-2000 flex items-center justify-center h-full w-full"
+      ref={containerRef}
+      className="perspective-[2800px] flex items-center justify-center h-full w-full"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
         <div style={{ ...customStyles.scene, ...(isHovered ? customStyles.sceneHover : {}) }}>
-        <div style={customStyles.computerUnit} className="scale-[0.5] md:scale-[0.65]">
+        <div style={customStyles.computerUnit} className="scale-[0.58] md:scale-[0.65]">
               {/* Front face */}
               <div style={customStyles.front}>
                 <div style={customStyles.screenInset}>
@@ -613,7 +646,7 @@ export const RetroComputer: React.FC = () => {
               <div style={customStyles.bottom}></div>
 
               {/* Keyboard Assembly */}
-              <div style={customStyles.keyboardAssembly}>
+              <div style={customStyles.keyboardAssembly} className="kb-assembly">
                 <div style={customStyles.kbBase}>
                   <div style={customStyles.keysGrid}>
                     {/* Row 1 - 12 keys */}
@@ -656,6 +689,12 @@ export const RetroComputer: React.FC = () => {
             .retro-key:nth-child(2n+4) { animation: typeKey 1.8s infinite 0.9s; }
             .retro-key:nth-child(5n) { animation: typeKey 2.5s infinite 1.2s; }
             .retro-key:nth-child(4n+2) { animation: typeKey 1.2s infinite 0s; }
+            
+            @media (max-width: 768px) {
+              .kb-assembly {
+                transform: translateZ(125px) rotateX(55deg) translateX(-30px) !important;
+              }
+            }
           ` }} />
     </div>
   );

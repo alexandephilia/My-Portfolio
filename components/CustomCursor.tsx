@@ -59,13 +59,21 @@ export const CustomCursor = () => {
             if (!target) return;
 
             if (target !== lastTargetRef.current) {
+                lastTargetRef.current = target;
+
+                // Fast path: check semantic elements first (avoids getComputedStyle)
                 const isClickable =
+                    target.tagName === 'BUTTON' ||
+                    target.tagName === 'A' ||
+                    target.tagName === 'INPUT' ||
+                    target.tagName === 'SELECT' ||
+                    target.tagName === 'TEXTAREA' ||
+                    target.getAttribute('role') === 'button' ||
                     target.closest('button') ||
                     target.closest('a') ||
                     target.closest('[role="button"]') ||
-                    window.getComputedStyle(target).cursor === 'pointer';
+                    target.dataset.cursor === 'pointer';
 
-                lastTargetRef.current = target;
                 if (lastIsPointerRef.current !== !!isClickable) {
                     lastIsPointerRef.current = !!isClickable;
                     setIsPointer(!!isClickable);

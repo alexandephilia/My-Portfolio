@@ -10,6 +10,7 @@ interface ProgressiveTextProps<T extends ElementType = "div"> extends HTMLMotion
   className?: string;
   triggerPoint?: string; // e.g., "0.9" (bottom 10% of screen)
   endPoint?: string;     // e.g., "0.5" (center of screen)
+  disabled?: boolean;
 }
 
 export default function ProgressiveText<T extends ElementType = "div">({ 
@@ -20,6 +21,7 @@ export default function ProgressiveText<T extends ElementType = "div">({
   className = "", 
   triggerPoint = "0.9",
   endPoint = "0.6",
+  disabled = false,
   style,
   ...props
 }: ProgressiveTextProps<T>) {
@@ -71,7 +73,7 @@ export default function ProgressiveText<T extends ElementType = "div">({
     <MotionTag 
       ref={containerRef as any} 
       className={className}
-      style={{ 
+      style={disabled ? style : { 
         maskImage,
         WebkitMaskImage,
         maskSize: resolvedMode === 'diagonal' ? '100% 100%' : `100% ${lineMetrics?.css || '1.2em'}`,

@@ -367,7 +367,7 @@ export const Footer: React.FC = () => {
 
             {/* THE END - Half Visible Footer Element */}
             <div className="w-full overflow-hidden flex justify-center pointer-events-none select-none relative h-[60px] md:h-[100px]">
-                <ProgressiveText as="h1" className="text-[120px] md:text-[200px] font-black text-gray-200/50 leading-[0.75] tracking-tighter absolute top-0 whitespace-nowrap">
+                <ProgressiveText as="h1" disabled className="text-[120px] md:text-[200px] font-black text-gray-200/50 leading-[0.75] tracking-tighter absolute top-0 whitespace-nowrap">
                     THE END
                 </ProgressiveText>
             </div>
